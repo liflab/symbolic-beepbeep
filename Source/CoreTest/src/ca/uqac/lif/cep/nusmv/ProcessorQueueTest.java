@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import ca.uqac.lif.symbolif.Assignment;
-import ca.uqac.lif.symbolif.Condition;
-import ca.uqac.lif.symbolif.Domain;
+import ca.uqac.lif.nusmv4j.Assignment;
+import ca.uqac.lif.nusmv4j.Condition;
+import ca.uqac.lif.nusmv4j.Domain;
 
 public class ProcessorQueueTest
 {
@@ -90,5 +90,32 @@ public class ProcessorQueueTest
 		Assignment a = new Assignment();
 		pq.assign(a);
 		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testLambdaEquals3()
+	{
+		int Q = 5;
+		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.hasLength(0);
+		assertNotNull(c);
+		pq.set();
+		Assignment a = new Assignment();
+		pq.assign(a);
+		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testLambdaEqualsNext1()
+	{
+		int Q = 5;
+		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		ProcessorQueue pq_next = pq.next();
+		Condition c = pq_next.hasLength(3);
+		assertNotNull(c);
+		pq_next.set("a", "b", "c", "a");
+		Assignment a = new Assignment();
+		pq_next.assign(a);
+		assertFalse(c.evaluate(a));
 	}
 }

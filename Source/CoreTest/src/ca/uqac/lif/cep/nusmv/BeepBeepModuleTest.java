@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import ca.uqac.lif.symbolif.Assignment;
-import ca.uqac.lif.symbolif.Condition;
-import ca.uqac.lif.symbolif.Domain;
+import ca.uqac.lif.nusmv4j.Assignment;
+import ca.uqac.lif.nusmv4j.Condition;
+import ca.uqac.lif.nusmv4j.Domain;
 
 public class BeepBeepModuleTest
 {

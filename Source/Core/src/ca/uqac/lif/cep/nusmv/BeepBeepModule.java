@@ -1,15 +1,15 @@
 package ca.uqac.lif.cep.nusmv;
 
-import ca.uqac.lif.symbolif.Condition;
-import ca.uqac.lif.symbolif.Conjunction;
-import ca.uqac.lif.symbolif.Disjunction;
-import ca.uqac.lif.symbolif.Domain;
-import ca.uqac.lif.symbolif.LogicModule;
+import static ca.uqac.lif.nusmv4j.ConstantFalse.FALSE;
 
-import static ca.uqac.lif.symbolif.ConstantFalse.FALSE;
-
-import ca.uqac.lif.symbolif.ArrayVariable;
-import ca.uqac.lif.symbolif.BooleanDomain;
+import ca.uqac.lif.nusmv4j.ArrayVariable;
+import ca.uqac.lif.nusmv4j.BooleanDomain;
+import ca.uqac.lif.nusmv4j.Condition;
+import ca.uqac.lif.nusmv4j.Conjunction;
+import ca.uqac.lif.nusmv4j.Disjunction;
+import ca.uqac.lif.nusmv4j.Domain;
+import ca.uqac.lif.nusmv4j.LogicModule;
+import ca.uqac.lif.nusmv4j.Term;
 
 /**
  * Abstract representation of a BeepBeep processor as a collection of queues
@@ -17,6 +17,8 @@ import ca.uqac.lif.symbolif.BooleanDomain;
  */
 public abstract class BeepBeepModule extends LogicModule
 {
+	protected enum QueueType {PORCH, BUFFER}
+	
 	/**
 	 * The front porches of this processor.
 	 */
@@ -104,6 +106,33 @@ public abstract class BeepBeepModule extends LogicModule
 	public ProcessorQueue getBackPorch()
 	{
 		return m_backPorch;
+	}
+	
+	public Condition at(QueueType t, int pipe_index, int m, int n)
+	{
+		if (t == QueueType.PORCH)
+		{
+			return atPorch(pipe_index, m, n);
+		}
+		return atBuffer(pipe_index, m, n);
+	}
+	
+	public Term<?> at(QueueType t, int pipe_index, int m)
+	{
+		if (t == QueueType.PORCH)
+		{
+			return m_frontPorches[pipe_index].valueAt(m);
+		}
+		return m_buffers[pipe_index].valueAt(m);
+	}
+	
+	public int getSize(QueueType t, int pipe_index)
+	{
+		if (t == QueueType.PORCH)
+		{
+			return getFrontPorch(pipe_index).getSize();
+		}
+		return getBuffer(pipe_index).getSize();
 	}
 	
 	/**
