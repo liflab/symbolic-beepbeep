@@ -71,7 +71,7 @@ public class BeepBeepModuleTest
 	@Test
 	public void testAtPorch3()
 	{
-		int Q_in = 1, Q_b = 5, Q_out = 1;
+		int Q_in = 5, Q_b = 5, Q_out = 1;
 		BeepBeepModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
 		Condition c = mod.atPorch(0, 1, 5);
 		assertNotNull(c);
@@ -144,17 +144,28 @@ public class BeepBeepModuleTest
 	}
 
 	@Test
-	public void testMinTotalPipe2()
+	public void testMinTotalPipe2a()
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		BeepBeepModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.minTotalPipe(0, 8);
+		Condition c = mod.minTotalPipe(0, 2);
 		assertNotNull(c);
-		mod.getBuffer(0).set("a", "b", "c", "a");
-		mod.getFrontPorch(0).set("a", "b", "c", "a");
 		Assignment a = new Assignment();
-		mod.getBuffer(0).assign(a);
-		mod.getFrontPorch(0).assign(a);
+		mod.getBuffer(0).set("a").assign(a);
+		mod.getFrontPorch(0).set("a").assign(a);
+		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testMinTotalPipe2b()
+	{
+		int Q_in = 1, Q_b = 5, Q_out = 1;
+		BeepBeepModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
+		Condition c = mod.minTotalPipe(0, 1);
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a").assign(a);
+		mod.getFrontPorch(0).set("a").assign(a);
 		assertTrue(c.evaluate(a));
 	}
 
@@ -186,6 +197,36 @@ public class BeepBeepModuleTest
 		mod.getBuffer(0).assign(a);
 		mod.getFrontPorch(0).assign(a);
 		assertFalse(c.evaluate(a));
+	}
+	
+	@Test
+	public void testMinTotalPipe5()
+	{
+		int Q_in = 1, Q_b = 1, Q_out = 1;
+		BeepBeepModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
+		Condition c = mod.minTotalPipe(0, 0);
+		assertNotNull(c);
+		mod.getBuffer(0).set();
+		mod.getFrontPorch(0).set();
+		Assignment a = new Assignment();
+		mod.getBuffer(0).assign(a);
+		mod.getFrontPorch(0).assign(a);
+		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testMinTotalPipe6()
+	{
+		int Q_in = 1, Q_b = 1, Q_out = 1;
+		BeepBeepModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
+		Condition c = mod.minTotalPipe(0, 0);
+		assertNotNull(c);
+		mod.getBuffer(0).set("a");
+		mod.getFrontPorch(0).set();
+		Assignment a = new Assignment();
+		mod.getBuffer(0).assign(a);
+		mod.getFrontPorch(0).assign(a);
+		assertTrue(c.evaluate(a));
 	}
 
 	@Test
@@ -223,10 +264,10 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		BeepBeepModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.hasTotalPipe(0, 8);
+		Condition c = mod.hasTotalPipe(0, 2);
 		assertNotNull(c);
-		mod.getBuffer(0).set("a", "b", "c", "a");
-		mod.getFrontPorch(0).set("a", "b", "c", "a");
+		mod.getBuffer(0).set("a");
+		mod.getFrontPorch(0).set("a");
 		Assignment a = new Assignment();
 		mod.getBuffer(0).assign(a);
 		mod.getFrontPorch(0).assign(a);
@@ -266,7 +307,7 @@ public class BeepBeepModuleTest
 	@Test
 	public void testHasTotalPipe6()
 	{
-		int Q_in = 1, Q_b = 5, Q_out = 1;
+		int Q_in = 2, Q_b = 5, Q_out = 2;
 		BeepBeepModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
 		Condition c = mod.hasTotalPipe(0, 4);
 		assertNotNull(c);

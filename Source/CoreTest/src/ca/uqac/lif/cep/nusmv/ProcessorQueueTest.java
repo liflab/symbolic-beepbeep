@@ -67,6 +67,19 @@ public class ProcessorQueueTest
 	}
 	
 	@Test
+	public void testLambdaAtLeast5()
+	{
+		int Q = 5;
+		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.minLength(5);
+		assertNotNull(c);
+		pq.set("a", "b", "c", "a", "a");
+		Assignment a = new Assignment();
+		pq.assign(a);
+		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
 	public void testLambdaEquals1()
 	{
 		int Q = 5;
@@ -94,6 +107,19 @@ public class ProcessorQueueTest
 	
 	@Test
 	public void testLambdaEquals3()
+	{
+		int Q = 5;
+		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.hasLength(5);
+		assertNotNull(c);
+		pq.set("a", "b", "c", "a", "a");
+		Assignment a = new Assignment();
+		pq.assign(a);
+		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testLambdaEquals4()
 	{
 		int Q = 5;
 		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);

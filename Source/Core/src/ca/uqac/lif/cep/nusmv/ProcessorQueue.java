@@ -139,7 +139,7 @@ public class ProcessorQueue
 	{
 		Conjunction and = new Conjunction();
 		int Q = getSize();
-		if (n < 0 || n >= Q)
+		if (n < 0 || n > Q)
 		{
 			return FALSE;
 		}
@@ -164,7 +164,7 @@ public class ProcessorQueue
 	{
 		Conjunction and = new Conjunction();
 		int Q = getSize();
-		if (n < 0 || n >= Q)
+		if (n < 0 || n > Q)
 		{
 			return FALSE;
 		}

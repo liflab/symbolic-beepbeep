@@ -127,6 +127,57 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBackPorch().set("a", "b", "c", "a").assign(a);
 		assertFalse(c.evaluate(a));
 	}
+	
+	@Test
+	public void testFrontsVsBackPorch1OnlySolution()
+	{
+		// There are 5 complete fronts in this test case
+		int Q_in = 5, Q_b = 5, Q_out = 5;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Condition c = mod.frontsVsBackPorch();
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
+		mod.getFrontPorch(0).set("a").assign(a);
+		mod.getBuffer(1).set("a", "b", "c", "a").assign(a);
+		mod.getFrontPorch(1).set("a", "b", "c", "a").assign(a);
+		mod.getBackPorch().set("a", "b", "c", "a").assign(a);
+		assertFalse(c.evaluate(a));
+	}
+
+	@Test
+	public void testFrontsVsBackPorch3()
+	{
+		// There are 4 complete fronts in this test case
+		int Q_in = 4, Q_b = 4, Q_out = 4;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Condition c = mod.frontsVsBackPorch();
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set("a", "b", "c", "a").assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		mod.getBackPorch().set(true, true, true, true).assign(a);
+		assertTrue(c.evaluate(a));
+	}
+
+	@Test
+	public void testFrontsVsBackPorch4()
+	{
+		// There are 4 complete fronts in this test case
+		int Q_in = 1, Q_b = 1, Q_out = 1;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Condition c = mod.frontsVsBackPorch();
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set().assign(a);
+		mod.getFrontPorch(0).set("a").assign(a);
+		mod.getBuffer(1).set("a").assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		mod.getBackPorch().set().assign(a);
+		assertFalse(c.evaluate(a));
+	}
 
 	@Test
 	public void testFrontsVsBackPorch2()
@@ -244,6 +295,23 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a", "c", "c").assign(a);
 		mod.getBackPorch().set(true, false, true).assign(a);
+		assertTrue(c.evaluate(a));
+	}
+
+	@Test
+	public void testBackPorchValues7()
+	{
+		// There are 5 complete fronts in this test case
+		int Q_in = 5, Q_b = 5, Q_out = 5;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Condition c = mod.backPorchValues();
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b", "c").assign(a);
+		mod.getFrontPorch(0).set("c", "d").assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set("a", "c", "c", "b", "a").assign(a);
+		mod.getBackPorch().set(true, false, true, false, false).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 
@@ -384,53 +452,178 @@ public class BinaryApplyFunctionModuleTest
 	}
 
 	@Test
-	public void testNextBufferValues1()
+	public void testNextBufferSize9()
 	{
-		// There are 2 complete fronts in this test case; 1 event left in buffer 0 in next state
-		int Q_in = 5, Q_b = 5, Q_out = 5;
+		// The fronts that are consumed are a-a, b-b. What remains in the buffer are c +
+		// what is in the front porch (c b).
+		int Q_in = 3, Q_b = 3, Q_out = 3;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
 		Assignment a = new Assignment();
-		mod.getBuffer(0).set("a", "b").assign(a);
+		mod.getBuffer(0).set("a", "b", "c").assign(a);
+		mod.getFrontPorch(0).set("c", "b").assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set("a", "b").assign(a);
+		mod.getBuffer(0).next().set("c", "b").assign(a);
+		Condition c = mod.nextBufferSize(0);
+		assertNotNull(c);
+		assertFalse(c.evaluate(a));
+	}
+
+	@Test
+	public void testNextBufferValues1()
+	{
+		// No input event: buffer remains the same
+		int Q_in = 3, Q_b = 3, Q_out = 3;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		mod.getBuffer(0).next().set("a").assign(a);
+		Condition c = mod.nextBufferValues(0);
+		assertNotNull(c);
+		assertTrue(c.evaluate(a));	
+	}
+
+	@Test
+	public void testNextBufferValues1_false()
+	{
+		// No input event: buffer remains the same
+		// nf=0, nq=1
+		int Q_in = 1, Q_b = 1, Q_out = 1;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		mod.getBuffer(0).next().set("b").assign(a);
+		Condition c = mod.nextBufferValues(0);
+		Condition c2 = Condition.simplify(c);
+		assertNotNull(c2);
+		assertFalse(c.evaluate(a));	
+	}
+
+	@Test
+	public void testNextBufferValues2()
+	{
+		// No front: buffer remains the same
+		int Q_in = 3, Q_b = 3, Q_out = 3;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b", "c").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		mod.getBuffer(0).next().set("a", "b", "c").assign(a);
+		Condition c = mod.nextBufferValues(0);
+		assertNotNull(c);
+		assertTrue(c.evaluate(a));	
+	}
+
+	@Test
+	public void testNextBufferValues2_false()
+	{
+		// No front: buffer remains the same
+		int Q_in = 3, Q_b = 3, Q_out = 3;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b", "c").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		mod.getBuffer(0).next().set("a", "c", "c").assign(a);
+		Condition c = mod.nextBufferValues(0);
+		assertNotNull(c);
+		assertFalse(c.evaluate(a));	
+	}
+
+	@Test
+	public void testNextBufferValues3()
+	{
+		// One front: buffer contents shifted
+		int Q_in = 3, Q_b = 3, Q_out = 3;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b", "c").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set("a").assign(a);
+		mod.getBuffer(0).next().set("b", "c").assign(a);
+		Condition c = mod.nextBufferValues(0);
+		assertNotNull(c);
+		assertTrue(c.evaluate(a));
+	}
+
+	@Test
+	public void testNextBufferValues3_false()
+	{
+		// One front: buffer contents shifted
+		int Q_in = 3, Q_b = 3, Q_out = 3;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b", "c").assign(a);
 		mod.getFrontPorch(0).set().assign(a);
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a").assign(a);
 		mod.getBuffer(0).next().set("b").assign(a);
 		Condition c = mod.nextBufferValues(0);
 		assertNotNull(c);
+		assertFalse(c.evaluate(a));
+	}
+
+	@Test
+	public void testNextBufferValues3_false2()
+	{
+		// One front: buffer contents shifted
+		int Q_in = 3, Q_b = 3, Q_out = 3;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b", "c").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set("a").assign(a);
+		mod.getBuffer(0).next().set("b", "a").assign(a);
+		Condition c = mod.nextBufferValues(0);
+		assertNotNull(c);
+		assertFalse(c.evaluate(a));
+	}
+
+	@Test
+	public void testNextBufferValues4()
+	{
+		// The fronts that are consumed are a-a, b-b. What remains in the buffer are c +
+		// what is in the front porch (c b).
+		int Q_in = 3, Q_b = 3, Q_out = 3;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b", "c").assign(a);
+		mod.getFrontPorch(0).set("c", "b").assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set("a", "b").assign(a);
+		mod.getBuffer(0).next().set("c", "c", "b").assign(a);
+		Condition c = mod.nextBufferValues(0);
+		assertNotNull(c);
 		assertTrue(c.evaluate(a));	
 	}
-	
+
 	@Test
-	public void testNextBufferValues2()
+	public void testNextBufferValues4_false()
 	{
-		// There are 2 complete fronts in this test case; 1 event left in buffer 0 in next state
-		int Q_in = 5, Q_b = 5, Q_out = 5;
+		// The fronts that are consumed are a-a, b-b. What remains in the buffer are c +
+		// what is in the front porch (c b).
+		int Q_in = 3, Q_b = 3, Q_out = 3;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
 		Assignment a = new Assignment();
-		mod.getBuffer(0).set("a", "b").assign(a);
-		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(0).set("a", "b", "c").assign(a);
+		mod.getFrontPorch(0).set("c", "b").assign(a);
 		mod.getBuffer(1).set().assign(a);
-		mod.getFrontPorch(1).set("a").assign(a);
-		mod.getBuffer(0).next().set("a").assign(a);
+		mod.getFrontPorch(1).set("a", "b").assign(a);
+		mod.getBuffer(0).next().set("c", "b").assign(a);
 		Condition c = mod.nextBufferValues(0);
 		assertNotNull(c);
 		assertFalse(c.evaluate(a));	
 	}
-	
-	@Test
-	public void testNextBufferValues3()
-	{
-		// There are 2 complete fronts in this test case; 1 event left in buffer 0 in next state
-		int Q_in = 5, Q_b = 5, Q_out = 5;
-		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Assignment a = new Assignment();
-		mod.getBuffer(0).set("a", "b").assign(a);
-		mod.getFrontPorch(0).set().assign(a);
-		mod.getBuffer(1).set().assign(a);
-		mod.getFrontPorch(1).set("a").assign(a);
-		mod.getBuffer(0).next().set("a", "b").assign(a);
-		Condition c = mod.nextBufferValues(0);
-		assertNotNull(c);
-		assertFalse(c.evaluate(a));	
-	}
+
 }

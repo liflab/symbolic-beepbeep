@@ -1,5 +1,6 @@
 package ca.uqac.lif.cep.nusmv;
 
+import ca.uqac.lif.nusmv4j.Assignment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Disjunction;
@@ -112,10 +113,10 @@ public class BinaryApplyFunctionModule extends BeepBeepModule
 							}
 							{
 								Condition right = m_function.getCondition(
-									at(sigma1, 0, m1), // first argument of f
-									at(sigma2, 1, m2), // second argument of f
-									getBackPorch().valueAt(n) // cell of the back porch to store value
-								);
+										at(sigma1, 0, m1), // first argument of f
+										at(sigma2, 1, m2), // second argument of f
+										getBackPorch().valueAt(n) // cell of the back porch to store value
+										);
 								imp.add(right);
 							}
 						}
@@ -150,11 +151,13 @@ public class BinaryApplyFunctionModule extends BeepBeepModule
 	 */
 	/*@ non_null @*/ public Condition nextBufferSize(int pipe_index)
 	{
-		int Q = getBuffer(pipe_index).getSize();
+		int Q_in = getFrontPorch(pipe_index).getSize();
+		int Q_b = getBuffer(pipe_index).getSize();
+		int Q_out = getBackPorch().getSize();
 		Conjunction big_and = new Conjunction();
-		for (int nf = 0; nf <= Q - 1; nf++)
+		for (int nf = 0; nf <= Q_out; nf++)
 		{
-			for (int nq = nf; nq <= Q - 1; nq++)
+			for (int nq = nf; nq <= Q_in + Q_b; nq++)
 			{
 				Implication imp = new Implication();
 				{
@@ -169,7 +172,7 @@ public class BinaryApplyFunctionModule extends BeepBeepModule
 		}
 		return big_and;
 	}
-	
+
 	/**
 	 * Generates the condition specifying the value of each cell of an
 	 * internal buffer in the next state, based on the size of the input pipe
@@ -179,39 +182,54 @@ public class BinaryApplyFunctionModule extends BeepBeepModule
 	 */
 	/*@ non_null @*/ public Condition nextBufferValues(int pipe_index)
 	{
-		int Q = getBuffer(pipe_index).getSize();
+		int Q_in = getFrontPorch(pipe_index).getSize();
+		int Q_b = getBuffer(pipe_index).getSize();
+		int Q_out = getBackPorch().getSize();
 		Conjunction big_and = new Conjunction();
-		for (int nf = 0; nf <= Q - 1; nf++)
+		for (int nf = 0; nf <= Q_out; nf++)
 		{
-			for (int nq = nf; nq <= Q - 1; nq++)
+			for (int nq = nf; nq <= Q_in + Q_b; nq++)
 			{
-				Implication imp = new Implication();
+				Implication imp = new DebugImplication();
 				{
 					Conjunction left = new Conjunction();
 					left.add(numFronts(nf));
 					left.add(hasTotalPipe(pipe_index, nq));
 					imp.add(left);
 				}
-				Conjunction in_and = new Conjunction();
-				for (int i = 0; i <= nq - nf - 1; i++)
 				{
-					for (QueueType sigma : new QueueType[] {QueueType.PORCH, QueueType.BUFFER})
+					Conjunction in_and = new Conjunction();
+					for (int i = 0; i <= nq - nf - 1; i++)
 					{
-						for (int j = 0; j <= length(sigma, pipe_index) - 1; j++)
+						for (QueueType sigma : new QueueType[] {QueueType.PORCH, QueueType.BUFFER})
 						{
-							Implication in_imp = new Implication();
-							in_imp.add(at(sigma, pipe_index, j, nf + i));
-							in_imp.add(new Equality(
-								at(sigma, pipe_index, j), // buffer/porch at position j
-								getBuffer(pipe_index).next().valueAt(i) // next buffer at position i
-							));
-							in_and.add(in_imp);
+							for (int j = 0; j <= length(sigma, pipe_index) - 1; j++)
+							{
+								Implication in_imp = new Implication();
+								in_imp.add(at(sigma, pipe_index, j, nf + i));
+								in_imp.add(new Equality(
+										at(sigma, pipe_index, j), // buffer/porch at position j
+										getBuffer(pipe_index).next().valueAt(i) // next buffer at position i
+										));
+								in_and.add(in_imp);
+							}
 						}
 					}
+					imp.add(in_and);
 				}
-				imp.add(in_and);
+				big_and.add(imp);
 			}
 		}
 		return big_and;
+	}
+
+	protected static class DebugImplication extends Implication
+	{
+		public Boolean evaluate(Assignment a)
+		{
+			boolean b_left = m_operands.get(0).evaluate(a);
+			boolean b_right =  m_operands.get(1).evaluate(a);
+			return !b_left || b_right;
+		}
 	}
 }
