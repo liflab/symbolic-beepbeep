@@ -108,6 +108,15 @@ public abstract class BeepBeepModule extends LogicModule
 		return m_backPorch;
 	}
 	
+	public int length(QueueType t, int pipe_index)
+	{
+		if (t == QueueType.PORCH)
+		{
+			return getFrontPorch(pipe_index).getSize();
+		}
+		return getBuffer(pipe_index).getSize();
+	}
+	
 	public Condition at(QueueType t, int pipe_index, int m, int n)
 	{
 		if (t == QueueType.PORCH)

@@ -1,15 +1,11 @@
 package ca.uqac.lif.cep.nusmv;
 
-import ca.uqac.lif.nusmv4j.ArrayAccess;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Disjunction;
-import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.Implication;
-import ca.uqac.lif.nusmv4j.PrettyPrintStream;
-import ca.uqac.lif.nusmv4j.Term;
 
 public class BinaryApplyFunctionModule extends BeepBeepModule
 {
@@ -154,9 +150,8 @@ public class BinaryApplyFunctionModule extends BeepBeepModule
 	 */
 	/*@ non_null @*/ public Condition nextBufferSize(int pipe_index)
 	{
-		int Q = getBackPorch().getSize();
-		//Q=1;
-		Conjunction and = new Conjunction();
+		int Q = getBuffer(pipe_index).getSize();
+		Conjunction big_and = new Conjunction();
 		for (int nf = 0; nf <= Q - 1; nf++)
 		{
 			for (int nq = nf; nq <= Q - 1; nq++)
@@ -169,9 +164,54 @@ public class BinaryApplyFunctionModule extends BeepBeepModule
 					imp.add(left);
 				}
 				imp.add(getBuffer(pipe_index).next().hasLength(nq - nf));
-				and.add(imp);
+				big_and.add(imp);
 			}
 		}
-		return and;
+		return big_and;
+	}
+	
+	/**
+	 * Generates the condition specifying the value of each cell of an
+	 * internal buffer in the next state, based on the size of the input pipe
+	 * and the number of complete fronts in the current state.
+	 * @param pipe_index The index of the input pipe
+	 * @return The condition
+	 */
+	/*@ non_null @*/ public Condition nextBufferValues(int pipe_index)
+	{
+		int Q = getBuffer(pipe_index).getSize();
+		Conjunction big_and = new Conjunction();
+		for (int nf = 0; nf <= Q - 1; nf++)
+		{
+			for (int nq = nf; nq <= Q - 1; nq++)
+			{
+				Implication imp = new Implication();
+				{
+					Conjunction left = new Conjunction();
+					left.add(numFronts(nf));
+					left.add(hasTotalPipe(pipe_index, nq));
+					imp.add(left);
+				}
+				Conjunction in_and = new Conjunction();
+				for (int i = 0; i <= nq - nf - 1; i++)
+				{
+					for (QueueType sigma : new QueueType[] {QueueType.PORCH, QueueType.BUFFER})
+					{
+						for (int j = 0; j <= length(sigma, pipe_index) - 1; j++)
+						{
+							Implication in_imp = new Implication();
+							in_imp.add(at(sigma, pipe_index, j, nf + i));
+							in_imp.add(new Equality(
+								at(sigma, pipe_index, j), // buffer/porch at position j
+								getBuffer(pipe_index).next().valueAt(i) // next buffer at position i
+							));
+							in_and.add(in_imp);
+						}
+					}
+				}
+				imp.add(in_and);
+			}
+		}
+		return big_and;
 	}
 }

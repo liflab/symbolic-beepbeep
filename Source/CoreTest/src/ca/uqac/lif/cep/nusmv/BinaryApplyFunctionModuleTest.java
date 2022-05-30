@@ -263,7 +263,7 @@ public class BinaryApplyFunctionModuleTest
 		assertNotNull(c);
 		assertTrue(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferSize2()
 	{
@@ -280,7 +280,7 @@ public class BinaryApplyFunctionModuleTest
 		assertNotNull(c);
 		assertTrue(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferSize3()
 	{
@@ -297,7 +297,7 @@ public class BinaryApplyFunctionModuleTest
 		assertNotNull(c);
 		assertTrue(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferSize4()
 	{
@@ -314,11 +314,11 @@ public class BinaryApplyFunctionModuleTest
 		assertNotNull(c);
 		assertTrue(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferSize5()
 	{
-		// There is 0 complete front in this test case; 1 event left in buffer in next state
+		// There is 0 complete front in this test case; 1 event left in buffer 0 in next state
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
 		Assignment a = new Assignment();
@@ -331,11 +331,11 @@ public class BinaryApplyFunctionModuleTest
 		assertNotNull(c);
 		assertTrue(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferSize6()
 	{
-		// There is 0 complete front in this test case
+		// There is 0 complete front in this test case; 1 event left in buffer 0 in next state
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
 		Assignment a = new Assignment();
@@ -348,11 +348,11 @@ public class BinaryApplyFunctionModuleTest
 		assertNotNull(c);
 		assertFalse(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferSize7()
 	{
-		// There is 0 complete front in this test case; 1 event left in buffer in next state
+		// There are 2 complete fronts in this test case; 1 event left in buffer 0 in next state
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
 		Assignment a = new Assignment();
@@ -365,11 +365,11 @@ public class BinaryApplyFunctionModuleTest
 		assertNotNull(c);
 		assertTrue(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferSize8()
 	{
-		// There is 0 complete front in this test case; 1 event left in buffer in next state
+		// There are 2 complete fronts in this test case; 1 event left in buffer 0 in next state
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
 		Assignment a = new Assignment();
@@ -381,5 +381,56 @@ public class BinaryApplyFunctionModuleTest
 		Condition c = mod.nextBufferSize(0);
 		assertNotNull(c);
 		assertFalse(c.evaluate(a));
+	}
+
+	@Test
+	public void testNextBufferValues1()
+	{
+		// There are 2 complete fronts in this test case; 1 event left in buffer 0 in next state
+		int Q_in = 5, Q_b = 5, Q_out = 5;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set("a").assign(a);
+		mod.getBuffer(0).next().set("b").assign(a);
+		Condition c = mod.nextBufferValues(0);
+		assertNotNull(c);
+		assertTrue(c.evaluate(a));	
+	}
+	
+	@Test
+	public void testNextBufferValues2()
+	{
+		// There are 2 complete fronts in this test case; 1 event left in buffer 0 in next state
+		int Q_in = 5, Q_b = 5, Q_out = 5;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set("a").assign(a);
+		mod.getBuffer(0).next().set("a").assign(a);
+		Condition c = mod.nextBufferValues(0);
+		assertNotNull(c);
+		assertFalse(c.evaluate(a));	
+	}
+	
+	@Test
+	public void testNextBufferValues3()
+	{
+		// There are 2 complete fronts in this test case; 1 event left in buffer 0 in next state
+		int Q_in = 5, Q_b = 5, Q_out = 5;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set("a").assign(a);
+		mod.getBuffer(0).next().set("a", "b").assign(a);
+		Condition c = mod.nextBufferValues(0);
+		assertNotNull(c);
+		assertFalse(c.evaluate(a));	
 	}
 }
