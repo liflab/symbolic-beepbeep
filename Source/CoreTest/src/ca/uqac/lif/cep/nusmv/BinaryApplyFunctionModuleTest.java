@@ -263,6 +263,41 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBackPorch().set(true).assign(a);
 		assertTrue(c.evaluate(a));
 	}
+	
+	@Test
+	public void testBackPorchValues1_false()
+	{
+		// There is 1 complete front in this test case
+		int Q_in = 5, Q_b = 5, Q_out = 5;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Condition c = mod.backPorchValues();
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set("a").assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		mod.getBackPorch().set(false).assign(a);
+		assertFalse(c.evaluate(a));
+	}
+	
+	@Test
+	public void testBackPorchValues1OnlySolution()
+	{
+		// There is 1 complete front in this test case
+		int Q_in = 5, Q_b = 5, Q_out = 5;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Condition c = mod.backPorchValues();
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set("a").assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		//mod.getBackPorch().set(true).assign(a);
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(), mod.getBackPorch().isWellFormed());
+		assertEquals(1, solutions.size());
+	}
 
 	@Test
 	public void testBackPorchValues2()

@@ -119,6 +119,7 @@ public class BinaryApplyFunctionModule extends BeepBeepModule
 										);
 								imp.add(right);
 							}
+							and.add(imp);
 						}
 					}
 				}
