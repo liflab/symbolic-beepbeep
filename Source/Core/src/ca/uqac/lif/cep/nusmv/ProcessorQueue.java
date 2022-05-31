@@ -10,8 +10,11 @@ import ca.uqac.lif.nusmv4j.BooleanArrayAccessCondition;
 import ca.uqac.lif.nusmv4j.BooleanDomain;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
+import ca.uqac.lif.nusmv4j.Constant;
 import ca.uqac.lif.nusmv4j.ConstantFalse;
 import ca.uqac.lif.nusmv4j.Domain;
+import ca.uqac.lif.nusmv4j.Equality;
+import ca.uqac.lif.nusmv4j.Implication;
 import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.Term;
 
@@ -67,6 +70,43 @@ public class ProcessorQueue
 	public ProcessorQueue next()
 	{
 		return m_next;
+	}
+	
+	/**
+	 * Returns the condition stipulating that the processor queue is well
+	 * formed. This is the case when:
+	 * <ol>
+	 * <li>If the flag array is true at position i, then it is also true
+	 * at position i&minus;1</li>
+	 * <li>If the flag array is false at position i, then the content array at
+	 * that same position contains the default value for the queue's
+	 * domain</li> 
+	 * </ol>
+	 * @return The condition
+	 */
+	/*@ non_null @*/ public Condition isWellFormed()
+	{
+		Object v = m_arrayContents.getDomain().getDefaultValue();
+		Constant cv = new Constant(v);
+		Conjunction and = new Conjunction();
+		for (int i = 0; i < getSize(); i++)
+		{
+			if (i > 0)
+			{
+				Implication imp = new Implication();
+				imp.add(hasAt(i));
+				imp.add(hasAt(i - 1));
+				and.add(imp);
+			}
+			Implication imp = new Implication();
+			Negation neg = new Negation();
+			neg.add(hasAt(i));
+			imp.add(neg);
+			Equality eq = new Equality(valueAt(i), cv);
+			imp.add(eq);
+			and.add(imp);
+		}
+		return and;
 	}
 	
 	/**

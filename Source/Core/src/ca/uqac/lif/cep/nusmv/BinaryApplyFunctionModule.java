@@ -74,7 +74,7 @@ public class BinaryApplyFunctionModule extends BeepBeepModule
 	{
 		ProcessorQueue back_porch = getBackPorch();
 		Conjunction and = new Conjunction();
-		for (int i = 0; i <= back_porch.getSize() - 1; i++)
+		for (int i = 0; i <= back_porch.getSize(); i++)
 		{
 			Equivalence eq = new Equivalence();
 			eq.add(numFronts(i));

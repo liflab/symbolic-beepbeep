@@ -15,6 +15,47 @@ public class ProcessorQueueTest
 	protected static Domain s_domLetters = new Domain(new Object[] {"a", "b", "c"});
 	
 	@Test
+	public void testWellFormed1()
+	{
+		int Q = 5;
+		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.isWellFormed();
+		assertNotNull(c);
+		pq.set("a", "b", "c", "a");
+		Assignment a = new Assignment();
+		pq.assign(a);
+		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testWellFormed2()
+	{
+		int Q = 5;
+		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.isWellFormed();
+		assertNotNull(c);
+		pq.set("a", "b", "c", "a");
+		pq.m_arrayFlags.setValues(true, false, true, true, false);
+		Assignment a = new Assignment();
+		pq.assign(a);
+		assertFalse(c.evaluate(a)); // Contains a "hole"
+	}
+	
+	@Test
+	public void testWellFormed3()
+	{
+		int Q = 1;
+		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.isWellFormed();
+		assertNotNull(c);
+		pq.set("b");
+		pq.m_arrayFlags.setValues(false);
+		Assignment a = new Assignment();
+		pq.assign(a);
+		assertFalse(c.evaluate(a)); // Not default value at index 0
+	}
+	
+	@Test
 	public void testLambdaAtLeast1()
 	{
 		int Q = 5;
@@ -129,6 +170,20 @@ public class ProcessorQueueTest
 		Assignment a = new Assignment();
 		pq.assign(a);
 		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testLambdaEquals5()
+	{
+		int Q = 5;
+		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.hasLength(3);
+		assertNotNull(c);
+		pq.set("a", "b", "c", "a");
+		pq.m_arrayFlags.setValues(true, false, true, true, false);
+		Assignment a = new Assignment();
+		pq.assign(a);
+		assertFalse(c.evaluate(a));
 	}
 	
 	@Test

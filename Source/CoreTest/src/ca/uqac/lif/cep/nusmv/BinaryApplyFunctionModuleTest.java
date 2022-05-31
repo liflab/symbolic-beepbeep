@@ -4,16 +4,23 @@ import org.junit.Test;
 
 import ca.uqac.lif.nusmv4j.Assignment;
 import ca.uqac.lif.nusmv4j.BooleanDomain;
+import ca.uqac.lif.nusmv4j.BruteSolver;
 import ca.uqac.lif.nusmv4j.Condition;
+import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Domain;
+import ca.uqac.lif.nusmv4j.Solver;
 
 import static org.junit.Assert.*;
+
+import java.util.List;
 
 public class BinaryApplyFunctionModuleTest
 {
 	protected static Domain s_domLetters = new Domain(new Object[] {"a", "b", "c"});
 
 	protected static Domain s_domBooleans = BooleanDomain.instance;
+
+	protected static Solver s_solver = new BruteSolver();
 
 	@Test
 	public void testNumFronts1()
@@ -127,22 +134,24 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBackPorch().set("a", "b", "c", "a").assign(a);
 		assertFalse(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testFrontsVsBackPorch1OnlySolution()
 	{
-		// There are 5 complete fronts in this test case
-		int Q_in = 5, Q_b = 5, Q_out = 5;
+		// Checks that, for a given content of the buffers and porches, the size
+		// of the back porch is uniquely determined
+		int Q_in = 3, Q_b = 3, Q_out = 3;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
 		Condition c = mod.frontsVsBackPorch();
 		assertNotNull(c);
 		Assignment a = new Assignment();
-		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
+		mod.getBuffer(0).set("a", "b").assign(a);
 		mod.getFrontPorch(0).set("a").assign(a);
-		mod.getBuffer(1).set("a", "b", "c", "a").assign(a);
-		mod.getFrontPorch(1).set("a", "b", "c", "a").assign(a);
-		mod.getBackPorch().set("a", "b", "c", "a").assign(a);
-		assertFalse(c.evaluate(a));
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set("a").assign(a);
+		//mod.getBackPorch().set(true).assign(a);
+		List<Assignment> solutions = s_solver.solveAll(c, a);
+		assertEquals(1, solutions.size());
 	}
 
 	@Test
@@ -160,6 +169,48 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(1).set().assign(a);
 		mod.getBackPorch().set(true, true, true, true).assign(a);
 		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testFrontsVsBackPorch3b()
+	{
+		int Q_in = 2, Q_b = 2, Q_out = 2;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Condition c = mod.frontsVsBackPorch();
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set("a", "b").assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		mod.getBackPorch().set(false, true);
+		mod.getBackPorch().m_arrayFlags.setValues(false, true).assign(a);
+		assertFalse(c.evaluate(a));
+	}
+
+	@Test
+	public void testFrontsVsBackPorch3bOnlySolution()
+	{
+		// Checks that, for a given content of the buffers and porches, the size
+		// of the back porch is uniquely determined
+		int Q_in = 2, Q_b = 2, Q_out = 2;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
+		Condition c = mod.frontsVsBackPorch();
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b").assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set("a", "b").assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		//c = Condition.simplify(c);
+		//mod.getBackPorch().set(true, true, true, true).assign(a);
+		List<Assignment> solutions = s_solver.solveAll(c, a);
+		Condition len = mod.getBackPorch().hasLength(2);
+		for (Assignment sol : solutions)
+		{
+			assertTrue(len.evaluate(sol));
+		}
+		assertEquals(1, solutions.size());
 	}
 
 	@Test
