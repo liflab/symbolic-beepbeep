@@ -21,57 +21,48 @@ import ca.uqac.lif.nusmv4j.Term;
 /**
  * An event queue modeled as a pair of NuSMV array variables.
  */
-public class ProcessorQueue
+public class ProcessorQueue extends NusmvQueue
 {
 	/*@ non_null @*/ protected final ArrayVariable m_arrayContents;
-	
-	/*@ non_null @*/ protected final ArrayVariable m_arrayFlags;
-	
+
 	protected ProcessorQueue m_next;
-	
+
 	public ProcessorQueue(ArrayVariable contents, ArrayVariable flags)
 	{
-		super();
+		super(flags);
 		m_arrayContents = contents;
-		m_arrayFlags = flags;
 		m_next = new ProcessorQueue(contents.next(), flags.next(), true);
 	}
-	
+
 	protected ProcessorQueue(ArrayVariable contents, ArrayVariable flags, boolean is_next)
 	{
-		super();
+		super(flags);
 		m_arrayContents = contents;
-		m_arrayFlags = flags;
 		m_next = null;
 	}
-	
+
 	public ProcessorQueue(String contents, String flags, int size, Domain d)
 	{
-		super();
+		super(new ArrayVariable(flags, BooleanDomain.instance, size));
 		m_arrayContents = new ArrayVariable(contents, d, size);
-		m_arrayFlags = new ArrayVariable(flags, BooleanDomain.instance, size);
 		m_next = new ProcessorQueue(m_arrayContents.next(), m_arrayFlags.next(), true);
 	}
-		
-	/**
-	 * Gets the size of this queue.
-	 * @return
-	 */
-	public int getSize()
-	{
-		return m_arrayContents.getDimension();
-	}
-	
+
 	/**
 	 * Gets an instance representing the processor queue in its next state.
 	 * @return The next instance, or <tt>null</tt> if the current object is
 	 * already the next instance.
 	 */
-	public ProcessorQueue next()
+	/*@ pure non_null @*/ public ProcessorQueue next()
 	{
 		return m_next;
 	}
 	
+	/*@ pure non_null @*/ public Domain getDomain()
+	{
+		return m_arrayContents.getDomain();
+	}
+
 	/**
 	 * Returns the condition stipulating that the processor queue is well
 	 * formed. This is the case when:
@@ -108,7 +99,7 @@ public class ProcessorQueue
 		}
 		return and;
 	}
-	
+
 	/**
 	 * Returns the condition stipulating that the queue has an element at
 	 * a given position. 
@@ -123,7 +114,7 @@ public class ProcessorQueue
 		}
 		return BooleanArrayAccessCondition.get(ArrayAccess.get(m_arrayFlags, index));
 	}
-	
+
 	/**
 	 * Returns the condition stipulating that the queue has an element at
 	 * a given position in the <em>next</em> state.
@@ -138,7 +129,7 @@ public class ProcessorQueue
 		}
 		return BooleanArrayAccessCondition.get(ArrayAccess.get(m_arrayFlags.next(), index));
 	}
-	
+
 	/**
 	 * Returns the term designating the value of an element of the queue at a
 	 * given position. 
@@ -153,7 +144,7 @@ public class ProcessorQueue
 		}
 		return ArrayAccess.get(m_arrayContents, index);
 	}
-	
+
 	/**
 	 * Returns the term designating the value of an element of the queue at a
 	 * given position in the <em>next</em> state.
@@ -168,7 +159,7 @@ public class ProcessorQueue
 		}
 		return ArrayAccess.get(m_arrayContents.next(), index);
 	}
-	
+
 	/**
 	 * Returns the condition stipulating that the queue contains at least
 	 * <i>n</i> elements.
@@ -193,7 +184,7 @@ public class ProcessorQueue
 		}
 		return and;
 	}
-	
+
 	/**
 	 * Returns the condition stipulating that the queue contains exactly
 	 * <i>n</i> elements.
@@ -220,7 +211,7 @@ public class ProcessorQueue
 		}
 		return and;
 	}
-	
+
 	/**
 	 * Returns the condition stipulating that the queue contains exactly
 	 * <i>n</i> elements in its <em>next</em> state.
@@ -247,7 +238,7 @@ public class ProcessorQueue
 		}
 		return and;
 	}
-	
+
 	/**
 	 * Sets the contents of the queue by giving a list of elements. The method
 	 * takes care of assigning the correct values of the cells in both the
@@ -277,7 +268,7 @@ public class ProcessorQueue
 		m_arrayFlags.setValues(flags);
 		return this;
 	}
-	
+
 	/**
 	 * Adds to an assignment the values of the queue's variables.
 	 * @param a The assignment

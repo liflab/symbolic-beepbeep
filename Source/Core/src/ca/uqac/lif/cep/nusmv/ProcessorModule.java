@@ -2,46 +2,57 @@ package ca.uqac.lif.cep.nusmv;
 
 import static ca.uqac.lif.nusmv4j.ConstantFalse.FALSE;
 
+import ca.uqac.lif.nusmv4j.ArrayAccess;
 import ca.uqac.lif.nusmv4j.ArrayVariable;
+import ca.uqac.lif.nusmv4j.BooleanArrayAccessCondition;
 import ca.uqac.lif.nusmv4j.BooleanDomain;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
+import ca.uqac.lif.nusmv4j.ConstantFalse;
 import ca.uqac.lif.nusmv4j.Disjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.LogicModule;
+import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.Term;
 
 /**
  * Abstract representation of a BeepBeep processor as a collection of queues
  * called front porch, internal buffer and back porch.
  */
-public abstract class BeepBeepModule extends LogicModule
+public abstract class ProcessorModule extends LogicModule
 {
-	protected enum QueueType {PORCH, BUFFER}
+	protected enum QueueType {PORCH, BUFFER, RESET}
 	
 	/**
 	 * The front porches of this processor.
 	 */
-	protected ProcessorQueue[] m_frontPorches;
+	protected final ProcessorQueue[] m_frontPorches;
+	
+	/**
+	 * The reset porches of this processor.
+	 */
+	protected final NusmvQueue[] m_resetPorches;
 	
 	/**
 	 * The internal buffers of this processor.
 	 */
-	protected ProcessorQueue[] m_buffers;
+	protected final ProcessorQueue[] m_buffers;
 	
 	/**
 	 * The back porch of this processor.
 	 */
-	protected ProcessorQueue m_backPorch;
+	protected final ProcessorQueue m_backPorch;
 	
 	
-	public BeepBeepModule(String name, int in_arity, Domain in_domain, Domain out_domain, int Q_in, int Q_b, int Q_out)
+	public ProcessorModule(String name, int in_arity, Domain in_domain, Domain out_domain, int Q_in, int Q_b, int Q_out)
 	{
 		super(name);
 		m_frontPorches = new ProcessorQueue[in_arity];
+		m_resetPorches = new NusmvQueue[in_arity];
 		for (int i = 0; i < in_arity; i++)
 		{
 			m_frontPorches[i] = new ProcessorQueue(new ArrayVariable("inc_" + i, in_domain, Q_in), new ArrayVariable("inb_" + i, BooleanDomain.instance, Q_in));
+			m_resetPorches[i] = new NusmvQueue(new ArrayVariable("inr_" + i, BooleanDomain.instance, Q_in));
 		}
 		m_buffers = new ProcessorQueue[in_arity];
 		for (int i = 0; i < in_arity; i++)
@@ -58,7 +69,7 @@ public abstract class BeepBeepModule extends LogicModule
 	 * @param position The position
 	 * @return This module
 	 */
-	public BeepBeepModule setFrontPorch(ProcessorQueue q, int position)
+	public ProcessorModule setFrontPorch(ProcessorQueue q, int position)
 	{
 		m_frontPorches[position] = q;
 		return this;
@@ -71,7 +82,7 @@ public abstract class BeepBeepModule extends LogicModule
 	 * @param position The position
 	 * @return This module
 	 */
-	public BeepBeepModule setBuffer(ProcessorQueue q, int position)
+	public ProcessorModule setBuffer(ProcessorQueue q, int position)
 	{
 		m_buffers[position] = q;
 		return this;
@@ -86,6 +97,17 @@ public abstract class BeepBeepModule extends LogicModule
 	public ProcessorQueue getFrontPorch(int index)
 	{
 		return m_frontPorches[index];
+	}
+	
+	/**
+	 * Gets the processor queue corresponding to the processor's reset porch
+	 * at a given position.
+	 * @param index The index of the input pipe
+	 * @return The queue
+	 */
+	public NusmvQueue getResetPorch(int index)
+	{
+		return m_resetPorches[index];
 	}
 	
 	/**
@@ -142,6 +164,76 @@ public abstract class BeepBeepModule extends LogicModule
 			return getFrontPorch(pipe_index).getSize();
 		}
 		return getBuffer(pipe_index).getSize();
+	}
+	
+	/**
+	 * Produces the condition stipulating that the reset queue for a given
+	 * input pipe contains no true value up to and including position m.
+	 * @param pipe_index The index of the input pipe
+	 */
+	public Condition noResetBefore(int pipe_index, int m)
+	{
+		NusmvQueue queue = getResetPorch(pipe_index);
+		ArrayVariable v = queue.m_arrayFlags;
+		if (m == 0)
+		{
+			return new Negation(BooleanArrayAccessCondition.get(ArrayAccess.get(v, 0)));
+		}
+		Conjunction and = new Conjunction();
+		for (int i = 0; i <= m; i++)
+		{
+			and.add(new Negation(BooleanArrayAccessCondition.get(ArrayAccess.get(v, i))));
+		}
+		return and;
+	}
+	
+	/**
+	 * Produces the condition stipulating that the reset queue for a given
+	 * input pipe is set to true at a given index.
+	 * @param next A flag indicating if the condition applies to the reset
+	 * vector in the current state or the next state
+	 * @param pipe_index The index of the input pipe
+	 * @param m The index in the reset queue
+	 * @return The condition
+	 */
+	/*@ non_null @*/ public Condition isResetAt(boolean next, int pipe_index, int m)
+	{
+		ArrayVariable q = m_resetPorches[pipe_index].m_arrayFlags;
+		if (next)
+		{
+			q = q.next();
+		}
+		return BooleanArrayAccessCondition.get(ArrayAccess.get(q, m));
+	}
+	
+	/**
+	 * Produces the condition stipulating that for two array indices m and n
+	 * such that m &leq; n, the reset buffer is true at position m, but for
+	 * no other position in the interval [m + 1, n].
+	 * @param next A flag indicating if the condition applies to the reset
+	 * vector in the current state or the next state
+	 * @param pipe_index The index of the input pipe
+	 * @param m The first position
+	 * @param n The second position
+	 * @return The condition
+	 */
+	/*@ non_null @*/ public Condition isLastResetAt(boolean next, int pipe_index, int m, int n)
+	{
+		if (m > n)
+		{
+			return ConstantFalse.FALSE;
+		}
+		if (m == n)
+		{
+			return isResetAt(next, pipe_index, m);
+		}
+		Conjunction and = new Conjunction();
+		and.add(isResetAt(next, pipe_index, m));
+		for (int i = m + 1; i <= n; i++)
+		{
+			and.add(new Negation(isResetAt(next, pipe_index, i)));
+		}
+		return and;
 	}
 	
 	/**

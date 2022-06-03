@@ -8,7 +8,7 @@ import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.Implication;
 
-public class BinaryApplyFunctionModule extends BeepBeepModule
+public class BinaryApplyFunctionModule extends ProcessorModule
 {
 	/**
 	 * The function to be applied on event fronts.
