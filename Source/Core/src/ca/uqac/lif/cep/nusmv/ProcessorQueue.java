@@ -131,6 +131,22 @@ public class ProcessorQueue extends NusmvQueue
 	}
 
 	/**
+	 * Returns the term asserting that the value an element of the queue at a
+	 * given position is true. This applies only to queues whose domain is
+	 * Boolean.
+	 * @param index The index
+	 * @return The condition
+	 */
+	/*@ non_null @*/ public Condition booleanValueAt(int index)
+	{
+		if (index < 0 || index >= getSize())
+		{
+			return ConstantFalse.FALSE;
+		}
+		return BooleanArrayAccessCondition.get(ArrayAccess.get(m_arrayContents, index));
+	}
+	
+	/**
 	 * Returns the term designating the value of an element of the queue at a
 	 * given position. 
 	 * @param index The index

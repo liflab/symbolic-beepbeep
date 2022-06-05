@@ -44,14 +44,14 @@ public abstract class ProcessorModule extends LogicModule
 	protected final ProcessorQueue m_backPorch;
 	
 	
-	public ProcessorModule(String name, int in_arity, Domain in_domain, Domain out_domain, int Q_in, int Q_b, int Q_out)
+	public ProcessorModule(String name, int in_arity, Domain[] in_domains, Domain out_domain, int Q_in, int Q_b, int Q_out)
 	{
 		super(name);
 		m_frontPorches = new ProcessorQueue[in_arity];
 		m_resetPorches = new NusmvQueue[in_arity];
 		for (int i = 0; i < in_arity; i++)
 		{
-			m_frontPorches[i] = new ProcessorQueue(new ArrayVariable("inc_" + i, in_domain, Q_in), new ArrayVariable("inb_" + i, BooleanDomain.instance, Q_in));
+			m_frontPorches[i] = new ProcessorQueue(new ArrayVariable("inc_" + i, in_domains[i], Q_in), new ArrayVariable("inb_" + i, BooleanDomain.instance, Q_in));
 			m_resetPorches[i] = new NusmvQueue(new ArrayVariable("inr_" + i, BooleanDomain.instance, Q_in));
 		}
 		m_buffers = new ProcessorQueue[in_arity];
@@ -155,6 +155,15 @@ public abstract class ProcessorModule extends LogicModule
 			return m_frontPorches[pipe_index].valueAt(m);
 		}
 		return m_buffers[pipe_index].valueAt(m);
+	}
+	
+	public Condition booleanAt(QueueType t, int pipe_index, int m)
+	{
+		if (t == QueueType.PORCH)
+		{
+			return m_frontPorches[pipe_index].booleanValueAt(m);
+		}
+		return m_buffers[pipe_index].booleanValueAt(m);
 	}
 	
 	public int getSize(QueueType t, int pipe_index)

@@ -14,7 +14,7 @@ import ca.uqac.lif.nusmv4j.ScalarVariable;
  * Module reproducing the operation of the BeepBeep {@link CountDecimate}
  * processor.
  */
-public class CountDecimateModule extends FilteringProcessorModule
+public class CountDecimateModule extends SubsetProcessorModule
 {
 	/**
 	 * The internal variable keeping track of the current cumulative count.

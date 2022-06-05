@@ -9,7 +9,7 @@ import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.IntegerRange;
 import ca.uqac.lif.nusmv4j.ScalarVariable;
 
-public class TrimModule extends FilteringProcessorModule
+public class TrimModule extends SubsetProcessorModule
 {
 	/**
 	 * The internal variable keeping track of the current cumulative count.

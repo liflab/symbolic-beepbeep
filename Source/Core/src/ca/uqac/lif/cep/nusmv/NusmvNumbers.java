@@ -1,6 +1,6 @@
 package ca.uqac.lif.cep.nusmv;
 
-import ca.uqac.lif.nusmv4j.AdditionModulo;
+import ca.uqac.lif.nusmv4j.Addition.AdditionModulo;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Disjunction;
@@ -58,6 +58,40 @@ public class NusmvNumbers
 		 * {0, 1, &hellip; n}.
 		 */
 		public Addition(Domain d)
+		{
+			super(d);
+		}
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public Condition getCondition(Term<?> x, Term<?> y, Term<?> z)
+		{
+			AdditionModulo plus = new AdditionModulo(m_domain.getSize());
+			plus.add((Term<Number>) x);
+			plus.add((Term<Number>) y);
+			Equality eq = new Equality(plus, z);
+			return eq;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "+";
+		}
+	}
+	
+	/**
+	 * Binary function for integer division. The modulus of the addition is
+	 * determined by the size of the domain passed to the function.
+	 */
+	public static class IntegerDivision extends BinaryNumberFunction
+	{
+		/**
+		 * Creates a new instance of the function for a given domain.
+		 * @param d The domain, which must be a discrete set for the form
+		 * {0, 1, &hellip; n}.
+		 */
+		public IntegerDivision(Domain d)
 		{
 			super(d);
 		}

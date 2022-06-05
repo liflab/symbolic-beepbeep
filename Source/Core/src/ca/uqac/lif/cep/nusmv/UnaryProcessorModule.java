@@ -15,7 +15,7 @@ public class UnaryProcessorModule extends ProcessorModule
 {
 	public UnaryProcessorModule(String name, Domain in_domain, Domain out_domain, int Q_in, int Q_b, int Q_out)
 	{
-		super(name, 1, in_domain, out_domain, Q_in, Q_b, Q_out);
+		super(name, 1, new Domain[] {in_domain}, out_domain, Q_in, Q_b, Q_out);
 	}
 	
 	/**

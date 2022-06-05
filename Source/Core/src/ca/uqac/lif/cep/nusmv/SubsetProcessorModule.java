@@ -10,14 +10,14 @@ import ca.uqac.lif.nusmv4j.Implication;
 import ca.uqac.lif.nusmv4j.Negation;
 
 /**
- * Base module for all processors whose output is made from a subset of the
+ * Base module for all 1:1 processors whose output is made from a subset of the
  * input. Descendants of this class simply need to implement
  * {@link #shouldBeOutput(boolean, int)}, which defines the logic by which a
- * specific processor picks the events of the input are part of the output.  
+ * specific processor picks the events of the input are part of the output.
  */
-public abstract class FilteringProcessorModule extends UnaryProcessorModule
+public abstract class SubsetProcessorModule extends UnaryProcessorModule
 {
-	public FilteringProcessorModule(String name, Domain d, int Q_in, int Q_out)
+	public SubsetProcessorModule(String name, Domain d, int Q_in, int Q_out)
 	{
 		super(name, d, d, Q_in, 0, Q_out);
 	}
