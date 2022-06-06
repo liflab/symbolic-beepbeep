@@ -1,3 +1,21 @@
+/*
+    Modeling of BeepBeep processor pipelines in NuSMV
+    Copyright (C) 2020-2022 Laboratoire d'informatique formelle
+    Université du Québec à Chicoutimi, Canada
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ca.uqac.lif.cep.nusmv;
 
 import ca.uqac.lif.nusmv4j.BooleanDomain;
@@ -267,5 +285,13 @@ public class FilterModule extends BinaryModule
 	public Condition getOutputCondition(QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
 	{
 		return new Equality(getBackPorch().valueAt(n), at(sigma1, 0, m1));
+	}
+	
+	@Override
+	public FilterModule duplicate()
+	{
+		FilterModule m = new FilterModule(getName(), getFrontPorch(0).getDomain(), getFrontPorch(0).getSize(), getBuffer(0).getSize(), getBackPorch().getSize());
+		super.copyInto(m);
+		return m;
 	}
 }
