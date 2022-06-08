@@ -2,17 +2,17 @@
     Modeling of BeepBeep processor pipelines in NuSMV
     Copyright (C) 2020-2022 Laboratoire d'informatique formelle
     Université du Québec à Chicoutimi, Canada
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,7 +29,6 @@ import ca.uqac.lif.nusmv4j.BooleanDomain;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Constant;
-import ca.uqac.lif.nusmv4j.ConstantFalse;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Implication;
@@ -75,7 +74,7 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		return m_next;
 	}
-	
+
 	/*@ pure non_null @*/ public Domain getDomain()
 	{
 		return m_arrayContents.getDomain();
@@ -128,7 +127,7 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		if (index < 0 || index >= getSize())
 		{
-			return ConstantFalse.FALSE;
+			return FALSE;
 		}
 		return BooleanArrayAccessCondition.get(ArrayAccess.get(m_arrayFlags, index));
 	}
@@ -143,7 +142,7 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		if (index < 0 || index >= getSize())
 		{
-			return ConstantFalse.FALSE;
+			return FALSE;
 		}
 		return BooleanArrayAccessCondition.get(ArrayAccess.get(m_arrayFlags.next(), index));
 	}
@@ -159,11 +158,11 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		if (index < 0 || index >= getSize())
 		{
-			return ConstantFalse.FALSE;
+			return FALSE;
 		}
 		return BooleanArrayAccessCondition.get(ArrayAccess.get(m_arrayContents, index));
 	}
-	
+
 	/**
 	 * Returns the term designating the value of an element of the queue at a
 	 * given position. 
@@ -174,7 +173,7 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		if (index < 0 || index >= getSize())
 		{
-			return ConstantFalse.FALSE;
+			return FALSE;
 		}
 		return ArrayAccess.get(m_arrayContents, index);
 	}
@@ -189,7 +188,7 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		if (index < 0 || index >= getSize())
 		{
-			return ConstantFalse.FALSE;
+			return FALSE;
 		}
 		return ArrayAccess.get(m_arrayContents.next(), index);
 	}
@@ -202,21 +201,45 @@ public class ProcessorQueue extends NusmvQueue
 	 */
 	/*@ non_null @*/ public Condition minLength(int n)
 	{
-		Conjunction and = new Conjunction();
 		int Q = getSize();
 		if (n < 0 || n > Q)
 		{
 			return FALSE;
 		}
-		if (n == 0)
+		else if (n == 0)
 		{
 			return TRUE;
 		}
-		for (int i = 0; i <= n - 1; i++)
+		return new MinLength(n);
+	}
+
+	public class MinLength extends Conjunction
+	{
+		protected final boolean m_next;
+
+		protected final int m_n;
+
+		public MinLength(int n)
 		{
-			and.add(hasAt(i));
+			this(false, n);
+			for (int i = 0; i <= n - 1; i++)
+			{
+				add(hasAt(i));
+			}
 		}
-		return and;
+
+		public MinLength(boolean next, int n)
+		{
+			super();
+			m_next = next;
+			m_n = n;
+		}
+
+		@Override
+		public String toString()
+		{
+			return "|" + m_arrayContents.getName() + "| >= " + m_n;
+		}
 	}
 
 	/**
@@ -229,11 +252,11 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		return new HasLength(n);
 	}
-	
+
 	public class HasLength extends Conjunction
 	{
 		protected final int m_length;
-		
+
 		public HasLength(int n)
 		{
 			super();
@@ -241,7 +264,7 @@ public class ProcessorQueue extends NusmvQueue
 			int Q = getSize();
 			if (n < 0 || n > Q)
 			{
-				add(ConstantFalse.FALSE);
+				add(FALSE);
 			}
 			for (int i = 0; i <= n - 1; i++)
 			{
@@ -254,11 +277,11 @@ public class ProcessorQueue extends NusmvQueue
 				add(not);
 			}
 		}
-		
+
 		@Override
 		public String toString()
 		{
-			return "HasLength(" + m_arrayContents.getName() + ", " + m_length + ")";
+			return "|" + m_arrayContents.getName() + "| = " + m_length;
 		}
 	}
 
