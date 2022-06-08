@@ -47,9 +47,9 @@ public class WindowModuleTest
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0, 1).assign(a);
 		mod.getBuffer(0).set(2).assign(a);
-		assertEquals(true, mod.isActive(false, 0).evaluate(a));
-		assertEquals(false, mod.isActive(false, 1).evaluate(a));
-		assertEquals(false, mod.isActive(false, 2).evaluate(a));
+		assertEquals(true, mod.new IsActive(false, 0).evaluate(a));
+		assertEquals(false, mod.new IsActive(false, 1).evaluate(a));
+		assertEquals(false, mod.new IsActive(false, 2).evaluate(a));
 	}
 	
 	@Test
@@ -61,9 +61,9 @@ public class WindowModuleTest
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0, 1, 1).assign(a);
 		mod.getBuffer(0).set(2).assign(a);
-		assertEquals(true, mod.isActive(false, 0).evaluate(a));
-		assertEquals(true, mod.isActive(false, 1).evaluate(a));
-		assertEquals(false, mod.isActive(false, 2).evaluate(a));
+		assertEquals(true, mod.new IsActive(false, 0).evaluate(a));
+		assertEquals(true, mod.new IsActive(false, 1).evaluate(a));
+		assertEquals(false, mod.new IsActive(false, 2).evaluate(a));
 	}
 	
 	@Test
@@ -75,9 +75,9 @@ public class WindowModuleTest
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getBuffer(0).set(2).assign(a);
-		assertEquals(false, mod.isActive(false, 0).evaluate(a));
-		assertEquals(false, mod.isActive(false, 1).evaluate(a));
-		assertEquals(false, mod.isActive(false, 2).evaluate(a));
+		assertEquals(false, mod.new IsActive(false, 0).evaluate(a));
+		assertEquals(false, mod.new IsActive(false, 1).evaluate(a));
+		assertEquals(false, mod.new IsActive(false, 2).evaluate(a));
 	}
 	
 	@Test
@@ -268,5 +268,45 @@ public class WindowModuleTest
 			back_porch.set(2, 2, 0, 0).assign(a);
 			assertEquals(false, mod.new BackPorchContents(false, 0).evaluate(a));
 		}
+		{
+			back_porch.set(1, 2, 0, 0).assign(a);
+			assertEquals(true, mod.new BackPorchContents(false, 1).evaluate(a));
+			back_porch.set(1, 1, 0, 0).assign(a);
+			assertEquals(false, mod.new BackPorchContents(false, 1).evaluate(a));
+			back_porch.set(1, 0, 0, 0).assign(a);
+			assertEquals(false, mod.new BackPorchContents(false, 1).evaluate(a));
+		}
+	}
+	
+	@Test
+	public void testBackPorchLength1()
+	{
+		int Q_in = 3, Q_b = 3, Q_out = 6;
+		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.m_innerFrontPorches.get(0).set(0, 0, 0).assign(a); // Must set front porches
+		mod.m_innerBackPorches.get(0).set(0, 1).assign(a);
+		mod.m_innerFrontPorches.get(1).set(0, 0, 0).assign(a); // Must set front porches
+		mod.m_innerBackPorches.get(1).set(1, 2).assign(a);
+		mod.m_innerFrontPorches.get(2).set(0, 0, 0).assign(a); // Must set front porches
+		mod.m_innerBackPorches.get(2).set(0).assign(a);
+		mod.m_innerFrontPorches.get(3).set(0, 0, 0).assign(a); // Must set front porches
+		mod.m_innerBackPorches.get(3).set(1, 0).assign(a);
+		mod.m_innerFrontPorches.get(4).set().assign(a); // Must set front porches
+		mod.m_innerBackPorches.get(4).set().assign(a);
+		mod.m_innerFrontPorches.get(5).set().assign(a); // Must set front porches
+		mod.m_innerBackPorches.get(5).set().assign(a);
+		ProcessorQueue back_porch = mod.getBackPorch();
+		back_porch.set(1, 2, 0, 0).assign(a);
+		assertEquals(true, mod.new BackPorchLength(false).evaluate(a));
+		back_porch.set(1, 2, 0, 0, 0).assign(a);
+		assertEquals(false, mod.new BackPorchLength(false).evaluate(a));
+		back_porch.set(1, 2, 0).assign(a);
+		assertEquals(false, mod.new BackPorchLength(false).evaluate(a));
+		back_porch.set(1).assign(a);
+		assertEquals(false, mod.new BackPorchLength(false).evaluate(a));
+		back_porch.set().assign(a);
+		assertEquals(false, mod.new BackPorchLength(false).evaluate(a));
 	}
 }

@@ -314,7 +314,7 @@ public abstract class ProcessorModule extends LogicModule
 	 * @param n The number of events
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition minTotalPipe(boolean next, int pipe_index, int n)
+	/*@ non_null @*/ public Disjunction minTotalPipe(boolean next, int pipe_index, int n)
 	{
 		Disjunction or = new Disjunction();
 		ProcessorQueue porch = m_frontPorches[pipe_index];

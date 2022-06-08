@@ -28,6 +28,7 @@ import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Disjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
+import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.Implication;
 import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.ScalarVariable;
@@ -101,14 +102,32 @@ public class WindowModule extends ProcessorModule
 	/**
 	 * Produces the condition stipulating that the n-th inner processor
 	 * instance is active in the current (or the next) computation step. 
-	 * @param next A flag indicating if the condition is expressed in the
-	 * current state or the next state
-	 * @param n The index of the processor instance
-	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition isActive(boolean next, int n)
+	public class IsActive extends Disjunction
 	{
-		return minTotalPipe(next, 0, m_width + n);
+		protected final boolean m_next;
+
+		protected final int m_n;
+
+		/**
+		 * 
+		 * @param next A flag indicating if the condition is expressed in the
+		 * current state or the next state
+		 * @param n The index of the processor instance
+		 */
+		public IsActive(boolean next, int n)
+		{
+			super();
+			m_next = next;
+			m_n = n;
+			add(minTotalPipe(next, 0, m_width + n));
+		}
+
+		@Override
+		public String toString()
+		{
+			return "IsActive(" + m_n + ")";
+		}
 	}
 
 	/**
@@ -132,13 +151,13 @@ public class WindowModule extends ProcessorModule
 			Disjunction or = new Disjunction();
 			{
 				Conjunction in_and = new Conjunction();
-				in_and.add(isActive(next, i));
+				in_and.add(new IsActive(next, i));
 				in_and.add(fp.hasLength(m_width));
 				or.add(in_and);
 			}
 			{
 				Conjunction in_and = new Conjunction();
-				in_and.add(new Negation(isActive(next, i)));
+				in_and.add(new Negation(new IsActive(next, i)));
 				in_and.add(fp.hasLength(0));
 				or.add(in_and);
 			}
@@ -185,6 +204,43 @@ public class WindowModule extends ProcessorModule
 	}
 
 	/**
+	 * Produces the condition stipulating that a given element at position m
+	 * in either the front porch or the internal buffer is the n-th event of
+	 * the front porch of a given internal processor instance, <em>and</em>
+	 * that the two matching cells contain the same event.
+	 */
+	public class InnerFrontPorchCellContents extends Equality
+	{
+		protected final boolean m_next;
+		
+		protected final int m_offset;
+		
+		protected final QueueType m_sigma;
+		
+		protected final int m_m;
+		
+		protected final int m_n;
+		
+		public InnerFrontPorchCellContents(boolean next, int offset, QueueType sigma, int m, int n)
+		{
+			super(at(sigma, 0, m), // m-th event of sigma
+					m_innerFrontPorches.get(offset).valueAt(n) // n-th event of front porch of offset
+					);
+			m_next = next;
+			m_offset = offset;
+			m_sigma = sigma;
+			m_m = m;
+			m_n = n;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return m_sigma + "[" + m_m + "] = inner_" + m_offset + "[" + m_n + "]";
+		}
+	}
+
+	/**
 	 * Produces the condition associating values of the input buffer/porch to
 	 * specific positions of the front porches of inner processor instances.
 	 * @param next A flag indicating if the condition is expressed in the
@@ -197,13 +253,12 @@ public class WindowModule extends ProcessorModule
 		for (int offset = 0; offset < m_innerFrontPorches.size(); offset++)
 		{
 			Implication imp = new Implication();
-			imp.add(isActive(next, offset));
+			imp.add(new IsActive(next, offset));
 			imp.add(new InnerFrontPorchContents(next, offset));
 			and.add(imp);
 		}
 		return and;
 	}
-
 
 	/**
 	 * Produces the condition associating values of the input buffer/porch to
@@ -241,7 +296,7 @@ public class WindowModule extends ProcessorModule
 				}
 			}
 		}
-		
+
 		@Override
 		public Boolean evaluate(Assignment a)
 		{
@@ -255,13 +310,13 @@ public class WindowModule extends ProcessorModule
 			return "InnerFrontPorchContents(" + m_next + "," + m_offset + ")"; 
 		}
 	}
-	
+
 	public class BackPorchContents extends Conjunction
 	{
 		protected final boolean m_next;
-		
+
 		protected final int m_offset;
-		
+
 		public BackPorchContents(boolean next, int offset)
 		{
 			super();
@@ -278,19 +333,55 @@ public class WindowModule extends ProcessorModule
 				add(imp);
 			}
 		}
-		
+
 		@Override
 		public Boolean evaluate(Assignment a)
 		{
 			// Only there to get a hook to insert a breakpoint if needed
 			return super.evaluate(a);
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return "BackPorchContents(" + m_next + "," + m_offset + ")"; 
 		}
+	}
+	
+	public class BackPorchLength extends Conjunction
+	{
+		protected final boolean m_next;
+		
+		public BackPorchLength(boolean next)
+		{
+			super();
+			m_next = next;
+			ProcessorQueue back_porch = getBackPorch();
+			for (int i = 0; i < back_porch.getSize(); i++)
+			{
+				Equivalence eq = new Equivalence();
+				eq.add(back_porch.hasAt(i));
+				eq.add(m_innerFrontPorches.get(i).hasLength(m_width));
+				add(eq);
+			}
+		}
+		
+		@Override
+		public Boolean evaluate(Assignment a)
+		{
+			return super.evaluate(a);
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "BackPorchLength";
+		}		
+	}
+	
+	public class NextBufferLength extends Conjunction
+	{
+		
 	}
 
 	@Override
