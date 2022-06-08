@@ -21,7 +21,6 @@ package ca.uqac.lif.cep.nusmv;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Constant;
-import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.Implication;
@@ -44,11 +43,11 @@ public class CumulateModule extends UnaryProcessorModule
 	 */
 	/*@ non_null @*/ protected final BinaryFunctionCall m_function;
 	
-	public CumulateModule(String name, BinaryFunctionCall f, Domain d, int Q_in, int Q_out)
+	public CumulateModule(String name, BinaryFunctionCall f, int Q_in, int Q_out)
 	{
-		super(name, d, d, Q_in, 0, Q_out);
+		super(name, f.getInputDomain(0), f.getOutputDomain(), Q_in, 0, Q_out);
 		m_function = f;
-		m_counter = new ScalarVariable("cnt", d);
+		m_counter = new ScalarVariable("cnt", f.getOutputDomain());
 	}
 	
 	/**
@@ -171,7 +170,7 @@ public class CumulateModule extends UnaryProcessorModule
 	@Override
 	public CumulateModule duplicate()
 	{
-		CumulateModule m = new CumulateModule(getName(), m_function, m_function.getInputDomain(0), getFrontPorch(0).getSize(), getBackPorch().getSize());
+		CumulateModule m = new CumulateModule(getName(), m_function, getFrontPorch(0).getSize(), getBackPorch().getSize());
 		super.copyInto(m);
 		return m;
 	}

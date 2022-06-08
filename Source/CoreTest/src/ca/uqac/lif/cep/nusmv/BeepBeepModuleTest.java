@@ -239,7 +239,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.minTotalPipe(0, 4);
+		Condition c = mod.minTotalPipe(false, 0, 4);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -254,7 +254,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.minTotalPipe(0, 2);
+		Condition c = mod.minTotalPipe(false, 0, 2);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a").assign(a);
@@ -267,7 +267,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.minTotalPipe(0, 1);
+		Condition c = mod.minTotalPipe(false, 0, 1);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a").assign(a);
@@ -280,7 +280,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.minTotalPipe(0, 9);
+		Condition c = mod.minTotalPipe(false, 0, 9);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -295,7 +295,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.minTotalPipe(0, 10);
+		Condition c = mod.minTotalPipe(false, 0, 10);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -310,7 +310,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 1, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.minTotalPipe(0, 0);
+		Condition c = mod.minTotalPipe(false, 0, 0);
 		assertNotNull(c);
 		mod.getBuffer(0).set();
 		mod.getFrontPorch(0).set();
@@ -325,7 +325,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 1, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.minTotalPipe(0, 0);
+		Condition c = mod.minTotalPipe(false, 0, 0);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a");
 		mod.getFrontPorch(0).set();

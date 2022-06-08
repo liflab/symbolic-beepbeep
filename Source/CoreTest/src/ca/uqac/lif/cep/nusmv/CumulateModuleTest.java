@@ -41,7 +41,7 @@ public class CumulateModuleTest
 	public void testOutputValues1()
 	{
 		int Q_in = 1, Q_out = 1;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false).assign(a);
@@ -55,7 +55,7 @@ public class CumulateModuleTest
 	public void testOutputValues2()
 	{
 		int Q_in = 2, Q_out = 2;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, false).assign(a);
@@ -71,7 +71,7 @@ public class CumulateModuleTest
 	public void testOutputValues3()
 	{
 		int Q_in = 3, Q_out = 3;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, false, false).assign(a);
@@ -87,7 +87,7 @@ public class CumulateModuleTest
 	public void testOutputValues5()
 	{
 		int Q_in = 3, Q_out = 3;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, true, false).assign(a);
@@ -103,7 +103,7 @@ public class CumulateModuleTest
 	public void testOutputValues6()
 	{
 		int Q_in = 3, Q_out = 3;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, true, false).assign(a);
@@ -119,7 +119,7 @@ public class CumulateModuleTest
 	public void testOutputValues7()
 	{
 		int Q_in = 3, Q_out = 3;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, true, false).assign(a);
@@ -133,7 +133,7 @@ public class CumulateModuleTest
 	public void testOutputValues4()
 	{
 		int Q_in = 3, Q_out = 3;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, true, false).assign(a);
@@ -150,7 +150,7 @@ public class CumulateModuleTest
 	{
 		// Test with another function
 		int Q_in = 3, Q_out = 3;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Maximum(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Maximum(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(3, 1, 4).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, false, false).assign(a);
@@ -167,7 +167,7 @@ public class CumulateModuleTest
 	{
 		// Test with another function
 		int Q_in = 3, Q_out = 3;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Maximum(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Maximum(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(3, 1, 4).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, true, false).assign(a);
@@ -183,7 +183,7 @@ public class CumulateModuleTest
 	public void testNextCounter1()
 	{
 		int Q_in = 1, Q_out = 1;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false).assign(a);
@@ -200,7 +200,7 @@ public class CumulateModuleTest
 	public void testNextCounter2()
 	{
 		int Q_in = 3, Q_out = 3;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, false, false).assign(a);
@@ -217,7 +217,7 @@ public class CumulateModuleTest
 	public void testNextCounter3()
 	{
 		int Q_in = 3, Q_out = 3;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, false, false).assign(a);
@@ -232,7 +232,7 @@ public class CumulateModuleTest
 	public void testNextCounter4()
 	{
 		int Q_in = 3, Q_out = 3;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, true, false).assign(a);
@@ -249,7 +249,7 @@ public class CumulateModuleTest
 	public void testNextCounter5()
 	{
 		int Q_in = 3, Q_out = 3;
-		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), s_domNumbers, Q_in, Q_out);
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetPorch(0).getVariable().setValues(false, true, true).assign(a);

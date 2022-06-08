@@ -227,23 +227,39 @@ public class ProcessorQueue extends NusmvQueue
 	 */
 	/*@ non_null @*/ public Condition hasLength(int n)
 	{
-		Conjunction and = new Conjunction();
-		int Q = getSize();
-		if (n < 0 || n > Q)
+		return new HasLength(n);
+	}
+	
+	public class HasLength extends Conjunction
+	{
+		protected final int m_length;
+		
+		public HasLength(int n)
 		{
-			return FALSE;
+			super();
+			m_length = n;
+			int Q = getSize();
+			if (n < 0 || n > Q)
+			{
+				add(ConstantFalse.FALSE);
+			}
+			for (int i = 0; i <= n - 1; i++)
+			{
+				add(hasAt(i));
+			}
+			for (int i = n; i <= Q - 1; i++)
+			{
+				Negation not = new Negation();
+				not.add(hasAt(i));
+				add(not);
+			}
 		}
-		for (int i = 0; i <= n - 1; i++)
+		
+		@Override
+		public String toString()
 		{
-			and.add(hasAt(i));
+			return "HasLength(" + m_arrayContents.getName() + ", " + m_length + ")";
 		}
-		for (int i = n; i <= Q - 1; i++)
-		{
-			Negation not = new Negation();
-			not.add(hasAt(i));
-			and.add(not);
-		}
-		return and;
 	}
 
 	/**

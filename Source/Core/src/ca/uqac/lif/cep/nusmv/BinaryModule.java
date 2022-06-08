@@ -56,12 +56,12 @@ public abstract class BinaryModule extends ProcessorModule
 		{
 			Conjunction and = new Conjunction();
 			and.add(hasTotalPipe(0, n));
-			and.add(minTotalPipe(1, n));
+			and.add(minTotalPipe(false, 1, n));
 			or.add(and);
 		}
 		{
 			Conjunction and = new Conjunction();
-			and.add(minTotalPipe(0, n));
+			and.add(minTotalPipe(false, 0, n));
 			and.add(hasTotalPipe(1, n));
 			or.add(and);
 		}

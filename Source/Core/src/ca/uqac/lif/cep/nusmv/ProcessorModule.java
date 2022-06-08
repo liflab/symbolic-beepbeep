@@ -306,17 +306,24 @@ public abstract class ProcessorModule extends LogicModule
 	}
 	
 	/**
-	 * Produces the condition stipulating that a given input pipe contains at
-	 * least n events. 
+	 * Produces the condition stipulating that a given input pipe (buffer +
+	 * porch combined) contains at least n events. 
+	 * @param next A flag indicating if the condition is expressed in the
+	 * current state or the next state
 	 * @param pipe_index The index of the input pipe
 	 * @param n The number of events
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition minTotalPipe(int pipe_index, int n)
+	/*@ non_null @*/ public Condition minTotalPipe(boolean next, int pipe_index, int n)
 	{
 		Disjunction or = new Disjunction();
 		ProcessorQueue porch = m_frontPorches[pipe_index];
 		ProcessorQueue buffer = m_buffers[pipe_index];
+		if (next)
+		{
+			porch = porch.next();
+			buffer = buffer.next();
+		}
 		for (int j = 0; j <= n; j++)
 		{
 			int k = n - j;
