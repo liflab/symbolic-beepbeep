@@ -36,7 +36,7 @@ public class ProcessorQueueTest
 	public void testWellFormed1()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
 		Condition c = pq.isWellFormed();
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
@@ -49,7 +49,7 @@ public class ProcessorQueueTest
 	public void testWellFormed2()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
 		Condition c = pq.isWellFormed();
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
@@ -63,7 +63,7 @@ public class ProcessorQueueTest
 	public void testWellFormed3()
 	{
 		int Q = 1;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
 		Condition c = pq.isWellFormed();
 		assertNotNull(c);
 		pq.set("b");
@@ -77,7 +77,7 @@ public class ProcessorQueueTest
 	public void testLambdaAtLeast1()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
 		Condition c = pq.minLength(3);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
@@ -90,7 +90,7 @@ public class ProcessorQueueTest
 	public void testLambdaAtLeast2()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
 		Condition c = pq.minLength(5);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
@@ -103,7 +103,7 @@ public class ProcessorQueueTest
 	public void testLambdaAtLeast3()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
 		Condition c = pq.minLength(6);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
@@ -116,7 +116,7 @@ public class ProcessorQueueTest
 	public void testLambdaAtLeast4()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
 		Condition c = pq.minLength(0);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
@@ -129,7 +129,7 @@ public class ProcessorQueueTest
 	public void testLambdaAtLeast5()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
 		Condition c = pq.minLength(5);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a", "a");
@@ -142,8 +142,8 @@ public class ProcessorQueueTest
 	public void testLambdaEquals1()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.hasLength(3);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.hasLength(false, 3);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
 		Assignment a = new Assignment();
@@ -155,8 +155,8 @@ public class ProcessorQueueTest
 	public void testLambdaEquals2()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.hasLength(4);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.hasLength(false, 4);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
 		Assignment a = new Assignment();
@@ -168,8 +168,8 @@ public class ProcessorQueueTest
 	public void testLambdaEquals3()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.hasLength(5);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.hasLength(false, 5);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a", "a");
 		Assignment a = new Assignment();
@@ -181,8 +181,8 @@ public class ProcessorQueueTest
 	public void testLambdaEquals4()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.hasLength(0);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.hasLength(false, 0);
 		assertNotNull(c);
 		pq.set();
 		Assignment a = new Assignment();
@@ -194,8 +194,8 @@ public class ProcessorQueueTest
 	public void testLambdaEquals5()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.hasLength(3);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
+		Condition c = pq.hasLength(false, 3);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
 		pq.m_arrayFlags.setValues(true, false, true, true, false);
@@ -208,9 +208,9 @@ public class ProcessorQueueTest
 	public void testLambdaEqualsNext1()
 	{
 		int Q = 5;
-		ProcessorQueue pq = new ProcessorQueue("q_c", "q_b", Q, s_domLetters);
+		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
 		ProcessorQueue pq_next = pq.next();
-		Condition c = pq_next.hasLength(3);
+		Condition c = pq_next.hasLength(false, 3);
 		assertNotNull(c);
 		pq_next.set("a", "b", "c", "a");
 		Assignment a = new Assignment();

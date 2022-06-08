@@ -69,15 +69,15 @@ public abstract class ProcessorModule extends LogicModule
 		m_resetPorches = new NusmvQueue[in_arity];
 		for (int i = 0; i < in_arity; i++)
 		{
-			m_frontPorches[i] = new ProcessorQueue(new ArrayVariable("inc_" + i, in_domains[i], Q_in), new ArrayVariable("inb_" + i, BooleanDomain.instance, Q_in));
+			m_frontPorches[i] = new ProcessorQueue("in_" + i, new ArrayVariable("inc_" + i, in_domains[i], Q_in), new ArrayVariable("inb_" + i, BooleanDomain.instance, Q_in));
 			m_resetPorches[i] = new NusmvQueue(new ArrayVariable("inr_" + i, BooleanDomain.instance, Q_in));
 		}
 		m_buffers = new ProcessorQueue[in_arity];
 		for (int i = 0; i < in_arity; i++)
 		{
-			m_buffers[i] = new ProcessorQueue(new ArrayVariable("bfc_" + i, m_frontPorches[i].m_arrayContents.getDomain(), Q_b), new ArrayVariable("bfb_" + i, BooleanDomain.instance, Q_b));
+			m_buffers[i] = new ProcessorQueue("bf_" + i, new ArrayVariable("bfc_" + i, m_frontPorches[i].m_arrayContents.getDomain(), Q_b), new ArrayVariable("bfb_" + i, BooleanDomain.instance, Q_b));
 		}
-		m_backPorch = new ProcessorQueue(new ArrayVariable("ouc", out_domain, Q_out), new ArrayVariable("oub", BooleanDomain.instance, Q_out));
+		m_backPorch = new ProcessorQueue("ou", new ArrayVariable("ouc", out_domain, Q_out), new ArrayVariable("oub", BooleanDomain.instance, Q_out));
 	}
 
 	/**
@@ -157,22 +157,22 @@ public abstract class ProcessorModule extends LogicModule
 		return getBuffer(pipe_index).getSize();
 	}
 	
-	public Condition at(QueueType t, int pipe_index, int m, int n)
+	public Condition at(boolean next, QueueType t, int pipe_index, int m, int n)
 	{
 		if (t == QueueType.PORCH)
 		{
-			return atPorch(pipe_index, m, n);
+			return atPorch(next, pipe_index, m, n);
 		}
-		return atBuffer(pipe_index, m, n);
+		return atBuffer(next, pipe_index, m, n);
 	}
 	
-	public Term<?> at(QueueType t, int pipe_index, int m)
+	public Term<?> at(boolean next, QueueType t, int pipe_index, int m)
 	{
 		if (t == QueueType.PORCH)
 		{
-			return m_frontPorches[pipe_index].valueAt(m);
+			return m_frontPorches[pipe_index].valueAt(next, m);
 		}
-		return m_buffers[pipe_index].valueAt(m);
+		return m_buffers[pipe_index].valueAt(next, m);
 	}
 	
 	public Condition booleanAt(QueueType t, int pipe_index, int m)
@@ -267,22 +267,29 @@ public abstract class ProcessorModule extends LogicModule
 	 * Produces the condition stipulating that for a given input pipe,
 	 * the n-th event of this pipe is at position m in the processor's
 	 * front porch.
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @param pipe_index The index of the input pipe
 	 * @param m The position in the porch
 	 * @param n The position in the pipe
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition atPorch(int pipe_index, int m, int n)
+	/*@ non_null @*/ public Condition atPorch(boolean next, int pipe_index, int m, int n)
 	{
 		ProcessorQueue porch = m_frontPorches[pipe_index];
 		ProcessorQueue buffer = m_buffers[pipe_index];
+		if (next)
+		{
+			porch = porch.next();
+			buffer = buffer.next();
+		}
 		if (n < 0 || n >= buffer.getSize() + porch.getSize() || m < 0 || m >= porch.getSize())
 		{
 			return FALSE; // Impossible
 		}
 		Conjunction and = new Conjunction();
-		and.add(porch.hasAt(m));
-		and.add(buffer.hasLength(n - m));
+		and.add(porch.hasAt(next, m));
+		and.add(buffer.hasLength(next, n - m));
 		return and;
 	}
 	
@@ -290,19 +297,21 @@ public abstract class ProcessorModule extends LogicModule
 	 * Produces the condition stipulating that for a given input pipe,
 	 * the n-th event of this pipe is at position m in the processor's
 	 * internal buffer.
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @param pipe_index The index of the input pipe
 	 * @param m The position in the buffer
 	 * @param n The position in the pipe
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition atBuffer(int pipe_index, int m, int n)
+	/*@ non_null @*/ public Condition atBuffer(boolean next, int pipe_index, int m, int n)
 	{
 		ProcessorQueue buffer = m_buffers[pipe_index];
 		if (m != n)
 		{
 			return FALSE; // Impossible
 		}
-		return buffer.hasAt(m);
+		return buffer.hasAt(next, m);
 	}
 	
 	/**
@@ -342,7 +351,7 @@ public abstract class ProcessorModule extends LogicModule
 	 * @param n The number of events
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition hasTotalPipe(int pipe_index, int n)
+	/*@ non_null @*/ public Condition hasTotalPipe(boolean next, int pipe_index, int n)
 	{
 		Disjunction or = new Disjunction();
 		ProcessorQueue porch = m_frontPorches[pipe_index];
@@ -351,8 +360,8 @@ public abstract class ProcessorModule extends LogicModule
 		{
 			int k = n - j;
 			Conjunction and = new Conjunction();
-			and.add(buffer.hasLength(j));
-			and.add(porch.hasLength(k));
+			and.add(buffer.hasLength(next, j));
+			and.add(porch.hasLength(next, k));
 			or.add(and);
 		}
 		return or;

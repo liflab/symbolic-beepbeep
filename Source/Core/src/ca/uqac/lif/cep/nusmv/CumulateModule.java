@@ -79,8 +79,8 @@ public class CumulateModule extends UnaryProcessorModule
 		for (int i = 0; i <= front_porch.getSize(); i++)
 		{
 			Equivalence eq = new Equivalence();
-			eq.add(front_porch.hasLength(i));
-			eq.add(back_porch.hasLength(i));
+			eq.add(front_porch.hasLength(next, i));
+			eq.add(back_porch.hasLength(next, i));
 			and.add(eq);
 		}
 		return and;
@@ -107,13 +107,13 @@ public class CumulateModule extends UnaryProcessorModule
 		for (int i = 0; i <= back_porch.getSize() - 1; i++)
 		{
 			Implication imp = new Implication();
-			imp.add(front_porch.hasAt(i));
+			imp.add(front_porch.hasAt(next, i));
 			{
 				Conjunction in_and = new Conjunction();
 				{
 					Implication in_imp = new Implication();
 					in_imp.add(isResetAt(next, 0, i));
-					in_imp.add(m_function.getCondition(new Constant(front_porch.getDomain().getDefaultValue()), front_porch.valueAt(i), back_porch.valueAt(i)));
+					in_imp.add(m_function.getCondition(new Constant(front_porch.getDomain().getDefaultValue()), front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
 					in_and.add(in_imp);
 				}
 				{
@@ -121,11 +121,11 @@ public class CumulateModule extends UnaryProcessorModule
 					in_imp.add(new Negation(isResetAt(next, 0, i)));
 					if (i == 0)
 					{
-						in_imp.add(m_function.getCondition(m_counter, front_porch.valueAt(i), back_porch.valueAt(i)));
+						in_imp.add(m_function.getCondition(m_counter, front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
 					}
 					else
 					{
-						in_imp.add(m_function.getCondition(back_porch.valueAt(i - 1), front_porch.valueAt(i), back_porch.valueAt(i)));
+						in_imp.add(m_function.getCondition(back_porch.valueAt(next, i - 1), front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
 					}
 					in_and.add(in_imp);
 				}
@@ -149,16 +149,16 @@ public class CumulateModule extends UnaryProcessorModule
 		for (int nf = 1; nf <= back_porch.getSize(); nf++)
 		{
 			Implication imp = new Implication();
-			imp.add(hasInputs(nf));
+			imp.add(hasInputs(false, nf));
 			imp.add(new Equality(
 					m_counter.next(),
-					back_porch.valueAt(nf - 1)));
+					back_porch.valueAt(false, nf - 1)));
 			big_and.add(imp);
 		}
 		{
 			// Counter stays unchanged if no inputs
 			Implication imp = new Implication();
-			imp.add(hasInputs(0));
+			imp.add(hasInputs(false, 0));
 			imp.add(new Equality(
 					m_counter.next(),
 					m_counter));

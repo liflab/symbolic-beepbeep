@@ -34,35 +34,39 @@ public abstract class BinaryModule extends ProcessorModule
 
 	/**
 	 * Generates the condition stipulating that internal buffers are empty.
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition emptyBuffers()
+	/*@ non_null @*/ public Condition emptyBuffers(boolean next)
 	{
 		Conjunction and = new Conjunction();
-		and.add(getBuffer(0).hasLength(0));
-		and.add(getBuffer(1).hasLength(0));
+		and.add(getBuffer(0).hasLength(next, 0));
+		and.add(getBuffer(1).hasLength(next, 0));
 		return and;
 	}
 
 	/**
 	 * Generates the condition asserting that the input pipes contain exactly
 	 * n complete event fronts.
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @param n The number of event fronts
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition numFronts(int n)
+	/*@ non_null @*/ public Condition numFronts(boolean next, int n)
 	{
 		Disjunction or = new Disjunction();
 		{
 			Conjunction and = new Conjunction();
-			and.add(hasTotalPipe(0, n));
-			and.add(minTotalPipe(false, 1, n));
+			and.add(hasTotalPipe(next, 0, n));
+			and.add(minTotalPipe(next, 1, n));
 			or.add(and);
 		}
 		{
 			Conjunction and = new Conjunction();
-			and.add(minTotalPipe(false, 0, n));
-			and.add(hasTotalPipe(1, n));
+			and.add(minTotalPipe(next, 0, n));
+			and.add(hasTotalPipe(next, 1, n));
 			or.add(and);
 		}
 		return or;
@@ -72,6 +76,8 @@ public abstract class BinaryModule extends ProcessorModule
 	 * Generates the condition stipulating that position m1 in sigma1 and
 	 * position m2 in sigma2 make the n-th input front of the processor's
 	 * input.
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @param sigma1 A variable indicating if the first pipe designates the
 	 * front porch or the internal buffer
 	 * @param m1 The position in the corresponding queue
@@ -81,11 +87,11 @@ public abstract class BinaryModule extends ProcessorModule
 	 * @param n The index of the input front
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition isNthFront(QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
+	/*@ non_null @*/ public Condition isNthFront(boolean next, QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
 	{
 		Conjunction left = new Conjunction();
-		left.add(at(sigma1, 0, m1, n));
-		left.add(at(sigma2, 1, m2, n));
+		left.add(at(next, sigma1, 0, m1, n));
+		left.add(at(next, sigma2, 1, m2, n));
 		return left;
 	}
 
@@ -124,11 +130,11 @@ public abstract class BinaryModule extends ProcessorModule
 				Implication imp = new Implication();
 				{
 					Conjunction left = new Conjunction();
-					left.add(numFronts(nf));
-					left.add(hasTotalPipe(pipe_index, nq));
+					left.add(numFronts(false, nf));
+					left.add(hasTotalPipe(false, pipe_index, nq));
 					imp.add(left);
 				}
-				imp.add(getBuffer(pipe_index).next().hasLength(nq - nf));
+				imp.add(getBuffer(pipe_index).hasLength(true, nq - nf));
 				big_and.add(imp);
 			}
 		}
@@ -155,8 +161,8 @@ public abstract class BinaryModule extends ProcessorModule
 				Implication imp = new Implication();
 				{
 					Conjunction left = new Conjunction();
-					left.add(numFronts(nf));
-					left.add(hasTotalPipe(pipe_index, nq));
+					left.add(numFronts(false, nf));
+					left.add(hasTotalPipe(false, pipe_index, nq));
 					imp.add(left);
 				}
 				{
@@ -168,10 +174,10 @@ public abstract class BinaryModule extends ProcessorModule
 							for (int j = 0; j <= length(sigma, pipe_index) - 1; j++)
 							{
 								Implication in_imp = new Implication();
-								in_imp.add(at(sigma, pipe_index, j, nf + i));
+								in_imp.add(at(false, sigma, pipe_index, j, nf + i));
 								in_imp.add(new Equality(
-										at(sigma, pipe_index, j), // buffer/porch at position j
-										getBuffer(pipe_index).next().valueAt(i) // next buffer at position i
+										at(false, sigma, pipe_index, j), // buffer/porch at position j
+										getBuffer(pipe_index).valueAt(true, i) // next buffer at position i
 										));
 								in_and.add(in_imp);
 							}
@@ -189,9 +195,11 @@ public abstract class BinaryModule extends ProcessorModule
 	 * Generates the condition associating back porch cells with the
 	 * appropriate value, by applying the binary function to the corresponding
 	 * input front.
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition backPorchValues()
+	/*@ non_null @*/ public Condition backPorchValues(boolean next)
 	{
 		int Q_in = Math.min(getFrontPorch(0).getSize(), getFrontPorch(1).getSize());
 		Conjunction and = new Conjunction();
@@ -206,8 +214,8 @@ public abstract class BinaryModule extends ProcessorModule
 						for (int m2 = 0; m2 <= getSize(sigma2, 1) - 1; m2++)
 						{
 							Implication imp = new Implication();
-							imp.add(isFrontToOutput(sigma1, m1, sigma2, m2, n));
-							imp.add(getOutputCondition(sigma1, m1, sigma2, m2, n));
+							imp.add(isFrontToOutput(next, sigma1, m1, sigma2, m2, n));
+							imp.add(getOutputCondition(next, sigma1, m1, sigma2, m2, n));
 							and.add(imp);
 						}
 					}
@@ -221,6 +229,8 @@ public abstract class BinaryModule extends ProcessorModule
 	 * Generates the condition stipulating that position m1 in sigma1 and
 	 * position m2 in sigma2 is the input front composing the n-th output
 	 * value.
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @param sigma1 A variable indicating if the first pipe designates the
 	 * front porch or the internal buffer
 	 * @param m1 The position in the corresponding queue
@@ -230,11 +240,13 @@ public abstract class BinaryModule extends ProcessorModule
 	 * @param n The index of the output value
 	 * @return The condition
 	 */
-	public abstract Condition isFrontToOutput(QueueType sigma1, int m1, QueueType sigma2, int m2, int n);
+	public abstract Condition isFrontToOutput(boolean next, QueueType sigma1, int m1, QueueType sigma2, int m2, int n);
 
 	/**
 	 * Generates the condition describing the value of the n-th output element
 	 * based on the 
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @param sigma1 A variable indicating if the first pipe designates the
 	 * front porch or the internal buffer
 	 * @param m1 The position in the corresponding queue
@@ -244,5 +256,5 @@ public abstract class BinaryModule extends ProcessorModule
 	 * @param n The index of the output value
 	 * @return The condition
 	 */
-	public abstract Condition getOutputCondition(QueueType sigma1, int m1, QueueType sigma2, int m2, int n);
+	public abstract Condition getOutputCondition(boolean next, QueueType sigma1, int m1, QueueType sigma2, int m2, int n);
 }

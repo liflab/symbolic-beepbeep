@@ -40,29 +40,35 @@ import ca.uqac.lif.nusmv4j.Term;
  */
 public class ProcessorQueue extends NusmvQueue
 {
+	/**
+	 * The name given to this queue.
+	 */
+	protected String m_name;
+	
 	/*@ non_null @*/ protected final ArrayVariable m_arrayContents;
 
 	protected ProcessorQueue m_next;
 
-	public ProcessorQueue(ArrayVariable contents, ArrayVariable flags)
+	public ProcessorQueue(String name, ArrayVariable contents, ArrayVariable flags)
 	{
 		super(flags);
 		m_arrayContents = contents;
-		m_next = new ProcessorQueue(contents.next(), flags.next(), true);
+		m_name = name;
+		m_next = new ProcessorQueue(name, contents.next(), flags.next(), true);
 	}
 
-	protected ProcessorQueue(ArrayVariable contents, ArrayVariable flags, boolean is_next)
+	protected ProcessorQueue(String name, ArrayVariable contents, ArrayVariable flags, boolean is_next)
 	{
 		super(flags);
 		m_arrayContents = contents;
 		m_next = null;
 	}
 
-	public ProcessorQueue(String contents, String flags, int size, Domain d)
+	public ProcessorQueue(String name, String contents, String flags, int size, Domain d)
 	{
 		super(new ArrayVariable(flags, BooleanDomain.instance, size));
 		m_arrayContents = new ArrayVariable(contents, d, size);
-		m_next = new ProcessorQueue(m_arrayContents.next(), m_arrayFlags.next(), true);
+		m_next = new ProcessorQueue(name, m_arrayContents.next(), m_arrayFlags.next(), true);
 	}
 
 	/**
@@ -79,6 +85,62 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		return m_arrayContents.getDomain();
 	}
+	
+	@Override
+	public String toString()
+	{
+		return m_name;
+	}
+	
+	/**
+	 * Gets the name of this queue.
+	 * @return The name
+	 */
+	public String getName()
+	{
+		return m_name;
+	}
+	
+	public class IsWellFormed extends Conjunction
+	{
+		protected final boolean m_next;
+		
+		public IsWellFormed()
+		{
+			this(false);
+		}
+		
+		public IsWellFormed(boolean next)
+		{
+			super();
+			m_next = next;
+			Object v = m_arrayContents.getDomain().getDefaultValue();
+			Constant cv = new Constant(v);
+			for (int i = 0; i < getSize(); i++)
+			{
+				if (i > 0)
+				{
+					Implication imp = new Implication();
+					imp.add(hasAt(m_next, i));
+					imp.add(hasAt(m_next, i - 1));
+					add(imp);
+				}
+				Implication imp = new Implication();
+				Negation neg = new Negation();
+				neg.add(hasAt(m_next, i));
+				imp.add(neg);
+				Equality eq = new Equality(valueAt(m_next, i), cv);
+				imp.add(eq);
+				add(imp);
+			}
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "WellFormed(" + m_name + ")";
+		}
+	}
 
 	/**
 	 * Returns the condition stipulating that the processor queue is well
@@ -94,42 +156,29 @@ public class ProcessorQueue extends NusmvQueue
 	 */
 	/*@ non_null @*/ public Condition isWellFormed()
 	{
-		Object v = m_arrayContents.getDomain().getDefaultValue();
-		Constant cv = new Constant(v);
-		Conjunction and = new Conjunction();
-		for (int i = 0; i < getSize(); i++)
-		{
-			if (i > 0)
-			{
-				Implication imp = new Implication();
-				imp.add(hasAt(i));
-				imp.add(hasAt(i - 1));
-				and.add(imp);
-			}
-			Implication imp = new Implication();
-			Negation neg = new Negation();
-			neg.add(hasAt(i));
-			imp.add(neg);
-			Equality eq = new Equality(valueAt(i), cv);
-			imp.add(eq);
-			and.add(imp);
-		}
-		return and;
+		return new IsWellFormed();
 	}
 
 	/**
 	 * Returns the condition stipulating that the queue has an element at
 	 * a given position. 
+	 * @param next A flag determining if the condition is expressed in the
+	 * current state or the next state
 	 * @param index The index
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition hasAt(int index)
+	/*@ non_null @*/ public Condition hasAt(boolean next, int index)
 	{
 		if (index < 0 || index >= getSize())
 		{
 			return FALSE;
 		}
-		return BooleanArrayAccessCondition.get(ArrayAccess.get(m_arrayFlags, index));
+		ArrayVariable q = m_arrayFlags;
+		if (next)
+		{
+			q = q.next();
+		}
+		return BooleanArrayAccessCondition.get(ArrayAccess.get(q, index));
 	}
 
 	/**
@@ -166,14 +215,20 @@ public class ProcessorQueue extends NusmvQueue
 	/**
 	 * Returns the term designating the value of an element of the queue at a
 	 * given position. 
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @param index The index
 	 * @return The term
 	 */
-	/*@ non_null @*/ public Term<?> valueAt(int index)
+	/*@ non_null @*/ public Term<?> valueAt(boolean next, int index)
 	{
 		if (index < 0 || index >= getSize())
 		{
 			return FALSE;
+		}
+		if (next)
+		{
+			return ArrayAccess.get(m_arrayContents.next(), index);
 		}
 		return ArrayAccess.get(m_arrayContents, index);
 	}
@@ -224,7 +279,7 @@ public class ProcessorQueue extends NusmvQueue
 			this(false, n);
 			for (int i = 0; i <= n - 1; i++)
 			{
-				add(hasAt(i));
+				add(hasAt(m_next, i));
 			}
 		}
 
@@ -245,22 +300,27 @@ public class ProcessorQueue extends NusmvQueue
 	/**
 	 * Returns the condition stipulating that the queue contains exactly
 	 * <i>n</i> elements.
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @param n The number of elements
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition hasLength(int n)
+	/*@ non_null @*/ public Condition hasLength(boolean next, int n)
 	{
-		return new HasLength(n);
+		return new HasLength(next, n);
 	}
 
 	public class HasLength extends Conjunction
 	{
 		protected final int m_length;
+		
+		protected final boolean m_next;
 
-		public HasLength(int n)
+		public HasLength(boolean next, int n)
 		{
 			super();
 			m_length = n;
+			m_next = next;
 			int Q = getSize();
 			if (n < 0 || n > Q)
 			{
@@ -268,12 +328,12 @@ public class ProcessorQueue extends NusmvQueue
 			}
 			for (int i = 0; i <= n - 1; i++)
 			{
-				add(hasAt(i));
+				add(hasAt(m_next, i));
 			}
 			for (int i = n; i <= Q - 1; i++)
 			{
 				Negation not = new Negation();
-				not.add(hasAt(i));
+				not.add(hasAt(m_next, i));
 				add(not);
 			}
 		}

@@ -132,12 +132,12 @@ public class FilterModuleTest
 		mod.getFrontPorch(0).set("a").assign(a);
 		mod.getBuffer(1).set(true, false, false).assign(a);
 		mod.getFrontPorch(1).set(true, true).assign(a);
-		assertEquals(true, mod.isFrontToOutput(BUFFER, 0, BUFFER, 0, 0).evaluate(a));
-		assertEquals(false, mod.isFrontToOutput(BUFFER, 0, BUFFER, 1, 0).evaluate(a));
-		assertEquals(false, mod.isFrontToOutput(BUFFER, 1, BUFFER, 0, 0).evaluate(a));
-		assertEquals(false, mod.isFrontToOutput(BUFFER, 0, BUFFER, 0, 1).evaluate(a));
-		assertEquals(true, mod.isFrontToOutput(BUFFER, 3, PORCH, 0, 1).evaluate(a));
-		assertEquals(true, mod.isFrontToOutput(PORCH, 0, PORCH, 1, 2).evaluate(a));
+		assertEquals(true, mod.isFrontToOutput(false, BUFFER, 0, BUFFER, 0, 0).evaluate(a));
+		assertEquals(false, mod.isFrontToOutput(false, BUFFER, 0, BUFFER, 1, 0).evaluate(a));
+		assertEquals(false, mod.isFrontToOutput(false, BUFFER, 1, BUFFER, 0, 0).evaluate(a));
+		assertEquals(false, mod.isFrontToOutput(false, BUFFER, 0, BUFFER, 0, 1).evaluate(a));
+		assertEquals(true, mod.isFrontToOutput(false, BUFFER, 3, PORCH, 0, 1).evaluate(a));
+		assertEquals(true, mod.isFrontToOutput(false, PORCH, 0, PORCH, 1, 2).evaluate(a));
 	}
 	
 	@Test
@@ -146,7 +146,7 @@ public class FilterModuleTest
 		// There are 5 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		FilterModule mod = new FilterModule("f", s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.frontsVsBackPorch();
+		Condition c = mod.frontsVsBackPorch(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
@@ -165,7 +165,7 @@ public class FilterModuleTest
 		// There are 5 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		FilterModule mod = new FilterModule("f", s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.frontsVsBackPorch();
+		Condition c = mod.frontsVsBackPorch(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
@@ -184,14 +184,14 @@ public class FilterModuleTest
 		// There are 5 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		FilterModule mod = new FilterModule("f", s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
 		mod.getFrontPorch(0).set("a").assign(a);
 		mod.getBuffer(1).set(true, false, true).assign(a);
 		mod.getFrontPorch(1).set(true, true).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch().isWellFormed(), mod.frontsVsBackPorch());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch().isWellFormed(), mod.frontsVsBackPorch(false));
 		assertEquals(1, solutions.size());
 		mod.getBackPorch().set("a", "c", "a", "a").assign(a);
 		assertTrue(c.evaluate(a));

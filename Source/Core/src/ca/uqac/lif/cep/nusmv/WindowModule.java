@@ -85,12 +85,12 @@ public class WindowModule extends ProcessorModule
 		m_innerFrontPorches = new HashMap<Integer,ProcessorQueue>();
 		for (int i = 0; i < Q_in + width; i++)
 		{
-			m_innerFrontPorches.put(i, new ProcessorQueue("innerfc_" + i, "innerfb_" + i, width, in_domain));
+			m_innerFrontPorches.put(i, new ProcessorQueue("inner_in", "innerfc_" + i, "innerfb_" + i, width, in_domain));
 		}
 		m_innerBackPorches = new HashMap<Integer,ProcessorQueue>();
 		for (int i = 0; i < Q_in + width; i++)
 		{
-			m_innerBackPorches.put(i, new ProcessorQueue("innerbc_" + i, "innerbb_" + i, width, out_domain));
+			m_innerBackPorches.put(i, new ProcessorQueue("inner_ou", "innerbc_" + i, "innerbb_" + i, width, out_domain));
 		}
 		m_resetFlags = new HashMap<Integer,ScalarVariable>();
 		for (int i = 0; i < Q_in + width; i++)
@@ -152,13 +152,13 @@ public class WindowModule extends ProcessorModule
 			{
 				Conjunction in_and = new Conjunction();
 				in_and.add(new IsActive(next, i));
-				in_and.add(fp.hasLength(m_width));
+				in_and.add(fp.hasLength(next, m_width));
 				or.add(in_and);
 			}
 			{
 				Conjunction in_and = new Conjunction();
 				in_and.add(new Negation(new IsActive(next, i)));
-				in_and.add(fp.hasLength(0));
+				in_and.add(fp.hasLength(next, 0));
 				or.add(in_and);
 			}
 			and.add(or);
@@ -180,7 +180,7 @@ public class WindowModule extends ProcessorModule
 	 */
 	/*@ non_null @*/ public Condition innerFrontPorchCellContents(boolean next, int offset, QueueType sigma, int m, int n)
 	{
-		return at(sigma, 0, m, n + offset);
+		return at(next, sigma, 0, m, n + offset);
 	}
 
 	/**
@@ -198,8 +198,8 @@ public class WindowModule extends ProcessorModule
 	/*@ non_null @*/ public Condition setFrontPorchContents(boolean next, int offset, QueueType sigma, int m, int n)
 	{
 		return new Equality(
-				at(sigma, 0, m), // m-th event of sigma
-				m_innerFrontPorches.get(offset).valueAt(n) // n-th event of front porch of offset
+				at(next, sigma, 0, m), // m-th event of sigma
+				m_innerFrontPorches.get(offset).valueAt(next, n) // n-th event of front porch of offset
 				);
 	}
 
@@ -223,8 +223,8 @@ public class WindowModule extends ProcessorModule
 		
 		public InnerFrontPorchCellContents(boolean next, int offset, QueueType sigma, int m, int n)
 		{
-			super(at(sigma, 0, m), // m-th event of sigma
-					m_innerFrontPorches.get(offset).valueAt(n) // n-th event of front porch of offset
+			super(at(next, sigma, 0, m), // m-th event of sigma
+					m_innerFrontPorches.get(offset).valueAt(next, n) // n-th event of front porch of offset
 					);
 			m_next = next;
 			m_offset = offset;
@@ -326,10 +326,10 @@ public class WindowModule extends ProcessorModule
 			for (int m = 1; m <= in_porch.getSize(); m++)
 			{
 				Implication imp = new Implication();
-				imp.add(in_porch.hasLength(m));
+				imp.add(in_porch.hasLength(next, m));
 				imp.add(new Equality(
-						in_porch.valueAt(m - 1),
-						getBackPorch().valueAt(offset)));
+						in_porch.valueAt(next, m - 1),
+						getBackPorch().valueAt(next, offset)));
 				add(imp);
 			}
 		}
@@ -360,8 +360,8 @@ public class WindowModule extends ProcessorModule
 			for (int i = 0; i < back_porch.getSize(); i++)
 			{
 				Equivalence eq = new Equivalence();
-				eq.add(back_porch.hasAt(i));
-				eq.add(m_innerFrontPorches.get(i).hasLength(m_width));
+				eq.add(back_porch.hasAt(next, i));
+				eq.add(m_innerFrontPorches.get(i).hasLength(next, m_width));
 				add(eq);
 			}
 		}

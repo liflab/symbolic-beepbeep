@@ -42,7 +42,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 8 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.numFronts(3);
+		Condition c = mod.numFronts(false, 3);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
@@ -58,7 +58,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 8 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.numFronts(8);
+		Condition c = mod.numFronts(false, 8);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
@@ -74,7 +74,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 6 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.numFronts(6);
+		Condition c = mod.numFronts(false, 6);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
@@ -90,7 +90,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 6 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.numFronts(8);
+		Condition c = mod.numFronts(false, 8);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
@@ -106,7 +106,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 5 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.numFronts(5);
+		Condition c = mod.numFronts(false, 5);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
@@ -122,7 +122,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 5 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.numFronts(4);
+		Condition c = mod.numFronts(false, 4);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
@@ -138,7 +138,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 5 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.frontsVsBackPorch();
+		Condition c = mod.frontsVsBackPorch(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
@@ -156,7 +156,7 @@ public class BinaryApplyFunctionModuleTest
 		// of the back porch is uniquely determined
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.frontsVsBackPorch();
+		Condition c = mod.frontsVsBackPorch(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b").assign(a);
@@ -174,7 +174,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 4 complete fronts in this test case
 		int Q_in = 4, Q_b = 4, Q_out = 4;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.frontsVsBackPorch();
+		Condition c = mod.frontsVsBackPorch(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
@@ -190,7 +190,7 @@ public class BinaryApplyFunctionModuleTest
 	{
 		int Q_in = 2, Q_b = 2, Q_out = 2;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.frontsVsBackPorch();
+		Condition c = mod.frontsVsBackPorch(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b").assign(a);
@@ -209,7 +209,7 @@ public class BinaryApplyFunctionModuleTest
 		// of the back porch is uniquely determined
 		int Q_in = 2, Q_b = 2, Q_out = 2;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.frontsVsBackPorch();
+		Condition c = mod.frontsVsBackPorch(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b").assign(a);
@@ -219,7 +219,7 @@ public class BinaryApplyFunctionModuleTest
 		//c = Condition.simplify(c);
 		//mod.getBackPorch().set(true, true, true, true).assign(a);
 		List<Assignment> solutions = s_solver.solveAll(c, a);
-		Condition len = mod.getBackPorch().hasLength(2);
+		Condition len = mod.getBackPorch().hasLength(false, 2);
 		for (Assignment sol : solutions)
 		{
 			assertTrue(len.evaluate(sol));
@@ -233,7 +233,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 4 complete fronts in this test case
 		int Q_in = 1, Q_b = 1, Q_out = 1;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.frontsVsBackPorch();
+		Condition c = mod.frontsVsBackPorch(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set().assign(a);
@@ -250,7 +250,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 5 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.frontsVsBackPorch();
+		Condition c = mod.frontsVsBackPorch(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
@@ -267,7 +267,7 @@ public class BinaryApplyFunctionModuleTest
 		// There is 1 complete front in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a").assign(a);
@@ -284,7 +284,7 @@ public class BinaryApplyFunctionModuleTest
 		// There is 1 complete front in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a").assign(a);
@@ -301,7 +301,7 @@ public class BinaryApplyFunctionModuleTest
 		// There is 1 complete front in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a").assign(a);
@@ -309,7 +309,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set("a").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
 		//mod.getBackPorch().set(true).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch().isWellFormed());
 		assertEquals(1, solutions.size());
 	}
 
@@ -319,7 +319,7 @@ public class BinaryApplyFunctionModuleTest
 		// There is 1 complete front in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a").assign(a);
@@ -336,7 +336,7 @@ public class BinaryApplyFunctionModuleTest
 		// There is 1 complete front in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a").assign(a);
@@ -344,7 +344,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set("b").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
 		//mod.getBackPorch().set(false).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch().isWellFormed());
 		assertEquals(1, solutions.size());
 	}
 
@@ -354,7 +354,7 @@ public class BinaryApplyFunctionModuleTest
 		// There is 1 complete front in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a").assign(a);
@@ -371,7 +371,7 @@ public class BinaryApplyFunctionModuleTest
 		// There is 1 complete front in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a").assign(a);
@@ -379,7 +379,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a").assign(a);
 		//mod.getBackPorch().set(true).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch().isWellFormed());
 		assertEquals(1, solutions.size());
 	}
 
@@ -389,7 +389,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 2 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b").assign(a);
@@ -406,7 +406,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 2 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b").assign(a);
@@ -423,7 +423,7 @@ public class BinaryApplyFunctionModuleTest
 		// There is 1 complete front in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b").assign(a);
@@ -431,7 +431,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a", "c").assign(a);
 		//mod.getBackPorch().set(true, false).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch().isWellFormed());
 		assertEquals(1, solutions.size());
 	}
 
@@ -441,7 +441,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 2 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b").assign(a);
@@ -458,7 +458,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 3 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b").assign(a);
@@ -475,7 +475,7 @@ public class BinaryApplyFunctionModuleTest
 		// There are 5 complete fronts in this test case
 		int Q_in = 5, Q_b = 5, Q_out = 5;
 		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new FunctionEquals(s_domLetters), Q_in, Q_b, Q_out);
-		Condition c = mod.backPorchValues();
+		Condition c = mod.backPorchValues(false);
 		assertNotNull(c);
 		Assignment a = new Assignment();
 		mod.getBuffer(0).set("a", "b", "c").assign(a);

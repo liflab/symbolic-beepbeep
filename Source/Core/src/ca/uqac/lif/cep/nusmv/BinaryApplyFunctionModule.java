@@ -38,7 +38,7 @@ public class BinaryApplyFunctionModule extends BinaryModule
 	/*@ non_null @*/ public Condition buildInitialState(int Q_up, int Q_b)
 	{
 		Conjunction big_and = new Conjunction();
-		big_and.add(emptyBuffers());
+		big_and.add(emptyBuffers(false));
 		// TODO
 		return big_and;
 	}
@@ -47,35 +47,37 @@ public class BinaryApplyFunctionModule extends BinaryModule
 	/**
 	 * Generates the condition stipulating that the size of the back porch is
 	 * equal to the number of complete event fronts in the input pipes.
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition frontsVsBackPorch()
+	/*@ non_null @*/ public Condition frontsVsBackPorch(boolean next)
 	{
 		ProcessorQueue back_porch = getBackPorch();
 		Conjunction and = new Conjunction();
 		for (int i = 0; i <= back_porch.getSize(); i++)
 		{
 			Equivalence eq = new Equivalence();
-			eq.add(numFronts(i));
-			eq.add(back_porch.hasLength(i));
+			eq.add(numFronts(next, i));
+			eq.add(back_porch.hasLength(next, i));
 			and.add(eq);
 		}
 		return and;
 	}
 
 	@Override
-	public Condition isFrontToOutput(QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
+	public Condition isFrontToOutput(boolean next, QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
 	{
-		return isNthFront(sigma1, m1, sigma2, m2, n);
+		return isNthFront(next, sigma1, m1, sigma2, m2, n);
 	}
 
 	@Override
-	public Condition getOutputCondition(QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
+	public Condition getOutputCondition(boolean next, QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
 	{
 		Condition right = m_function.getCondition(
-				at(sigma1, 0, m1), // first argument of f
-				at(sigma2, 1, m2), // second argument of f
-				getBackPorch().valueAt(n) // cell of the back porch to store value
+				at(next, sigma1, 0, m1), // first argument of f
+				at(next, sigma2, 1, m2), // second argument of f
+				getBackPorch().valueAt(next, n) // cell of the back porch to store value
 				);
 		return right;
 	}

@@ -53,9 +53,9 @@ public abstract class UnaryProcessorModule extends ProcessorModule
 	 * @param n The number of input events
 	 * @return The condition
 	 */
-	/*@ pure non_null @*/ public Condition hasInputs(int n)
+	/*@ pure non_null @*/ public Condition hasInputs(boolean next, int n)
 	{
-		return m_frontPorches[0].hasLength(n);
+		return m_frontPorches[0].hasLength(next, n);
 	}
 
 }

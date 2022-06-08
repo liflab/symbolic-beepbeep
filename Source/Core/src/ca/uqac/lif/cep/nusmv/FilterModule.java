@@ -48,7 +48,7 @@ public class FilterModule extends BinaryModule
 	/*@ non_null @*/ public Condition buildInitialState(int Q_up, int Q_b)
 	{
 		Conjunction big_and = new Conjunction();
-		big_and.add(emptyBuffers());
+		big_and.add(emptyBuffers(false));
 		// TODO
 		return big_and;
 	}
@@ -57,17 +57,19 @@ public class FilterModule extends BinaryModule
 	/**
 	 * Generates the condition stipulating that the size of the back porch is
 	 * equal to the number of complete event fronts in the input pipes.
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition frontsVsBackPorch()
+	/*@ non_null @*/ public Condition frontsVsBackPorch(boolean next)
 	{
 		ProcessorQueue back_porch = getBackPorch();
 		Conjunction and = new Conjunction();
 		for (int i = 0; i <= back_porch.getSize(); i++)
 		{
 			Equivalence eq = new Equivalence();
-			eq.add(numTrueFronts(i));
-			eq.add(back_porch.hasLength(i));
+			eq.add(numTrueFronts(next, i));
+			eq.add(back_porch.hasLength(next, i));
 			and.add(eq);
 		}
 		return and;
@@ -174,12 +176,14 @@ public class FilterModule extends BinaryModule
 	 * Generates the condition stipulating that there are exactly n cells
 	 * of the input pipe (porch + buffer) that contain the true value, up 
 	 * to the event at index m
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @param pipe_index The index of the input pipe
 	 * @param m The position in the queue
 	 * @param n The number of true values
 	 * @return The condition
 	 */
-	public Condition hasNTrue(int pipe_index, int m, int n)
+	public Condition hasNTrue(boolean next, int pipe_index, int m, int n)
 	{
 		if (n - 1 > m)
 		{
@@ -192,7 +196,7 @@ public class FilterModule extends BinaryModule
 		for (int s_b = 0; s_b <= Q_b; s_b++)
 		{
 			Conjunction and = new Conjunction();
-			and.add(buffer.hasLength(s_b));
+			and.add(buffer.hasLength(next, s_b));
 			if (s_b > m)
 			{
 				// All events in buffer
@@ -247,15 +251,15 @@ public class FilterModule extends BinaryModule
 	}
 
 	@Override
-	public Condition isFrontToOutput(QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
+	public Condition isFrontToOutput(boolean next, QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
 	{
 		int Q_out = getBackPorch().getSize();
 		Disjunction or = new Disjunction();
 		for (int nf = n; nf <= Q_out; nf++)
 		{
 			Conjunction left = new Conjunction();
-			left.add(at(sigma1, 0, m1, nf));
-			left.add(at(sigma2, 1, m2, nf));
+			left.add(at(next, sigma1, 0, m1, nf));
+			left.add(at(next, sigma2, 1, m2, nf));
 			left.add(isNthTrue(sigma2, 1, m2, n + 1));
 			or.add(left);
 		}
@@ -267,24 +271,24 @@ public class FilterModule extends BinaryModule
 	 * @param n The number of true fronts
 	 * @return
 	 */
-	public Condition numTrueFronts(int n)
+	public Condition numTrueFronts(boolean next, int n)
 	{
 		int Q_out = getBackPorch().getSize();
 		Disjunction or = new Disjunction();
 		for (int nf = n; nf <= Q_out; nf++)
 		{
 			Conjunction and = new Conjunction();
-			and.add(numFronts(nf));
-			and.add(hasNTrue(1, nf, n));
+			and.add(numFronts(next, nf));
+			and.add(hasNTrue(next, 1, nf, n));
 			or.add(and);
 		}
 		return or;
 	}
 
 	@Override
-	public Condition getOutputCondition(QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
+	public Condition getOutputCondition(boolean next, QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
 	{
-		return new Equality(getBackPorch().valueAt(n), at(sigma1, 0, m1));
+		return new Equality(getBackPorch().valueAt(next, n), at(next, sigma1, 0, m1));
 	}
 	
 	@Override

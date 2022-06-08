@@ -123,7 +123,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.atBuffer(0, 3, 3);
+		Condition c = mod.atBuffer(false, 0, 3, 3);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		Assignment a = new Assignment();
@@ -136,7 +136,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.atBuffer(0, 3, 4);
+		Condition c = mod.atBuffer(false, 0, 3, 4);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		Assignment a = new Assignment();
@@ -149,7 +149,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.atPorch(0, 0, 4);
+		Condition c = mod.atPorch(false, 0, 0, 4);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -164,7 +164,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.atPorch(0, 1, 4);
+		Condition c = mod.atPorch(false, 0, 1, 4);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -179,7 +179,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 5, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.atPorch(0, 1, 5);
+		Condition c = mod.atPorch(false, 0, 1, 5);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -194,7 +194,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.atPorch(0, 4, 8);
+		Condition c = mod.atPorch(false, 0, 4, 8);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -209,7 +209,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.atPorch(0, 4, 10);
+		Condition c = mod.atPorch(false, 0, 4, 10);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -224,7 +224,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.atPorch(0, 1, 1);
+		Condition c = mod.atPorch(false, 0, 1, 1);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -340,7 +340,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.hasTotalPipe(0, 4);
+		Condition c = mod.hasTotalPipe(false, 0, 4);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -355,7 +355,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.hasTotalPipe(0, 7);
+		Condition c = mod.hasTotalPipe(false, 0, 7);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -370,7 +370,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.hasTotalPipe(0, 2);
+		Condition c = mod.hasTotalPipe(false, 0, 2);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a");
 		mod.getFrontPorch(0).set("a");
@@ -385,7 +385,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.hasTotalPipe(0, 9);
+		Condition c = mod.hasTotalPipe(false, 0, 9);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set("a", "b", "c", "a");
@@ -400,7 +400,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 1, Q_b = 5, Q_out = 1;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.hasTotalPipe(0, 4);
+		Condition c = mod.hasTotalPipe(false, 0, 4);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b", "c", "a");
 		mod.getFrontPorch(0).set();
@@ -415,7 +415,7 @@ public class BeepBeepModuleTest
 	{
 		int Q_in = 2, Q_b = 5, Q_out = 2;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Condition c = mod.hasTotalPipe(0, 4);
+		Condition c = mod.hasTotalPipe(false, 0, 4);
 		assertNotNull(c);
 		mod.getBuffer(0).set("a", "b");
 		mod.getFrontPorch(0).set("a", "b");

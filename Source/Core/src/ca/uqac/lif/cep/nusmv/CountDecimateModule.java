@@ -106,6 +106,8 @@ public class CountDecimateModule extends SubsetProcessorModule
 	/**
 	 * Produces the condition fixing the value of the internal counter in the
 	 * next state.
+	 * @param next A flag indicating if the condition applies to the
+	 * current state or the next state
 	 * @return The condition
 	 */
 	/*@ non_null @*/ public Condition nextCounter()
@@ -115,7 +117,7 @@ public class CountDecimateModule extends SubsetProcessorModule
 		for (int num_inputs = 0; num_inputs <= porch_size; num_inputs++)
 		{
 			Implication imp = new Implication();
-			imp.add(hasInputs(num_inputs));
+			imp.add(hasInputs(false, num_inputs));
 			if (num_inputs == 0)
 			{
 				// Easy case: counter does not change

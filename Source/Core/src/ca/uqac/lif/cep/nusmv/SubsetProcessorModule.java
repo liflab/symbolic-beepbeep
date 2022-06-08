@@ -107,7 +107,7 @@ public abstract class SubsetProcessorModule extends UnaryProcessorModule
 		{
 			Implication imp = new Implication();
 			imp.add(numOutputs(next, last_pos, i));
-			imp.add(back_porch.hasLength(i));
+			imp.add(back_porch.hasLength(next, i));
 			and.add(imp);
 		}
 		return and;
@@ -156,8 +156,8 @@ public abstract class SubsetProcessorModule extends UnaryProcessorModule
 				eq.add(isOutputAt(next, j, i));
 				Conjunction in_and = new Conjunction();
 				{
-					in_and.add(back_porch.hasAt(i));
-					in_and.add(new Equality(front_porch.valueAt(j), back_porch.valueAt(i)));
+					in_and.add(back_porch.hasAt(next, i));
+					in_and.add(new Equality(front_porch.valueAt(next, j), back_porch.valueAt(next, i)));
 				}
 				eq.add(in_and);
 				and.add(eq);
