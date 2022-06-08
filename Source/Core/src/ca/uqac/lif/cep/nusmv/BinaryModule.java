@@ -176,7 +176,7 @@ public abstract class BinaryModule extends ProcessorModule
 								Implication in_imp = new Implication();
 								in_imp.add(at(false, sigma, pipe_index, j, nf + i));
 								in_imp.add(new Equality(
-										at(false, sigma, pipe_index, j), // buffer/porch at position j
+										valueAt(false, sigma, pipe_index, j), // buffer/porch at position j
 										getBuffer(pipe_index).valueAt(true, i) // next buffer at position i
 										));
 								in_and.add(in_imp);

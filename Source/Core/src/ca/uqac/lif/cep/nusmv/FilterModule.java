@@ -235,7 +235,7 @@ public class FilterModule extends BinaryModule
 		if (sigma == QueueType.PORCH)
 		{
 			Conjunction and = new Conjunction();
-			and.add(booleanAt(QueueType.PORCH, pipe_index, 0));
+			and.add(booleanValueAt(QueueType.PORCH, pipe_index, 0));
 			and.add(hasNTrue(QueueType.BUFFER, pipe_index, getBuffer(pipe_index).getSize() - 1, n - 1));
 			return and;
 		}
@@ -288,7 +288,7 @@ public class FilterModule extends BinaryModule
 	@Override
 	public Condition getOutputCondition(boolean next, QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
 	{
-		return new Equality(getBackPorch().valueAt(next, n), at(next, sigma1, 0, m1));
+		return new Equality(getBackPorch().valueAt(next, n), valueAt(next, sigma1, 0, m1));
 	}
 	
 	@Override

@@ -198,7 +198,7 @@ public class WindowModule extends ProcessorModule
 	/*@ non_null @*/ public Condition setFrontPorchContents(boolean next, int offset, QueueType sigma, int m, int n)
 	{
 		return new Equality(
-				at(next, sigma, 0, m), // m-th event of sigma
+				valueAt(next, sigma, 0, m), // m-th event of sigma
 				m_innerFrontPorches.get(offset).valueAt(next, n) // n-th event of front porch of offset
 				);
 	}
@@ -212,18 +212,18 @@ public class WindowModule extends ProcessorModule
 	public class InnerFrontPorchCellContents extends Equality
 	{
 		protected final boolean m_next;
-		
+
 		protected final int m_offset;
-		
+
 		protected final QueueType m_sigma;
-		
+
 		protected final int m_m;
-		
+
 		protected final int m_n;
-		
+
 		public InnerFrontPorchCellContents(boolean next, int offset, QueueType sigma, int m, int n)
 		{
-			super(at(next, sigma, 0, m), // m-th event of sigma
+			super(valueAt(next, sigma, 0, m), // m-th event of sigma
 					m_innerFrontPorches.get(offset).valueAt(next, n) // n-th event of front porch of offset
 					);
 			m_next = next;
@@ -232,7 +232,7 @@ public class WindowModule extends ProcessorModule
 			m_m = m;
 			m_n = n;
 		}
-		
+
 		@Override
 		public String toString()
 		{
@@ -347,11 +347,11 @@ public class WindowModule extends ProcessorModule
 			return "BackPorchContents(" + m_next + "," + m_offset + ")"; 
 		}
 	}
-	
+
 	public class BackPorchLength extends Conjunction
 	{
 		protected final boolean m_next;
-		
+
 		public BackPorchLength(boolean next)
 		{
 			super();
@@ -365,24 +365,137 @@ public class WindowModule extends ProcessorModule
 				add(eq);
 			}
 		}
+
+		@Override
+		public Boolean evaluate(Assignment a)
+		{
+			return super.evaluate(a);
+		}
+
+		@Override
+		public String toString()
+		{
+			return "BackPorchLength";
+		}
+	}
+
+	public class NextBufferLength extends Conjunction
+	{
+		public NextBufferLength()
+		{
+			super();
+			ProcessorQueue buffer = getBuffer(0);
+			for (int nf = 0; nf < m_width; nf++)
+			{
+				Implication imp = new Implication();
+				imp.add(hasTotalPipe(false, 0, nf));
+				imp.add(buffer.nextHasLength(nf));
+				add(imp);
+			}
+			Implication eq = new Implication();
+			eq.add(minTotalPipe(false, 0, m_width));
+			eq.add(buffer.nextHasLength(m_width - 1));
+			add(eq);
+		}
 		
 		@Override
 		public Boolean evaluate(Assignment a)
 		{
 			return super.evaluate(a);
 		}
+
+		@Override
+		public String toString()
+		{
+			return "NextBufferLength";
+		}
+	}
+	
+	public class NextBufferContents extends Conjunction
+	{
+		public NextBufferContents()
+		{
+			super();
+			for (int len_pipe = 1; len_pipe <= getFrontPorch(0).getSize() + getBuffer(0).getSize(); len_pipe++)
+			//int len_pipe = 4;
+			{
+				Implication imp = new Implication();
+				imp.add(hasTotalPipe(false, 0, len_pipe));
+				imp.add(new NextBufferContentsLength(len_pipe));
+				add(imp);
+			}
+		}
 		
 		@Override
 		public String toString()
 		{
-			return "BackPorchLength";
-		}		
+			return "NextBufferContents";
+		}
+		
+		@Override
+		public Boolean evaluate(Assignment a)
+		{
+			return super.evaluate(a);
+		}
 	}
 	
-	public class NextBufferLength extends Conjunction
+	public class NextBufferContentsLength extends Conjunction
 	{
+		protected final int m_lenPipe;
 		
+		public NextBufferContentsLength(int len_pipe)
+		{
+			super();
+			m_lenPipe = len_pipe;
+			for (QueueType sigma : new QueueType[] {BUFFER, PORCH})
+			{
+				for (int m = 0; m < getSize(sigma, 0); m++)
+				{
+					if (len_pipe < m_width)
+					{
+						for (int n = 0; n < m_width - 1; n++)
+						{
+							Implication in_imp = new Implication();
+							in_imp.add(at(false, sigma, 0, m, n));
+							in_imp.add(new Equality(
+									valueAt(false, sigma, 0, m),
+									valueAt(true, BUFFER, 0, n)
+									));
+							add(in_imp);
+						}
+					}
+					else
+					{
+						for (int n = 0; n < m_width - 1; n++)
+						{
+							Implication in_imp = new Implication();
+							in_imp.add(at(false, sigma, 0, m, n + len_pipe - m_width + 1));
+							in_imp.add(new Equality(
+									valueAt(false, sigma, 0, m),
+									valueAt(true, BUFFER, 0, n)
+									));
+							add(in_imp);
+						}
+					}						
+				}
+			}
+		}
+		
+		@Override
+		public Boolean evaluate(Assignment a)
+		{
+			return super.evaluate(a);
+		}
 	}
+	
+	public class NextBufferCellContent extends Conjunction
+	{
+		public NextBufferCellContent(int m, int n)
+		{
+			super();
+		}
+	}
+	
 
 	@Override
 	public WindowModule duplicate()

@@ -75,8 +75,8 @@ public class BinaryApplyFunctionModule extends BinaryModule
 	public Condition getOutputCondition(boolean next, QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
 	{
 		Condition right = m_function.getCondition(
-				at(next, sigma1, 0, m1), // first argument of f
-				at(next, sigma2, 1, m2), // second argument of f
+				valueAt(next, sigma1, 0, m1), // first argument of f
+				valueAt(next, sigma2, 1, m2), // second argument of f
 				getBackPorch().valueAt(next, n) // cell of the back porch to store value
 				);
 		return right;

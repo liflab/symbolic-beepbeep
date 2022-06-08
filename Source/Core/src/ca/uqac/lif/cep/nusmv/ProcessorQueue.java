@@ -353,23 +353,7 @@ public class ProcessorQueue extends NusmvQueue
 	 */
 	/*@ non_null @*/ public Condition nextHasLength(int n)
 	{
-		Conjunction and = new Conjunction();
-		int Q = getSize();
-		if (n < 0 || n >= Q)
-		{
-			return FALSE;
-		}
-		for (int i = 0; i <= n - 1; i++)
-		{
-			and.add(nextHasAt(i));
-		}
-		for (int i = n; i <= Q - 1; i++)
-		{
-			Negation not = new Negation();
-			not.add(nextHasAt(i));
-			and.add(not);
-		}
-		return and;
+		return new HasLength(true, n);
 	}
 
 	/**

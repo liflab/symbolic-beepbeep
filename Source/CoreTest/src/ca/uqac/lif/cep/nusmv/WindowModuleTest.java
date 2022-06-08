@@ -2,17 +2,17 @@
     Modeling of BeepBeep processor pipelines in NuSMV
     Copyright (C) 2020-2022 Laboratoire d'informatique formelle
     Université du Québec à Chicoutimi, Canada
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -20,13 +20,16 @@ package ca.uqac.lif.cep.nusmv;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 
-import ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType;
 import ca.uqac.lif.nusmv4j.Assignment;
+import ca.uqac.lif.nusmv4j.BruteSolver;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.IntegerRange;
+import ca.uqac.lif.nusmv4j.Solver;
 
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.BUFFER;
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.PORCH;
@@ -38,6 +41,8 @@ public class WindowModuleTest
 {
 	protected static Domain s_domNumbers = new IntegerRange(0, 2);
 	
+	protected static Solver s_solver = new BruteSolver();
+
 	@Test
 	public void testIsActive1()
 	{
@@ -51,7 +56,7 @@ public class WindowModuleTest
 		assertEquals(false, mod.new IsActive(false, 1).evaluate(a));
 		assertEquals(false, mod.new IsActive(false, 2).evaluate(a));
 	}
-	
+
 	@Test
 	public void testIsActive2()
 	{
@@ -65,7 +70,7 @@ public class WindowModuleTest
 		assertEquals(true, mod.new IsActive(false, 1).evaluate(a));
 		assertEquals(false, mod.new IsActive(false, 2).evaluate(a));
 	}
-	
+
 	@Test
 	public void testIsActive3()
 	{
@@ -79,7 +84,7 @@ public class WindowModuleTest
 		assertEquals(false, mod.new IsActive(false, 1).evaluate(a));
 		assertEquals(false, mod.new IsActive(false, 2).evaluate(a));
 	}
-	
+
 	@Test
 	public void testInnerFrontPorchSizes1()
 	{
@@ -103,7 +108,7 @@ public class WindowModuleTest
 		mod.m_innerFrontPorches.get(5).set().assign(a);
 		assertEquals(true, mod.innerFrontPorchSizes(false).evaluate(a));
 	}
-	
+
 	@Test
 	public void testInnerFrontPorchSizes2()
 	{
@@ -124,7 +129,7 @@ public class WindowModuleTest
 		mod.m_innerFrontPorches.get(5).set().assign(a);
 		assertEquals(false, mod.innerFrontPorchSizes(false).evaluate(a));
 	}
-	
+
 	@Test
 	public void testInnerFrontPorchSizes3()
 	{
@@ -151,7 +156,7 @@ public class WindowModuleTest
 		mod.m_innerFrontPorches.get(5).set().assign(a);
 		assertEquals(false, mod.innerFrontPorchSizes(false).evaluate(a));
 	}
-	
+
 	@Test
 	public void testInnerFrontPorchContents1()
 	{
@@ -162,17 +167,17 @@ public class WindowModuleTest
 		mod.getFrontPorch(0).set(0, 1).assign(a);
 		mod.getBuffer(0).set(0, 2).assign(a);
 		// First instance
-		assertEquals(true, mod.innerFrontPorchCellContents(false, 0, QueueType.BUFFER, 0, 0).evaluate(a));
-		assertEquals(false, mod.innerFrontPorchCellContents(false, 0, QueueType.BUFFER, 0, 1).evaluate(a));
-		assertEquals(false, mod.innerFrontPorchCellContents(false, 0, QueueType.BUFFER, 1, 0).evaluate(a));
-		assertEquals(true, mod.innerFrontPorchCellContents(false, 0, QueueType.BUFFER, 1, 1).evaluate(a));
-		assertEquals(true, mod.innerFrontPorchCellContents(false, 0, QueueType.PORCH, 0, 2).evaluate(a));
+		assertEquals(true, mod.innerFrontPorchCellContents(false, 0, BUFFER, 0, 0).evaluate(a));
+		assertEquals(false, mod.innerFrontPorchCellContents(false, 0, BUFFER, 0, 1).evaluate(a));
+		assertEquals(false, mod.innerFrontPorchCellContents(false, 0, BUFFER, 1, 0).evaluate(a));
+		assertEquals(true, mod.innerFrontPorchCellContents(false, 0, BUFFER, 1, 1).evaluate(a));
+		assertEquals(true, mod.innerFrontPorchCellContents(false, 0, PORCH, 0, 2).evaluate(a));
 		// Second instance
-		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, QueueType.BUFFER, 1, 0).evaluate(a));
-		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, QueueType.PORCH, 0, 1).evaluate(a));
-		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, QueueType.PORCH, 1, 2).evaluate(a));
+		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, BUFFER, 1, 0).evaluate(a));
+		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, PORCH, 0, 1).evaluate(a));
+		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, PORCH, 1, 2).evaluate(a));
 	}
-	
+
 	@Test
 	public void testInnerFrontPorchContentsAll1()
 	{
@@ -182,9 +187,9 @@ public class WindowModuleTest
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0, 1).assign(a);
 		mod.getBuffer(0).set(0, 2).assign(a);
-		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, QueueType.BUFFER, 1, 0).evaluate(a));
-		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, QueueType.PORCH, 0, 1).evaluate(a));
-		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, QueueType.PORCH, 1, 2).evaluate(a));
+		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, BUFFER, 1, 0).evaluate(a));
+		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, PORCH, 0, 1).evaluate(a));
+		assertEquals(true, mod.innerFrontPorchCellContents(false, 1, PORCH, 1, 2).evaluate(a));
 		{
 			ProcessorQueue porch = mod.m_innerFrontPorches.get(0);
 			porch.set(0, 2, 0).assign(a);
@@ -209,7 +214,7 @@ public class WindowModuleTest
 			assertEquals(false, mod.new InnerFrontPorchContents(false, 1).evaluate(a));
 		}
 	}
-	
+
 	@Test
 	public void testInnerFrontPorchContentsAll2()
 	{
@@ -227,7 +232,7 @@ public class WindowModuleTest
 		mod.m_innerFrontPorches.get(5).set().assign(a);
 		assertEquals(true, mod.innerFrontPorchContents(false).evaluate(a));
 	}
-	
+
 	@Test
 	public void testInnerFrontPorchContentsAll3()
 	{
@@ -245,7 +250,7 @@ public class WindowModuleTest
 		mod.m_innerFrontPorches.get(5).set().assign(a);
 		assertEquals(true, mod.innerFrontPorchContents(false).evaluate(a));
 	}
-	
+
 	@Test
 	public void testBackPorchContentsAll1()
 	{
@@ -277,7 +282,7 @@ public class WindowModuleTest
 			assertEquals(false, mod.new BackPorchContents(false, 1).evaluate(a));
 		}
 	}
-	
+
 	@Test
 	public void testBackPorchLength1()
 	{
@@ -308,5 +313,128 @@ public class WindowModuleTest
 		assertEquals(false, mod.new BackPorchLength(false).evaluate(a));
 		back_porch.set().assign(a);
 		assertEquals(false, mod.new BackPorchLength(false).evaluate(a));
+	}
+
+	@Test
+	public void testNextBufferLength1()
+	{
+		int Q_in = 3, Q_b = 3, Q_out = 6;
+		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		// We only check the length, not the contents
+		mod.getFrontPorch(0).set(0, 1).assign(a);
+		mod.getBuffer(0).set(0, 2).assign(a);
+		mod.getBuffer(0).next().set(2, 0).assign(a);
+		assertEquals(true, mod.new NextBufferLength().evaluate(a));
+		mod.getBuffer(0).next().set().assign(a);
+		assertEquals(false, mod.new NextBufferLength().evaluate(a));
+		mod.getBuffer(0).next().set(0).assign(a);
+		assertEquals(false, mod.new NextBufferLength().evaluate(a));
+	}
+
+	@Test
+	public void testNextBufferLength2()
+	{
+		int Q_in = 3, Q_b = 3, Q_out = 6;
+		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		// We only check the length, not the contents
+		mod.getFrontPorch(0).set(0).assign(a);
+		mod.getBuffer(0).set().assign(a);
+		mod.getBuffer(0).next().set(0).assign(a);
+		assertEquals(true, mod.new NextBufferLength().evaluate(a));
+		mod.getBuffer(0).next().set().assign(a);
+		assertEquals(false, mod.new NextBufferLength().evaluate(a));
+		mod.getBuffer(0).next().set(1, 0).assign(a);
+		assertEquals(false, mod.new NextBufferLength().evaluate(a));
+	}
+	
+	@Test
+	public void testNextBufferContents1()
+	{
+		int Q_in = 3, Q_b = 3, Q_out = 6;
+		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		// We only check the contents, not the length
+		mod.getFrontPorch(0).set(0, 1).assign(a);
+		mod.getBuffer(0).set(0, 2).assign(a);
+		mod.getBuffer(0).next().set(0, 1).assign(a);
+		assertEquals(true, mod.new NextBufferContents().evaluate(a));
+		mod.getBuffer(0).next().set(0, 2).assign(a);
+		assertEquals(false, mod.new NextBufferContents().evaluate(a));
+		mod.getBuffer(0).next().set(2, 0).assign(a);
+		assertEquals(false, mod.new NextBufferContents().evaluate(a));
+	}
+	
+	@Test
+	public void testNextBufferContents2()
+	{
+		int Q_in = 3, Q_b = 3, Q_out = 6;
+		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		// We only check the contents, not the length
+		mod.getFrontPorch(0).set(0, 1).assign(a);
+		mod.getBuffer(0).set().assign(a);
+		mod.getBuffer(0).next().set(0, 1).assign(a);
+		assertEquals(true, mod.new NextBufferContents().evaluate(a));
+		mod.getBuffer(0).next().set().assign(a);
+		assertEquals(false, mod.new NextBufferContents().evaluate(a));
+		mod.getBuffer(0).next().set(2, 0).assign(a);
+		assertEquals(false, mod.new NextBufferContents().evaluate(a));
+	}
+	
+	@Test
+	public void testNextBufferContents3()
+	{
+		int Q_in = 3, Q_b = 3, Q_out = 6;
+		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		// We only check the contents, not the length
+		mod.getFrontPorch(0).set(0, 1, 2).assign(a);
+		mod.getBuffer(0).set(1, 2, 0).assign(a);
+		mod.getBuffer(0).next().set(1, 2).assign(a);
+		assertEquals(true, mod.new NextBufferContents().evaluate(a));
+		mod.getBuffer(0).next().set().assign(a);
+		assertEquals(false, mod.new NextBufferContents().evaluate(a));
+		mod.getBuffer(0).next().set(0, 1).assign(a);
+		assertEquals(false, mod.new NextBufferContents().evaluate(a));
+	}
+	
+	@Test
+	public void testNextBufferContents4()
+	{
+		int Q_in = 3, Q_b = 3, Q_out = 6;
+		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		// We only check the contents, not the length
+		mod.getFrontPorch(0).set(0).assign(a);
+		mod.getBuffer(0).set(1).assign(a);
+		mod.getBuffer(0).next().set(1, 0).assign(a);
+		assertEquals(true, mod.new NextBufferContents().evaluate(a));
+		mod.getBuffer(0).next().set().assign(a);
+		assertEquals(false, mod.new NextBufferContents().evaluate(a));
+		mod.getBuffer(0).next().set(0, 1).assign(a);
+		assertEquals(false, mod.new NextBufferContents().evaluate(a));
+	}
+	
+	@Test
+	public void testNextBufferContents4_onlySolution()
+	{
+		int Q_in = 3, Q_b = 3, Q_out = 6;
+		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		// We only check the contents, not the length
+		mod.getFrontPorch(0).set(0).assign(a);
+		mod.getBuffer(0).set(1).assign(a);
+		Condition c = mod.new NextBufferContents();
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.new NextBufferLength(), mod.getBuffer(0).isWellFormed(), mod.getBuffer(0).next().isWellFormed());
+		assertEquals(1, solutions.size());
 	}
 }
