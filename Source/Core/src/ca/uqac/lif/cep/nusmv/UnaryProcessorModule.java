@@ -37,17 +37,6 @@ public abstract class UnaryProcessorModule extends ProcessorModule
 	}
 	
 	/**
-	 * Produces the condition stipulating that the unary processor has at least
-	 * <i>n</i> inputs ready to be consumed.
-	 * @param n The number of input events
-	 * @return The condition
-	 */
-	/*@ pure non_null @*/ public Condition minInputs(int n)
-	{
-		return m_frontPorches[0].minLength(n);
-	}
-	
-	/**
 	 * Produces the condition stipulating that the unary processor has exactly
 	 * <i>n</i> inputs ready to be consumed.
 	 * @param n The number of input events

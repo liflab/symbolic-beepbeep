@@ -29,6 +29,7 @@ import ca.uqac.lif.nusmv4j.BruteSolver;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.IntegerRange;
+import ca.uqac.lif.nusmv4j.PrettyPrintStream;
 import ca.uqac.lif.nusmv4j.Solver;
 
 /**
@@ -44,7 +45,7 @@ public class TrimModuleTest
 	public void testShouldBeOutput1()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("dec", 2, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 2, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -60,7 +61,7 @@ public class TrimModuleTest
 	public void testShouldBeOutput2()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("dec", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -76,7 +77,7 @@ public class TrimModuleTest
 	public void testShouldBeOutput3()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("dec", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -93,7 +94,7 @@ public class TrimModuleTest
 	public void testShouldBeOutput4()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("dec", 10, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 10, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -110,7 +111,7 @@ public class TrimModuleTest
 	public void testBackPorchValues1()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("dec", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 1, 2, 3).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -120,5 +121,14 @@ public class TrimModuleTest
 		assertEquals(1, solutions.size());
 		mod.getBackPorch().set(2, 3, 1, 2, 3).assign(a);
 		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testPrint1()
+	{
+		int Q_in = 6, Q_out = 6;
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		PrettyPrintStream ps = new PrettyPrintStream(System.out);
+		mod.print(ps);
 	}
 }

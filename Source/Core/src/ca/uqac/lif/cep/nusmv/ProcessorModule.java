@@ -77,6 +77,33 @@ public abstract class ProcessorModule extends LogicModule
 		}
 		m_backPorch = new ProcessorQueue("ou", new ArrayVariable("ouc", out_domain, Q_out), new ArrayVariable("oub", BooleanDomain.instance, Q_out));
 	}
+	
+	@Override
+	public Conjunction getInit()
+	{
+		Conjunction and_init = new Conjunction();
+		for (int i = 0; i < getInputArity(); i++)
+		{
+			and_init.add(m_buffers[i].hasLength(false, 0));
+		}
+		return and_init;
+	}
+	
+	@Override
+	public Conjunction getTrans()
+	{
+		Conjunction and = new Conjunction();
+		return and;
+	}
+	
+	/**
+	 * Gets the input arity of this processor module.
+	 * @return The input arity
+	 */
+	public int getInputArity()
+	{
+		return m_buffers.length;
+	}
 
 	/**
 	 * Sets the processor queue corresponding to the processor's front porch
@@ -116,12 +143,25 @@ public abstract class ProcessorModule extends LogicModule
 	}
 
 	/**
-	 * Gets the processor variable corresponding to the processor's reset flag
-	 * @param index The index of the input pipe
+	 * Gets the processor variable corresponding to the processor's reset flag.
 	 * @return The variable
 	 */
 	public ScalarVariable getResetFlag()
 	{
+		return m_resetFlag;
+	}
+	
+	/**
+	 * Gets the processor variable corresponding to the processor's reset flag.
+	 * @param next A flag to get the variable in the current or the next state
+	 * @return The variable
+	 */
+	protected ScalarVariable getResetFlag(boolean next)
+	{
+		if (next)
+		{
+			return m_resetFlag.next();			
+		}
 		return m_resetFlag;
 	}
 
@@ -250,29 +290,35 @@ public abstract class ProcessorModule extends LogicModule
 	
 	public class NoReset extends Negation
 	{
-		public NoReset()
+		protected final boolean m_next;
+		
+		public NoReset(boolean next)
 		{
-			super(new IsReset());
+			super(new IsReset(next));
+			m_next = next;
 		}
 		
 		@Override
 		public String toString()
 		{
-			return "NoReset";
+			return "NoReset" + (m_next ? "'" : "");
 		}
 	}
 	
 	public class IsReset extends BooleanVariableCondition
 	{
-		public IsReset()
+		protected final boolean m_next;
+		
+		public IsReset(boolean next)
 		{
-			super(m_resetFlag);
+			super(getResetFlag(next));
+			m_next = next;
 		}
 		
 		@Override
 		public String toString()
 		{
-			return "IsReset";
+			return "IsReset" + (m_next ? "'" : "");
 		}
 	}
 

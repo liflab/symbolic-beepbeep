@@ -114,13 +114,13 @@ public class CumulateModule extends UnaryProcessorModule
 					{
 						{
 							Implication in_imp = new Implication();
-							in_imp.add(new IsReset());
+							in_imp.add(new IsReset(next));
 							in_imp.add(m_function.getCondition(new Constant(m_function.getInputDomain(0).getDefaultValue()), front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
 							in_and.add(in_imp);
 						}
 						{
 							Implication in_imp = new Implication();
-							in_imp.add(new NoReset());
+							in_imp.add(new NoReset(next));
 							in_imp.add(m_function.getCondition(m_counter, front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
 							in_and.add(in_imp);
 						}

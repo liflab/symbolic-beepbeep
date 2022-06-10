@@ -40,8 +40,8 @@ public class BeepBeepModuleTest
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
 		Assignment a = new Assignment();
 		mod.getResetFlag().set(true).assign(a);
-		assertTrue(mod.new IsReset().evaluate(a));
-		assertFalse(mod.new NoReset().evaluate(a));
+		assertTrue(mod.new IsReset(false).evaluate(a));
+		assertFalse(mod.new NoReset(false).evaluate(a));
 	}
 	
 	@Test
@@ -51,8 +51,8 @@ public class BeepBeepModuleTest
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
 		Assignment a = new Assignment();
 		mod.getResetFlag().set(false).assign(a);
-		assertFalse(mod.new IsReset().evaluate(a));
-		assertTrue(mod.new NoReset().evaluate(a));
+		assertFalse(mod.new IsReset(false).evaluate(a));
+		assertTrue(mod.new NoReset(false).evaluate(a));
 	}
 	
 	@Test

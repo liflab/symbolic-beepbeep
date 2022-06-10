@@ -67,17 +67,22 @@ public class TrimModule extends SubsetProcessorModule
 	@Override
 	public Condition shouldBeOutput(boolean next, int m)
 	{
+		ScalarVariable counter = m_counter;
+		if (next)
+		{
+			counter = m_counter.next();
+		}
 		Disjunction big_or = new Disjunction();
 		{
 			// First case: no reset; depends on current counter and position
 			Conjunction and = new Conjunction();
-			and.add(new NoReset());
+			and.add(new NoReset(next));
 			Disjunction imp_or = new Disjunction();
 			for (int c = 0; c < m_interval; c++)
 			{
 				if ((c + m) >= m_interval)
 				{
-					imp_or.add(new Equality(m_counter, new Constant(c)));
+					imp_or.add(new Equality(counter, new Constant(c)));
 				}
 			}
 			and.add(imp_or);
@@ -85,7 +90,7 @@ public class TrimModule extends SubsetProcessorModule
 		}
 		if (m >= m_interval)
 		{
-			big_or.add(new IsReset());
+			big_or.add(new IsReset(next));
 		}
 		return big_or;
 	}

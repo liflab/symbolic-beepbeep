@@ -142,11 +142,6 @@ public abstract class SubsetProcessorModule extends UnaryProcessorModule
 	{
 		ProcessorQueue front_porch = getFrontPorch(0);
 		ProcessorQueue back_porch = getBackPorch();
-		if (next)
-		{
-			front_porch = front_porch.next();
-			back_porch = back_porch.next();
-		}
 		Conjunction and = new Conjunction();
 		for (int i = 0; i < back_porch.getSize(); i++)
 		{
@@ -173,4 +168,20 @@ public abstract class SubsetProcessorModule extends UnaryProcessorModule
 	 * @return The condition
 	 */
 	/*@ non_null @*/ public abstract Condition shouldBeOutput(boolean next, int m);
+	
+	@Override
+	public Conjunction getInit()
+	{
+		Conjunction and_init = super.getInit();
+		and_init.add(backPorchValues(false));
+		return and_init;
+	}
+	
+	@Override
+	public Conjunction getTrans()
+	{
+		Conjunction and_trans = super.getTrans();
+		and_trans.add(backPorchValues(true));
+		return and_trans;
+	}
 }

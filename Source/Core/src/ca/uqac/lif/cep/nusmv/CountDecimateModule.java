@@ -84,7 +84,7 @@ public class CountDecimateModule extends SubsetProcessorModule
 		{
 			// Case where no reset occurs: depends on counter
 			Conjunction and = new Conjunction();
-			and.add(new NoReset());
+			and.add(new NoReset(next));
 			Disjunction imp_or = new Disjunction();
 			for (int c = 0; c < m_interval; c++)
 			{
@@ -99,7 +99,7 @@ public class CountDecimateModule extends SubsetProcessorModule
 		// Other case: a reset occurs and m % interval == 0
 		if (m % m_interval == 0)
 		{
-			big_or.add(new IsReset());
+			big_or.add(new IsReset(next));
 		}
 		return big_or;
 	}
@@ -131,7 +131,7 @@ public class CountDecimateModule extends SubsetProcessorModule
 					// Either there is no reset in the vector; new value of counter =
 					// (current counter + input events) mod interval
 					Conjunction and = new Conjunction();
-					and.add(new NoReset());
+					and.add(new NoReset(false));
 					Disjunction in_or = new Disjunction();
 					for (int c = 0; c < m_interval; c++)
 					{
@@ -146,7 +146,7 @@ public class CountDecimateModule extends SubsetProcessorModule
 				{
 					// Or there is a reset and the next counter is equal to num_inputs % interval
 					Conjunction in_and = new Conjunction();
-					in_and.add(new IsReset());
+					in_and.add(new IsReset(false));
 					in_and.add(new Equality(m_counter.next(), new Constant((num_inputs) % m_interval)));
 					or.add(in_and);
 				}
