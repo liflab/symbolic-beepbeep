@@ -20,6 +20,7 @@ package ca.uqac.lif.cep.nusmv;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import org.junit.Test;
@@ -128,7 +129,12 @@ public class TrimModuleTest
 	{
 		int Q_in = 6, Q_out = 6;
 		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
-		PrettyPrintStream ps = new PrettyPrintStream(System.out);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PrettyPrintStream ps = new PrettyPrintStream(baos);
 		mod.print(ps);
+		String out = baos.toString();
+		assertNotNull(out);
+		assertFalse(out.contains("ERROR")); // Indicating a problem with the transition relation
+		System.out.println(out);
 	}
 }

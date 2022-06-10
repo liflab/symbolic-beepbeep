@@ -18,6 +18,7 @@
  */
 package ca.uqac.lif.cep.nusmv;
 
+import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Equivalence;
@@ -34,15 +35,12 @@ public class BinaryApplyFunctionModule extends BinaryModule
 		super(name, f.getInputDomain(0), f.getInputDomain(1), f.getOutputDomain(), Q_in, Q_b, Q_out);
 		m_function = f;
 	}
-
-	/*@ non_null @*/ public Condition buildInitialState(int Q_up, int Q_b)
+	
+	@Override
+	protected void addToComment(Comment c)
 	{
-		Conjunction big_and = new Conjunction();
-		big_and.add(emptyBuffers(false));
-		// TODO
-		return big_and;
+		c.addLine("Module: ApplyFunction(" + m_function + ")");
 	}
-
 
 	/**
 	 * Generates the condition stipulating that the size of the back porch is
@@ -88,5 +86,19 @@ public class BinaryApplyFunctionModule extends BinaryModule
 		BinaryApplyFunctionModule m = new BinaryApplyFunctionModule(getName(), m_function, getFrontPorch(0).getSize(), getBuffer(0).getSize(), getBackPorch().getSize());
 		super.copyInto(m);
 		return m;
+	}
+
+	@Override
+	protected void addToInit(Conjunction c)
+	{
+		super.addToInit(c);
+		c.add(frontsVsBackPorch(false));
+	}
+
+	@Override
+	protected void addToTrans(Conjunction c) 
+	{
+		super.addToTrans(c);
+		c.add(frontsVsBackPorch(true));		
 	}
 }

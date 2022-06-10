@@ -23,6 +23,7 @@ import static ca.uqac.lif.nusmv4j.ConstantFalse.FALSE;
 import ca.uqac.lif.nusmv4j.ArrayVariable;
 import ca.uqac.lif.nusmv4j.BooleanDomain;
 import ca.uqac.lif.nusmv4j.BooleanVariableCondition;
+import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Disjunction;
@@ -31,6 +32,7 @@ import ca.uqac.lif.nusmv4j.LogicModule;
 import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.ScalarVariable;
 import ca.uqac.lif.nusmv4j.Term;
+import ca.uqac.lif.nusmv4j.Variable;
 
 /**
  * Abstract representation of a BeepBeep processor as a collection of queues
@@ -38,6 +40,17 @@ import ca.uqac.lif.nusmv4j.Term;
  */
 public abstract class ProcessorModule extends LogicModule
 {
+	/**
+	 * Dashes to be added to the comments of the NuSMV files.
+	 */
+	protected static String s_dashes = "------------------------------------------------------------";
+	
+	/**
+	 * A flag determining if the formulas of the transition relation are
+	 * simplified before being printed.
+	 */
+	public static boolean s_simplify = true;
+	
 	protected enum QueueType {PORCH, BUFFER}
 
 	/**
@@ -76,24 +89,82 @@ public abstract class ProcessorModule extends LogicModule
 			m_buffers[i] = new ProcessorQueue("bf_" + i, new ArrayVariable("bfc_" + i, m_frontPorches[i].m_arrayContents.getDomain(), Q_b), new ArrayVariable("bfb_" + i, BooleanDomain.instance, Q_b));
 		}
 		m_backPorch = new ProcessorQueue("ou", new ArrayVariable("ouc", out_domain, Q_out), new ArrayVariable("oub", BooleanDomain.instance, Q_out));
+		Variable[] params = new Variable[2 * (in_arity + 1) + 1];
+		int index = 0;
+		for (int i = 0; i < in_arity; i++)
+		{
+			params[index++] = m_frontPorches[i].m_arrayContents;
+			params[index++] = m_frontPorches[i].m_arrayFlags;
+		}
+		params[index++] = m_backPorch.m_arrayContents;
+		params[index++] = m_backPorch.m_arrayFlags;
+		params[index++] = m_resetFlag;
+		setParameters(params);
+		if (Q_b > 0)
+		{
+			for (int i = 0; i < in_arity; i++)
+			{
+				add(m_buffers[i].m_arrayContents);
+				add(m_buffers[i].m_arrayFlags);
+			}
+		}
 	}
 	
 	@Override
-	public Conjunction getInit()
+	protected Comment getComment()
+	{
+		Comment c = new Comment(s_dashes);
+		addToComment(c);
+		c.addLine("Q_in = " + m_frontPorches[0].getSize() + ", Q_b = " + m_buffers[0].getSize() + ", Q_out = " + m_backPorch.getSize());
+		c.addLine(s_dashes);
+		return c;
+	}
+	
+	/**
+	 * Adds new lines to the top comment for this module.
+	 * @param c The comment
+	 */
+	protected void addToComment(Comment c)
+	{
+		// Do nothing
+	}
+	
+	@Override
+	public Condition getInit()
 	{
 		Conjunction and_init = new Conjunction();
 		for (int i = 0; i < getInputArity(); i++)
 		{
 			and_init.add(m_buffers[i].hasLength(false, 0));
+			and_init.add(m_buffers[i].isWellFormed());
+			and_init.add(m_frontPorches[i].isWellFormed());
+		}
+		and_init.add(m_backPorch.isWellFormed());
+		addToInit(and_init);
+		if (s_simplify)
+		{
+			return Condition.simplify(and_init);
 		}
 		return and_init;
 	}
 	
 	@Override
-	public Conjunction getTrans()
+	public Condition getTrans()
 	{
-		Conjunction and = new Conjunction();
-		return and;
+		Conjunction and_trans = new Conjunction();
+		for (int i = 0; i < getInputArity(); i++)
+		{
+			and_trans.add(m_buffers[i].hasLength(true, 0));
+			and_trans.add(m_buffers[i].next().isWellFormed());
+			and_trans.add(m_frontPorches[i].next().isWellFormed());
+		}
+		and_trans.add(m_backPorch.next().isWellFormed());
+		addToTrans(and_trans);
+		if (s_simplify)
+		{
+			return Condition.simplify(and_trans);
+		}
+		return and_trans;
 	}
 	
 	/**
@@ -265,11 +336,6 @@ public abstract class ProcessorModule extends LogicModule
 			m_n = n;
 			ProcessorQueue porch = m_frontPorches[pipe_index];
 			ProcessorQueue buffer = m_buffers[pipe_index];
-			if (next)
-			{
-				porch = porch.next();
-				buffer = buffer.next();
-			}
 			if (n < 0 || n >= buffer.getSize() + porch.getSize() || m < 0 || m >= porch.getSize())
 			{
 				add(FALSE); // Impossible
@@ -486,4 +552,20 @@ public abstract class ProcessorModule extends LogicModule
 	 * @return A new, identical instance of the current processor module
 	 */
 	/*@ non_null @*/ public abstract ProcessorModule duplicate();
+	
+	/**
+	 * Adds any extra terms to the conjunction defining the initial states of
+	 * the module. A processor module must override this method even if it has
+	 * nothing to add to the conjunction.
+	 * @param c The conjunction
+	 */
+	protected abstract void addToInit(/*@ non_null @*/ Conjunction c);
+	
+	/**
+	 * Adds any extra terms to the conjunction defining the transition relation
+	 * of the module. A processor module must override this method even if it
+	 * has nothing to add to the conjunction.
+	 * @param c The conjunction
+	 */
+	protected abstract void addToTrans(/*@ non_null @*/ Conjunction c);
 }

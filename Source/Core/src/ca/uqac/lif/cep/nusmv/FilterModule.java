@@ -19,6 +19,7 @@
 package ca.uqac.lif.cep.nusmv;
 
 import ca.uqac.lif.nusmv4j.BooleanDomain;
+import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.ConstantFalse;
@@ -52,7 +53,12 @@ public class FilterModule extends BinaryModule
 		// TODO
 		return big_and;
 	}
-
+	
+	@Override
+	protected void addToComment(Comment c)
+	{
+		c.addLine("Module: Filter");
+	}
 
 	/**
 	 * Generates the condition stipulating that the size of the back porch is

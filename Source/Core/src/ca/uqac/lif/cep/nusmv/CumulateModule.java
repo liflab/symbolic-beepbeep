@@ -18,6 +18,7 @@
  */
 package ca.uqac.lif.cep.nusmv;
 
+import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Constant;
@@ -47,6 +48,13 @@ public class CumulateModule extends UnaryProcessorModule
 		super(name, f.getInputDomain(0), f.getOutputDomain(), Q_in, 0, Q_out);
 		m_function = f;
 		m_counter = new ScalarVariable("cnt", f.getOutputDomain());
+		add(m_counter);
+	}
+	
+	@Override
+	protected void addToComment(Comment c)
+	{
+		c.addLine("Module: Cumulate(" + m_function + ")");
 	}
 
 	/**
@@ -56,6 +64,18 @@ public class CumulateModule extends UnaryProcessorModule
 	/*@ pure non_null @*/ public ScalarVariable getCounter()
 	{
 		return m_counter;
+	}
+	
+	@Override
+	protected void addToInit(Conjunction c)
+	{
+		c.add(new Equality(m_counter, new Constant(m_counter.getDomain().getDefaultValue())));
+	}
+	
+	@Override
+	protected void addToTrans(Conjunction c)
+	{
+		c.add(nextCounter());
 	}
 
 	/**
@@ -174,5 +194,11 @@ public class CumulateModule extends UnaryProcessorModule
 		CumulateModule m = new CumulateModule(getName(), m_function, getFrontPorch(0).getSize(), getBackPorch().getSize());
 		super.copyInto(m);
 		return m;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Cumulate(" + m_function + ")";
 	}
 }

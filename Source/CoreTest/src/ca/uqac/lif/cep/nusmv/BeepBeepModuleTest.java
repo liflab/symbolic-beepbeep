@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import ca.uqac.lif.nusmv4j.Assignment;
 import ca.uqac.lif.nusmv4j.Condition;
+import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 
 /**
@@ -373,6 +374,18 @@ public class BeepBeepModuleTest
 		{
 			// Not needed
 			return null;
+		}
+
+		@Override
+		protected void addToInit(Conjunction c)
+		{
+			// Nothing to do
+		}
+
+		@Override
+		protected void addToTrans(Conjunction c)
+		{
+			// Nothing to do
 		}
 	}
 }

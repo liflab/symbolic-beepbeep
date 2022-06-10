@@ -20,6 +20,7 @@ package ca.uqac.lif.cep.nusmv;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import org.junit.Test;
@@ -29,6 +30,7 @@ import ca.uqac.lif.nusmv4j.BruteSolver;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.IntegerRange;
+import ca.uqac.lif.nusmv4j.PrettyPrintStream;
 import ca.uqac.lif.nusmv4j.Solver;
 
 public class CountDecimateModuleTest 
@@ -329,5 +331,19 @@ public class CountDecimateModuleTest
 		assertTrue(c.evaluate(a));
 		a.set(mod.getCounter().next(), 1);
 		assertFalse(c.evaluate(a));
+	}
+	
+	@Test
+	public void testPrint1()
+	{
+		int Q_in = 6, Q_out = 6;
+		CountDecimateModule mod = new CountDecimateModule("dec", 3, s_domNumbers, Q_in, Q_out);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PrettyPrintStream ps = new PrettyPrintStream(baos);
+		mod.print(ps);
+		String out = baos.toString();
+		assertNotNull(out);
+		assertFalse(out.contains("ERROR")); // Indicating a problem with the transition relation
+		System.out.println(out);
 	}
 }

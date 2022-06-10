@@ -19,7 +19,10 @@
 package ca.uqac.lif.cep.nusmv;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import org.junit.Test;
@@ -29,6 +32,7 @@ import ca.uqac.lif.nusmv4j.BruteSolver;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.IntegerRange;
+import ca.uqac.lif.nusmv4j.PrettyPrintStream;
 import ca.uqac.lif.nusmv4j.Solver;
 
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.BUFFER;
@@ -40,7 +44,7 @@ import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.PORCH;
 public class WindowModuleTest
 {
 	protected static Domain s_domNumbers = new IntegerRange(0, 2);
-	
+
 	protected static Solver s_solver = new BruteSolver();
 
 	@Test
@@ -350,7 +354,7 @@ public class WindowModuleTest
 		mod.getBuffer(0).next().set(1, 0).assign(a);
 		assertEquals(false, mod.new NextBufferLength().evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferContents1()
 	{
@@ -368,7 +372,7 @@ public class WindowModuleTest
 		mod.getBuffer(0).next().set(2, 0).assign(a);
 		assertEquals(false, mod.new NextBufferContents().evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferContents2()
 	{
@@ -386,7 +390,7 @@ public class WindowModuleTest
 		mod.getBuffer(0).next().set(2, 0).assign(a);
 		assertEquals(false, mod.new NextBufferContents().evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferContents3()
 	{
@@ -404,7 +408,7 @@ public class WindowModuleTest
 		mod.getBuffer(0).next().set(0, 1).assign(a);
 		assertEquals(false, mod.new NextBufferContents().evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferContents4()
 	{
@@ -422,7 +426,7 @@ public class WindowModuleTest
 		mod.getBuffer(0).next().set(0, 1).assign(a);
 		assertEquals(false, mod.new NextBufferContents().evaluate(a));
 	}
-	
+
 	@Test
 	public void testNextBufferContents4_onlySolution()
 	{
@@ -436,5 +440,20 @@ public class WindowModuleTest
 		Condition c = mod.new NextBufferContents();
 		List<Assignment> solutions = s_solver.solveAll(c, a, mod.new NextBufferLength(), mod.getBuffer(0).isWellFormed(), mod.getBuffer(0).next().isWellFormed());
 		assertEquals(1, solutions.size());
+	}
+
+	@Test
+	public void testPrint()
+	{
+		int Q_in = 3, Q_b = 3, Q_out = 6;
+		CumulateModule sum = new CumulateModule("Cumulate", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PrettyPrintStream ps = new PrettyPrintStream(baos);
+		mod.print(ps);
+		String out = baos.toString();
+		assertNotNull(out);
+		assertFalse(out.contains("ERROR")); // Indicating a problem with the transition relation
+		System.out.println(out);
 	}
 }

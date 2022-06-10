@@ -161,6 +161,18 @@ public abstract class SubsetProcessorModule extends UnaryProcessorModule
 		return and;
 	}
 	
+	@Override
+	protected void addToInit(Conjunction and_init)
+	{
+		and_init.add(backPorchValues(false));
+	}
+	
+	@Override
+	protected void addToTrans(Conjunction and_trans)
+	{
+		and_trans.add(backPorchValues(true));
+	}
+	
 	/**
 	 * Produces the condition stipulating that the element in the input porch
 	 * at position m should be output by the processor.
@@ -168,20 +180,4 @@ public abstract class SubsetProcessorModule extends UnaryProcessorModule
 	 * @return The condition
 	 */
 	/*@ non_null @*/ public abstract Condition shouldBeOutput(boolean next, int m);
-	
-	@Override
-	public Conjunction getInit()
-	{
-		Conjunction and_init = super.getInit();
-		and_init.add(backPorchValues(false));
-		return and_init;
-	}
-	
-	@Override
-	public Conjunction getTrans()
-	{
-		Conjunction and_trans = super.getTrans();
-		and_trans.add(backPorchValues(true));
-		return and_trans;
-	}
 }

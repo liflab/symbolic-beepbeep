@@ -18,6 +18,7 @@
  */
 package ca.uqac.lif.cep.nusmv;
 
+import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Constant;
@@ -49,6 +50,13 @@ public class CountDecimateModule extends SubsetProcessorModule
 		super(name, d, Q_in, Q_out);
 		m_interval = interval;
 		m_counter = new ScalarVariable("cnt", new IntegerRange(0, interval - 1));
+		add(m_counter);
+	}
+	
+	@Override
+	protected void addToComment(Comment c)
+	{
+		c.addLine("Module: CountDecimate(" + m_interval + ")");
 	}
 
 	/**
@@ -67,6 +75,18 @@ public class CountDecimateModule extends SubsetProcessorModule
 	/*@ pure @*/ public int getInterval()
 	{
 		return m_interval;
+	}
+	
+	@Override
+	protected void addToInit(Conjunction c)
+	{
+		c.add(new Equality(m_counter, new Constant(m_counter.getDomain().getDefaultValue())));
+	}
+	
+	@Override
+	protected void addToTrans(Conjunction c)
+	{
+		c.add(nextCounter());
 	}
 
 	/**

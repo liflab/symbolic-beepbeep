@@ -23,13 +23,17 @@ import java.util.Map;
 
 import ca.uqac.lif.nusmv4j.Assignment;
 import ca.uqac.lif.nusmv4j.BooleanDomain;
+import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
+import ca.uqac.lif.nusmv4j.Constant;
+import ca.uqac.lif.nusmv4j.ConstantTrue;
 import ca.uqac.lif.nusmv4j.Disjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.Implication;
+import ca.uqac.lif.nusmv4j.ModuleDomain;
 import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.ScalarVariable;
 
@@ -64,7 +68,7 @@ public class WindowModule extends ProcessorModule
 	 * A map associating reset flags of each inner processor instance to
 	 * their offset index.
 	 */
-	protected final Map<Integer,ScalarVariable> m_resetFlags;
+	protected final ScalarVariable m_innerResetFlag;
 
 	/**
 	 * An array of processor instances, one for each offset of the processor
@@ -83,20 +87,28 @@ public class WindowModule extends ProcessorModule
 			m_processors[i] = m_processor.duplicate();
 		}
 		m_innerFrontPorches = new HashMap<Integer,ProcessorQueue>();
-		for (int i = 0; i < Q_in + width; i++)
-		{
-			m_innerFrontPorches.put(i, new ProcessorQueue("inner_in", "innerfc_" + i, "innerfb_" + i, width, in_domain));
-		}
 		m_innerBackPorches = new HashMap<Integer,ProcessorQueue>();
+		m_innerResetFlag = new ScalarVariable("innerr", new Domain(new Object[] {ConstantTrue.TRUE}));
+		add(m_innerResetFlag);
 		for (int i = 0; i < Q_in + width; i++)
 		{
-			m_innerBackPorches.put(i, new ProcessorQueue("inner_ou", "innerbc_" + i, "innerbb_" + i, width, out_domain));
+			ProcessorQueue in_q = new ProcessorQueue("inner_in", "innerfc_" + i, "innerfb_" + i, width, in_domain);
+			ProcessorQueue out_q = new ProcessorQueue("inner_ou", "innerbc_" + i, "innerbb_" + i, width, out_domain);
+			m_innerFrontPorches.put(i, in_q);
+			m_innerBackPorches.put(i, out_q);
+			add(in_q.m_arrayContents);
+			add(in_q.m_arrayFlags);
+			add(out_q.m_arrayContents);
+			add(in_q.m_arrayFlags);
+			ModuleDomain dom = new ModuleDomain(m_processors[i], in_q.m_arrayContents, in_q.m_arrayFlags, out_q.m_arrayContents, out_q.m_arrayFlags, m_innerResetFlag);
+			this.add("in_p" + i, dom);
 		}
-		m_resetFlags = new HashMap<Integer,ScalarVariable>();
-		for (int i = 0; i < Q_in + width; i++)
-		{
-			m_resetFlags.put(i, new ScalarVariable("innerr_" + i, BooleanDomain.instance));
-		}
+	}
+	
+	@Override
+	public void addToComment(Comment c)
+	{
+		c.addLine("Module: Window of " + m_width + " of " + m_processor.toString());
 	}
 
 	/**
@@ -494,6 +506,33 @@ public class WindowModule extends ProcessorModule
 		{
 			super();
 		}
+	}
+	
+	@Override
+	protected void addToInit(Conjunction c)
+	{
+		c.add(new Equality(m_innerResetFlag, ConstantTrue.TRUE));
+		c.add(innerFrontPorchContents(false));
+		for (int i = 0; i < m_backPorch.getSize(); i++)
+		{
+			c.add(new BackPorchContents(false, i));
+		}
+		c.add(new BackPorchLength(false));
+	}
+	
+	@Override
+	protected void addToTrans(Conjunction c)
+	{
+		c.add(new Equality(m_innerResetFlag.next(), ConstantTrue.TRUE));
+		c.add(innerFrontPorchContents(true));
+		for (int i = 0; i < m_backPorch.getSize(); i++)
+		{
+			c.add(new BackPorchContents(true, i));
+		}
+		c.add(new BackPorchLength(true));
+		// Conditions applying only for transitions
+		c.add(new NextBufferLength());
+		c.add(new NextBufferContents());
 	}
 	
 

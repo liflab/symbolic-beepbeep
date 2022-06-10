@@ -40,10 +40,58 @@ public abstract class BinaryModule extends ProcessorModule
 	 */
 	/*@ non_null @*/ public Condition emptyBuffers(boolean next)
 	{
-		Conjunction and = new Conjunction();
-		and.add(getBuffer(0).hasLength(next, 0));
-		and.add(getBuffer(1).hasLength(next, 0));
-		return and;
+		return new EmptyBuffers(next);
+	}
+	
+	public class EmptyBuffers extends Conjunction
+	{
+		protected final boolean m_next;
+		
+		public EmptyBuffers(boolean next)
+		{
+			super();
+			m_next = next;
+			add(getBuffer(0).hasLength(next, 0));
+			add(getBuffer(1).hasLength(next, 0));
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "EmptyBuffers" + (m_next ? "'" : "");
+		}
+	}
+	
+	@Override
+	protected void addToInit(Conjunction c)
+	{
+		c.add(emptyBuffers(false));
+		c.add(backPorchValues(false));
+	}
+	
+	@Override
+	protected void addToTrans(Conjunction c)
+	{
+		// Buffers size = 0 if reset, otherwise follow definition
+		{
+			Implication imp = new Implication();
+			imp.add(new IsReset(true));
+			imp.add(emptyBuffers(true));
+			c.add(imp);
+		}
+		{
+			Implication imp = new Implication();
+			imp.add(new IsReset(true));
+			Conjunction and = new Conjunction();
+			and.add(nextBufferSizes());
+			imp.add(and);
+			c.add(imp);
+		}
+		// Conditions that dictate the content of each buffer in the next state
+		c.add(nextBufferValues(0));
+		c.add(nextBufferValues(1));
+		// Conditions that dictate the content of the back porch in the next state
+		c.add(backPorchValues(true));
 	}
 
 	/**
