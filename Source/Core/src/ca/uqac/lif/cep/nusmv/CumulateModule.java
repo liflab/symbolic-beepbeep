@@ -2,17 +2,17 @@
     Modeling of BeepBeep processor pipelines in NuSMV
     Copyright (C) 2020-2022 Laboratoire d'informatique formelle
     Université du Québec à Chicoutimi, Canada
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,7 +24,6 @@ import ca.uqac.lif.nusmv4j.Constant;
 import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.Implication;
-import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.ScalarVariable;
 
 /**
@@ -37,19 +36,19 @@ public class CumulateModule extends UnaryProcessorModule
 	 * The internal variable keeping track of the current cumulative count.
 	 */
 	/*@ non_null @*/ protected final ScalarVariable m_counter;
-	
+
 	/**
 	 * The binary function to be applied on the input values.
 	 */
 	/*@ non_null @*/ protected final BinaryFunctionCall m_function;
-	
+
 	public CumulateModule(String name, BinaryFunctionCall f, int Q_in, int Q_out)
 	{
 		super(name, f.getInputDomain(0), f.getOutputDomain(), Q_in, 0, Q_out);
 		m_function = f;
 		m_counter = new ScalarVariable("cnt", f.getOutputDomain());
 	}
-	
+
 	/**
 	 * Gets the internal variable acting as the processor's counter.
 	 * @return The variable
@@ -58,7 +57,7 @@ public class CumulateModule extends UnaryProcessorModule
 	{
 		return m_counter;
 	}
-	
+
 	/**
 	 * Produces the condition stipulating that the number of events in the
 	 * front porch is equal to the number of events in the front porch.
@@ -85,7 +84,7 @@ public class CumulateModule extends UnaryProcessorModule
 		}
 		return and;
 	}
-	
+
 	/**
 	 * Produces the condition stipulating the value of each cell in the
 	 * back porch, based on the current value of the internal counter, and the
@@ -111,23 +110,25 @@ public class CumulateModule extends UnaryProcessorModule
 			{
 				Conjunction in_and = new Conjunction();
 				{
-					Implication in_imp = new Implication();
-					in_imp.add(isResetAt(next, 0, i));
-					in_imp.add(m_function.getCondition(new Constant(front_porch.getDomain().getDefaultValue()), front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
-					in_and.add(in_imp);
-				}
-				{
-					Implication in_imp = new Implication();
-					in_imp.add(new Negation(isResetAt(next, 0, i)));
 					if (i == 0)
 					{
-						in_imp.add(m_function.getCondition(m_counter, front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
+						{
+							Implication in_imp = new Implication();
+							in_imp.add(new IsReset());
+							in_imp.add(m_function.getCondition(new Constant(m_function.getInputDomain(0).getDefaultValue()), front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
+							in_and.add(in_imp);
+						}
+						{
+							Implication in_imp = new Implication();
+							in_imp.add(new NoReset());
+							in_imp.add(m_function.getCondition(m_counter, front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
+							in_and.add(in_imp);
+						}
 					}
 					else
 					{
-						in_imp.add(m_function.getCondition(back_porch.valueAt(next, i - 1), front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
+						in_and.add(m_function.getCondition(back_porch.valueAt(next, i - 1), front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
 					}
-					in_and.add(in_imp);
 				}
 				imp.add(in_and);
 			}
@@ -135,7 +136,7 @@ public class CumulateModule extends UnaryProcessorModule
 		}
 		return and;
 	}
-	
+
 	/**
 	 * Produces the condition determining the value of the internal counter in
 	 * the next computation step, based on the current value of the internal
