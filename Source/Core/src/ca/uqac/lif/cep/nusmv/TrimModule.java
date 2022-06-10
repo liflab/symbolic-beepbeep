@@ -69,9 +69,9 @@ public class TrimModule extends SubsetProcessorModule
 	{
 		Disjunction big_or = new Disjunction();
 		{
-			// First case: no reset until m; depends on current counter and position
+			// First case: no reset; depends on current counter and position
 			Conjunction and = new Conjunction();
-			and.add(noResetBefore(0, m));
+			and.add(new NoReset());
 			Disjunction imp_or = new Disjunction();
 			for (int c = 0; c < m_interval; c++)
 			{
@@ -83,10 +83,9 @@ public class TrimModule extends SubsetProcessorModule
 			and.add(imp_or);
 			big_or.add(and);
 		}
-		// Other case: the last reset is at a distance greater than interval
-		for (int i = 0; i <= m - m_interval ; i++)
+		if (m >= m_interval)
 		{
-			big_or.add(isLastResetAt(next, 0, i, m));
+			big_or.add(new IsReset());
 		}
 		return big_or;
 	}

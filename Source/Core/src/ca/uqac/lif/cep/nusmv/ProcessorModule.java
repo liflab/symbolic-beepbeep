@@ -20,17 +20,16 @@ package ca.uqac.lif.cep.nusmv;
 
 import static ca.uqac.lif.nusmv4j.ConstantFalse.FALSE;
 
-import ca.uqac.lif.nusmv4j.ArrayAccess;
 import ca.uqac.lif.nusmv4j.ArrayVariable;
-import ca.uqac.lif.nusmv4j.BooleanArrayAccessCondition;
 import ca.uqac.lif.nusmv4j.BooleanDomain;
+import ca.uqac.lif.nusmv4j.BooleanVariableCondition;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
-import ca.uqac.lif.nusmv4j.ConstantFalse;
 import ca.uqac.lif.nusmv4j.Disjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.LogicModule;
 import ca.uqac.lif.nusmv4j.Negation;
+import ca.uqac.lif.nusmv4j.ScalarVariable;
 import ca.uqac.lif.nusmv4j.Term;
 
 /**
@@ -39,7 +38,7 @@ import ca.uqac.lif.nusmv4j.Term;
  */
 public abstract class ProcessorModule extends LogicModule
 {
-	protected enum QueueType {PORCH, BUFFER, RESET}
+	protected enum QueueType {PORCH, BUFFER}
 
 	/**
 	 * The front porches of this processor.
@@ -49,7 +48,7 @@ public abstract class ProcessorModule extends LogicModule
 	/**
 	 * The reset porches of this processor.
 	 */
-	protected final NusmvQueue[] m_resetPorches;
+	protected final ScalarVariable m_resetFlag;
 
 	/**
 	 * The internal buffers of this processor.
@@ -66,11 +65,10 @@ public abstract class ProcessorModule extends LogicModule
 	{
 		super(name);
 		m_frontPorches = new ProcessorQueue[in_arity];
-		m_resetPorches = new NusmvQueue[in_arity];
+		m_resetFlag = new ScalarVariable("rst", BooleanDomain.instance);
 		for (int i = 0; i < in_arity; i++)
 		{
 			m_frontPorches[i] = new ProcessorQueue("in_" + i, new ArrayVariable("inc_" + i, in_domains[i], Q_in), new ArrayVariable("inb_" + i, BooleanDomain.instance, Q_in));
-			m_resetPorches[i] = new NusmvQueue(new ArrayVariable("inr_" + i, BooleanDomain.instance, Q_in));
 		}
 		m_buffers = new ProcessorQueue[in_arity];
 		for (int i = 0; i < in_arity; i++)
@@ -118,14 +116,13 @@ public abstract class ProcessorModule extends LogicModule
 	}
 
 	/**
-	 * Gets the processor queue corresponding to the processor's reset porch
-	 * at a given position.
+	 * Gets the processor variable corresponding to the processor's reset flag
 	 * @param index The index of the input pipe
-	 * @return The queue
+	 * @return The variable
 	 */
-	public NusmvQueue getResetPorch(int index)
+	public ScalarVariable getResetFlag()
 	{
-		return m_resetPorches[index];
+		return m_resetFlag;
 	}
 
 	/**
@@ -194,76 +191,6 @@ public abstract class ProcessorModule extends LogicModule
 	}
 
 	/**
-	 * Produces the condition stipulating that the reset queue for a given
-	 * input pipe contains no true value up to and including position m.
-	 * @param pipe_index The index of the input pipe
-	 */
-	public Condition noResetBefore(int pipe_index, int m)
-	{
-		NusmvQueue queue = getResetPorch(pipe_index);
-		ArrayVariable v = queue.m_arrayFlags;
-		if (m == 0)
-		{
-			return new Negation(BooleanArrayAccessCondition.get(ArrayAccess.get(v, 0)));
-		}
-		Conjunction and = new Conjunction();
-		for (int i = 0; i <= m; i++)
-		{
-			and.add(new Negation(BooleanArrayAccessCondition.get(ArrayAccess.get(v, i))));
-		}
-		return and;
-	}
-
-	/**
-	 * Produces the condition stipulating that the reset queue for a given
-	 * input pipe is set to true at a given index.
-	 * @param next A flag indicating if the condition applies to the reset
-	 * vector in the current state or the next state
-	 * @param pipe_index The index of the input pipe
-	 * @param m The index in the reset queue
-	 * @return The condition
-	 */
-	/*@ non_null @*/ public Condition isResetAt(boolean next, int pipe_index, int m)
-	{
-		ArrayVariable q = m_resetPorches[pipe_index].m_arrayFlags;
-		if (next)
-		{
-			q = q.next();
-		}
-		return BooleanArrayAccessCondition.get(ArrayAccess.get(q, m));
-	}
-
-	/**
-	 * Produces the condition stipulating that for two array indices m and n
-	 * such that m &leq; n, the reset buffer is true at position m, but for
-	 * no other position in the interval [m + 1, n].
-	 * @param next A flag indicating if the condition applies to the reset
-	 * vector in the current state or the next state
-	 * @param pipe_index The index of the input pipe
-	 * @param m The first position
-	 * @param n The second position
-	 * @return The condition
-	 */
-	/*@ non_null @*/ public Condition isLastResetAt(boolean next, int pipe_index, int m, int n)
-	{
-		if (m > n)
-		{
-			return ConstantFalse.FALSE;
-		}
-		if (m == n)
-		{
-			return isResetAt(next, pipe_index, m);
-		}
-		Conjunction and = new Conjunction();
-		and.add(isResetAt(next, pipe_index, m));
-		for (int i = m + 1; i <= n; i++)
-		{
-			and.add(new Negation(isResetAt(next, pipe_index, i)));
-		}
-		return and;
-	}
-
-	/**
 	 * Produces the condition stipulating that for a given input pipe,
 	 * the n-th event of this pipe is at position m in the processor's
 	 * front porch.
@@ -313,7 +240,7 @@ public abstract class ProcessorModule extends LogicModule
 				add(buffer.hasLength(next, n - m));
 			}
 		}
-		
+
 		@Override
 		public String toString()
 		{
@@ -321,6 +248,34 @@ public abstract class ProcessorModule extends LogicModule
 		}
 	}
 	
+	public class NoReset extends Negation
+	{
+		public NoReset()
+		{
+			super(new IsReset());
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "NoReset";
+		}
+	}
+	
+	public class IsReset extends BooleanVariableCondition
+	{
+		public IsReset()
+		{
+			super(m_resetFlag);
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "IsReset";
+		}
+	}
+
 	public class AtBuffer extends Conjunction
 	{
 		protected final boolean m_next;
@@ -348,7 +303,7 @@ public abstract class ProcessorModule extends LogicModule
 				add(buffer.hasAt(next, m));
 			}
 		}
-		
+
 		@Override
 		public String toString()
 		{

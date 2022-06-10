@@ -44,7 +44,7 @@ public class CountDecimateModuleTest
 		CountDecimateModule mod = new CountDecimateModule("dec", 2, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false, false, false, false, false).assign(a);
+		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(0).assign(a);
 		Condition c = mod.shouldBeOutput(false, 0);
 		assertTrue(c.evaluate(a));
@@ -57,7 +57,7 @@ public class CountDecimateModuleTest
 		CountDecimateModule mod = new CountDecimateModule("dec", 2, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false, false, false, false, false).assign(a);
+		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(0).assign(a);
 		Condition c = mod.shouldBeOutput(false, 1);
 		assertFalse(c.evaluate(a));
@@ -70,7 +70,7 @@ public class CountDecimateModuleTest
 		CountDecimateModule mod = new CountDecimateModule("dec", 2, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false, false, false, false, false).assign(a);
+		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(0).assign(a);
 		Condition c = mod.shouldBeOutput(false, 2);
 		assertTrue(c.evaluate(a));
@@ -83,7 +83,7 @@ public class CountDecimateModuleTest
 		CountDecimateModule mod = new CountDecimateModule("dec", 2, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false, false, false, false, false).assign(a);
+		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(1).assign(a);
 		Condition c = mod.shouldBeOutput(false, 2);
 		assertFalse(c.evaluate(a));
@@ -96,7 +96,7 @@ public class CountDecimateModuleTest
 		CountDecimateModule mod = new CountDecimateModule("dec", 2, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false, false, false, false, false).assign(a);
+		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(1).assign(a);
 		Condition c = mod.shouldBeOutput(false, 1);
 		assertTrue(c.evaluate(a));
@@ -109,52 +109,10 @@ public class CountDecimateModuleTest
 		CountDecimateModule mod = new CountDecimateModule("dec", 2, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false, true, false, false, false).assign(a);
+		mod.getResetFlag().set(true).assign(a);
 		mod.getCounter().set(1).assign(a);
 		Condition c = mod.shouldBeOutput(false, 2);
 		assertTrue(c.evaluate(a));
-	}
-	
-	@Test
-	public void testShouldBeOutput7()
-	{
-		int Q_in = 6, Q_out = 6;
-		CountDecimateModule mod = new CountDecimateModule("dec", 2, s_domNumbers, Q_in, Q_out);
-		Assignment a = new Assignment();
-		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false, true, false, false, false).assign(a);
-		mod.getCounter().set(1).assign(a);
-		Condition c = mod.shouldBeOutput(false, 3);
-		assertFalse(c.evaluate(a));
-	}
-	
-	@Test
-	public void testShouldBeOutput8()
-	{
-		int Q_in = 6, Q_out = 6;
-		CountDecimateModule mod = new CountDecimateModule("dec", 3, s_domNumbers, Q_in, Q_out);
-		Assignment a = new Assignment();
-		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false, false, false, true, false).assign(a);
-		mod.getCounter().set(1).assign(a);
-		Condition c = mod.shouldBeOutput(false, 2);
-		assertEquals(true, c.evaluate(a));
-		assertEquals(true, mod.shouldBeOutput(false, 2).evaluate(a));
-		assertEquals(false, mod.shouldBeOutput(false, 3).evaluate(a));
-		assertEquals(true, mod.shouldBeOutput(false, 4).evaluate(a));
-	}
-	
-	@Test
-	public void testShouldBeOutput9()
-	{
-		int Q_in = 2, Q_out = 2;
-		CountDecimateModule mod = new CountDecimateModule("dec", 3, s_domNumbers, Q_in, Q_out);
-		Assignment a = new Assignment();
-		mod.getFrontPorch(0).set(2, 3).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false).assign(a);
-		mod.getCounter().set(0).assign(a);
-		Condition c = mod.shouldBeOutput(false, 1);
-		assertEquals(false, c.evaluate(a));
 	}
 	
 	@Test
@@ -164,7 +122,7 @@ public class CountDecimateModuleTest
 		CountDecimateModule mod = new CountDecimateModule("dec", 3, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(2, 3).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false).assign(a);
+		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(2).assign(a);
 		Condition c = mod.shouldBeOutput(false, 1);
 		assertEquals(true, c.evaluate(a));
@@ -177,7 +135,7 @@ public class CountDecimateModuleTest
 		CountDecimateModule mod = new CountDecimateModule("dec", 3, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false).assign(a);
+		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(2).assign(a);
 		assertEquals(true, mod.numOutputs(false, 0, 0).evaluate(a));
 		assertEquals(false, mod.numOutputs(false, 1, 0).evaluate(a));
@@ -191,7 +149,7 @@ public class CountDecimateModuleTest
 		CountDecimateModule mod = new CountDecimateModule("dec", 3, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false, false, false, true, false).assign(a);
+		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(2).assign(a);
 		assertEquals(true, mod.numOutputs(false, 0, 0).evaluate(a));
 		assertEquals(false, mod.numOutputs(false, 1, 0).evaluate(a));
@@ -212,7 +170,7 @@ public class CountDecimateModuleTest
 		CountDecimateModule mod = new CountDecimateModule("dec", 3, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
-		mod.getResetPorch(0).getVariable().setValues(false, false, false, false, true, false).assign(a);
+		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(2).assign(a);
 		mod.getBackPorch().set(2, 2).assign(a);
 		assertEquals(true, mod.backPorchLength(false).evaluate(a));

@@ -2,17 +2,17 @@
     Modeling of BeepBeep processor pipelines in NuSMV
     Copyright (C) 2020-2022 Laboratoire d'informatique formelle
     Université du Québec à Chicoutimi, Canada
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -84,7 +84,7 @@ public class CountDecimateModule extends SubsetProcessorModule
 		{
 			// Case where no reset occurs: depends on counter
 			Conjunction and = new Conjunction();
-			and.add(noResetBefore(0, m));
+			and.add(new NoReset());
 			Disjunction imp_or = new Disjunction();
 			for (int c = 0; c < m_interval; c++)
 			{
@@ -96,13 +96,14 @@ public class CountDecimateModule extends SubsetProcessorModule
 			and.add(imp_or);
 			big_or.add(and);
 		}
-		for (int i = m; i >= 0; i -= m_interval)
+		// Other case: a reset occurs and m % interval == 0
+		if (m % m_interval == 0)
 		{
-			big_or.add(isLastResetAt(next, 0, i, m));
+			big_or.add(new IsReset());
 		}
 		return big_or;
 	}
-	
+
 	/**
 	 * Produces the condition fixing the value of the internal counter in the
 	 * next state.
@@ -130,7 +131,7 @@ public class CountDecimateModule extends SubsetProcessorModule
 					// Either there is no reset in the vector; new value of counter =
 					// (current counter + input events) mod interval
 					Conjunction and = new Conjunction();
-					and.add(noResetBefore(0, num_inputs - 1));
+					and.add(new NoReset());
 					Disjunction in_or = new Disjunction();
 					for (int c = 0; c < m_interval; c++)
 					{
@@ -143,14 +144,11 @@ public class CountDecimateModule extends SubsetProcessorModule
 					or.add(and);
 				}
 				{
-					for (int m = 0; m < num_inputs; m++)
-					{
-						// Or the last reset is at position m
-						Conjunction in_and = new Conjunction();
-						in_and.add(this.isLastResetAt(false, 0, m, num_inputs - 1));
-						in_and.add(new Equality(m_counter.next(), new Constant((num_inputs - m) % m_interval)));
-						or.add(in_and);
-					}
+					// Or there is a reset and the next counter is equal to num_inputs % interval
+					Conjunction in_and = new Conjunction();
+					in_and.add(new IsReset());
+					in_and.add(new Equality(m_counter.next(), new Constant((num_inputs) % m_interval)));
+					or.add(in_and);
 				}
 				imp.add(or);
 			}
@@ -158,7 +156,7 @@ public class CountDecimateModule extends SubsetProcessorModule
 		}		
 		return big_and;
 	}
-	
+
 	@Override
 	public CountDecimateModule duplicate()
 	{

@@ -26,6 +26,9 @@ import ca.uqac.lif.nusmv4j.Assignment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Domain;
 
+/**
+ * Unit tests for basic methods of {@link BeepBeepModule}.
+ */
 public class BeepBeepModuleTest
 {
 	protected static Domain s_domLetters = new Domain(new Object[] {"a", "b", "c"});
@@ -36,9 +39,9 @@ public class BeepBeepModuleTest
 		int Q_in = 5, Q_b = 0, Q_out = 5;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
 		Assignment a = new Assignment();
-		mod.getResetPorch(0).getVariable().setValues(true, false, true, true, false).assign(a);
-		Condition c = mod.isResetAt(false, 0, 0);
-		assertTrue(c.evaluate(a));
+		mod.getResetFlag().set(true).assign(a);
+		assertTrue(mod.new IsReset().evaluate(a));
+		assertFalse(mod.new NoReset().evaluate(a));
 	}
 	
 	@Test
@@ -47,77 +50,11 @@ public class BeepBeepModuleTest
 		int Q_in = 5, Q_b = 0, Q_out = 5;
 		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
 		Assignment a = new Assignment();
-		mod.getResetPorch(0).getVariable().setValues(true, false, true, true, false).assign(a);
-		Condition c = mod.isResetAt(false, 0, 1);
-		assertFalse(c.evaluate(a));
+		mod.getResetFlag().set(false).assign(a);
+		assertFalse(mod.new IsReset().evaluate(a));
+		assertTrue(mod.new NoReset().evaluate(a));
 	}
 	
-	@Test
-	public void testLastResetAt1()
-	{
-		int Q_in = 5, Q_b = 0, Q_out = 5;
-		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Assignment a = new Assignment();
-		mod.getResetPorch(0).getVariable().setValues(true, false, true, true, false).assign(a);
-		Condition c = mod.isLastResetAt(false, 0, 0, 0);
-		assertTrue(c.evaluate(a));
-	}
-	
-	@Test
-	public void testLastResetAt2()
-	{
-		int Q_in = 5, Q_b = 0, Q_out = 5;
-		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Assignment a = new Assignment();
-		mod.getResetPorch(0).getVariable().setValues(true, false, true, true, false).assign(a);
-		Condition c = mod.isLastResetAt(false, 0, 0, 1);
-		assertTrue(c.evaluate(a));
-	}
-	
-	@Test
-	public void testLastResetAt3()
-	{
-		int Q_in = 5, Q_b = 0, Q_out = 5;
-		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Assignment a = new Assignment();
-		mod.getResetPorch(0).getVariable().setValues(true, false, true, true, false).assign(a);
-		Condition c = mod.isLastResetAt(false, 0, 0, 2);
-		assertFalse(c.evaluate(a));
-	}
-	
-	@Test
-	public void testLastResetAt4()
-	{
-		int Q_in = 5, Q_b = 0, Q_out = 5;
-		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Assignment a = new Assignment();
-		mod.getResetPorch(0).getVariable().setValues(true, false, true, true, false).assign(a);
-		Condition c = mod.isLastResetAt(false, 0, 2, 2);
-		assertTrue(c.evaluate(a));
-	}
-	
-	@Test
-	public void testLastResetAt5()
-	{
-		int Q_in = 5, Q_b = 0, Q_out = 5;
-		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Assignment a = new Assignment();
-		mod.getResetPorch(0).getVariable().setValues(true, false, true, true, false).assign(a);
-		Condition c = mod.isLastResetAt(false, 0, 3, 4);
-		assertTrue(c.evaluate(a));
-	}
-	
-	@Test
-	public void testLastResetAt6()
-	{
-		int Q_in = 5, Q_b = 0, Q_out = 5;
-		ProcessorModule mod = new DummyBeepBeepModule(1, s_domLetters, s_domLetters, Q_in, Q_b, Q_out);
-		Assignment a = new Assignment();
-		mod.getResetPorch(0).getVariable().setValues(true, false, true, true, false).assign(a);
-		Condition c = mod.isLastResetAt(false, 0, 4, 4);
-		assertFalse(c.evaluate(a));
-	}
-
 	@Test
 	public void testAtBuffer1()
 	{
