@@ -51,7 +51,7 @@ public class BinaryApplyFunctionModule extends BinaryModule
 	 */
 	/*@ non_null @*/ public Condition frontsVsBackPorch(boolean next)
 	{
-		ProcessorQueue back_porch = getBackPorch();
+		ProcessorQueue back_porch = getBackPorch(0);
 		Conjunction and = new Conjunction();
 		for (int i = 0; i <= back_porch.getSize(); i++)
 		{
@@ -75,7 +75,7 @@ public class BinaryApplyFunctionModule extends BinaryModule
 		Condition right = m_function.getCondition(
 				valueAt(next, sigma1, 0, m1), // first argument of f
 				valueAt(next, sigma2, 1, m2), // second argument of f
-				getBackPorch().valueAt(next, n) // cell of the back porch to store value
+				getBackPorch(0).valueAt(next, n) // cell of the back porch to store value
 				);
 		return right;
 	}
@@ -83,7 +83,7 @@ public class BinaryApplyFunctionModule extends BinaryModule
 	@Override
 	public BinaryApplyFunctionModule duplicate()
 	{
-		BinaryApplyFunctionModule m = new BinaryApplyFunctionModule(getName(), m_function, getFrontPorch(0).getSize(), getBuffer(0).getSize(), getBackPorch().getSize());
+		BinaryApplyFunctionModule m = new BinaryApplyFunctionModule(getName(), m_function, getFrontPorch(0).getSize(), getBuffer(0).getSize(), getBackPorch(0).getSize());
 		super.copyInto(m);
 		return m;
 	}

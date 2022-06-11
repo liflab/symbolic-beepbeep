@@ -96,7 +96,7 @@ public abstract class SubsetProcessorModule extends UnaryProcessorModule
 	 */
 	/*@ non_null @*/ public Condition backPorchLength(boolean next)
 	{
-		ProcessorQueue back_porch = getBackPorch();
+		ProcessorQueue back_porch = getBackPorch(0);
 		if (next)
 		{
 			back_porch = back_porch.next();
@@ -141,7 +141,7 @@ public abstract class SubsetProcessorModule extends UnaryProcessorModule
 	public Condition backPorchValues(boolean next)
 	{
 		ProcessorQueue front_porch = getFrontPorch(0);
-		ProcessorQueue back_porch = getBackPorch();
+		ProcessorQueue back_porch = getBackPorch(0);
 		Conjunction and = new Conjunction();
 		for (int i = 0; i < back_porch.getSize(); i++)
 		{

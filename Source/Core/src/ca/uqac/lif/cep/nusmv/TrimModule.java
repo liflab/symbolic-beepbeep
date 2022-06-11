@@ -124,7 +124,7 @@ public class TrimModule extends SubsetProcessorModule
 	@Override
 	public TrimModule duplicate()
 	{
-		TrimModule m = new TrimModule(getName(), m_interval, getFrontPorch(0).getDomain(), getFrontPorch(0).getSize(), getBackPorch().getSize());
+		TrimModule m = new TrimModule(getName(), m_interval, getFrontPorch(0).getDomain(), getFrontPorch(0).getSize(), getBackPorch(0).getSize());
 		super.copyInto(m);
 		return m;
 	}

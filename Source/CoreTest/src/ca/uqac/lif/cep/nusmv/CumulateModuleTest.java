@@ -48,7 +48,7 @@ public class CumulateModuleTest
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
-		mod.getBackPorch().set(1).assign(a);
+		mod.getBackPorch(0).set(1).assign(a);
 		a.set(mod.getCounter(), s_domNumbers.getDefaultValue());
 		Condition c = mod.backPorchValues(false);
 		assertTrue(c.evaluate(a));
@@ -66,7 +66,7 @@ public class CumulateModuleTest
 		Condition c = mod.backPorchValues(false);
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set(1, 3).assign(a);
+		mod.getBackPorch(0).set(1, 3).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -82,7 +82,7 @@ public class CumulateModuleTest
 		Condition c = mod.backPorchValues(false);
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set(1, 2, 4).assign(a);
+		mod.getBackPorch(0).set(1, 2, 4).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -98,7 +98,7 @@ public class CumulateModuleTest
 		Condition c = mod.backPorchValues(false);
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set(3, 4, 1).assign(a);
+		mod.getBackPorch(0).set(3, 4, 1).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -114,7 +114,7 @@ public class CumulateModuleTest
 		Condition c = mod.backPorchValues(false);
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set(1, 2, 4).assign(a);
+		mod.getBackPorch(0).set(1, 2, 4).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -131,7 +131,7 @@ public class CumulateModuleTest
 		Condition c = mod.backPorchValues(false);
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set(3, 3, 4).assign(a);
+		mod.getBackPorch(0).set(3, 3, 4).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -148,7 +148,7 @@ public class CumulateModuleTest
 		Condition c = mod.backPorchValues(false);
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set(3, 3, 4).assign(a);
+		mod.getBackPorch(0).set(3, 3, 4).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -161,7 +161,7 @@ public class CumulateModuleTest
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
-		mod.getBackPorch().set(1).assign(a);
+		mod.getBackPorch(0).set(1).assign(a);
 		a.set(mod.getCounter(), s_domNumbers.getDefaultValue());
 		Condition c = mod.nextCounter();
 		List<Assignment> solutions = s_solver.solveAll(c, a);
@@ -179,7 +179,7 @@ public class CumulateModuleTest
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetFlag().set(false).assign(a);
-		mod.getBackPorch().set(1, 2, 4).assign(a);
+		mod.getBackPorch(0).set(1, 2, 4).assign(a);
 		a.set(mod.getCounter(), 1);
 		Condition c = mod.nextCounter();
 		List<Assignment> solutions = s_solver.solveAll(c, a);
@@ -197,7 +197,7 @@ public class CumulateModuleTest
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetFlag().set(false).assign(a);
-		mod.getBackPorch().set(1, 2, 4).assign(a);
+		mod.getBackPorch(0).set(1, 2, 4).assign(a);
 		a.set(mod.getCounter(), 1);
 		Condition c = mod.nextCounter();
 		a.set(mod.getCounter().next(), 3);
@@ -213,7 +213,7 @@ public class CumulateModuleTest
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetFlag().set(true).assign(a);
-		mod.getBackPorch().set(1, 1, 3).assign(a);
+		mod.getBackPorch(0).set(1, 1, 3).assign(a);
 		a.set(mod.getCounter(), 1);
 		Condition c = mod.nextCounter();
 		List<Assignment> solutions = s_solver.solveAll(c, a);
@@ -231,7 +231,7 @@ public class CumulateModuleTest
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 1, 2).assign(a);
 		mod.getResetFlag().set(true).assign(a);
-		mod.getBackPorch().set(1, 2, 4).assign(a);
+		mod.getBackPorch(0).set(1, 2, 4).assign(a);
 		a.set(mod.getCounter(), 1);
 		Condition c = mod.nextCounter();
 		List<Assignment> solutions = s_solver.solveAll(c, a);

@@ -36,7 +36,9 @@ import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.Term;
 
 /**
- * An event queue modeled as a pair of NuSMV array variables.
+ * An event queue modeled as a pair of NuSMV array variables. Concretely,
+ * this class is implemented as a descendant of {@link NusmvQueue} with an
+ * extra array variable field.
  */
 public class ProcessorQueue extends NusmvQueue
 {
@@ -45,9 +47,16 @@ public class ProcessorQueue extends NusmvQueue
 	 */
 	protected String m_name;
 	
+	/**
+	 * The array variable that stores the actual events of the queue.
+	 */
 	/*@ non_null @*/ protected final ArrayVariable m_arrayContents;
 
-	protected ProcessorQueue m_next;
+	/**
+	 * A reference to an instance of the same variable in the next state. This
+	 * reference is null if the current object is already a "next" variable.
+	 */
+	/*@ null @*/ protected ProcessorQueue m_next;
 
 	public ProcessorQueue(String name, ArrayVariable contents, ArrayVariable flags)
 	{
@@ -99,6 +108,18 @@ public class ProcessorQueue extends NusmvQueue
 	public String getName()
 	{
 		return m_name;
+	}
+	
+	/**
+	 * Sets the maximum size of this processor queue to a new value.
+	 * @param size The new queue size
+	 * @return This queue
+	 */
+	public ProcessorQueue setSize(int size)
+	{
+		m_arrayFlags.setDimension(size);
+		m_arrayContents.setDimension(size);
+		return this;
 	}
 	
 	public class IsWellFormed extends Conjunction

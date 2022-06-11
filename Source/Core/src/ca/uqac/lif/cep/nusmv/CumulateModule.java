@@ -89,7 +89,7 @@ public class CumulateModule extends UnaryProcessorModule
 	{
 		Conjunction and = new Conjunction();
 		ProcessorQueue front_porch = getFrontPorch(0);
-		ProcessorQueue back_porch = getBackPorch();
+		ProcessorQueue back_porch = getBackPorch(0);
 		if (next)
 		{
 			front_porch = front_porch.next();
@@ -117,7 +117,7 @@ public class CumulateModule extends UnaryProcessorModule
 	{
 		Conjunction and = new Conjunction();
 		ProcessorQueue front_porch = getFrontPorch(0);
-		ProcessorQueue back_porch = getBackPorch();
+		ProcessorQueue back_porch = getBackPorch(0);
 		if (next)
 		{
 			front_porch = front_porch.next();
@@ -165,7 +165,7 @@ public class CumulateModule extends UnaryProcessorModule
 	 */
 	/*@ non_null @*/ public Condition nextCounter()
 	{
-		ProcessorQueue back_porch = getBackPorch();
+		ProcessorQueue back_porch = getBackPorch(0);
 		Conjunction big_and = new Conjunction();
 		for (int nf = 1; nf <= back_porch.getSize(); nf++)
 		{
@@ -191,7 +191,7 @@ public class CumulateModule extends UnaryProcessorModule
 	@Override
 	public CumulateModule duplicate()
 	{
-		CumulateModule m = new CumulateModule(getName(), m_function, getFrontPorch(0).getSize(), getBackPorch().getSize());
+		CumulateModule m = new CumulateModule(getName(), m_function, getFrontPorch(0).getSize(), getBackPorch(0).getSize());
 		super.copyInto(m);
 		return m;
 	}

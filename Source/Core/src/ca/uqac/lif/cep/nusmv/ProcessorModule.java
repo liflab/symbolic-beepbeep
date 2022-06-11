@@ -69,12 +69,12 @@ public abstract class ProcessorModule extends LogicModule
 	protected final ProcessorQueue[] m_buffers;
 
 	/**
-	 * The back porch of this processor.
+	 * The back porches of this processor.
 	 */
-	protected final ProcessorQueue m_backPorch;
+	protected final ProcessorQueue[] m_backPorches;
 
 
-	public ProcessorModule(String name, int in_arity, Domain[] in_domains, Domain out_domain, int Q_in, int Q_b, int Q_out)
+	public ProcessorModule(String name, int in_arity, Domain[] in_domains, int out_arity, Domain[] out_domains, int Q_in, int Q_b, int Q_out)
 	{
 		super(name);
 		m_frontPorches = new ProcessorQueue[in_arity];
@@ -88,16 +88,23 @@ public abstract class ProcessorModule extends LogicModule
 		{
 			m_buffers[i] = new ProcessorQueue("bf_" + i, new ArrayVariable("bfc_" + i, m_frontPorches[i].m_arrayContents.getDomain(), Q_b), new ArrayVariable("bfb_" + i, BooleanDomain.instance, Q_b));
 		}
-		m_backPorch = new ProcessorQueue("ou", new ArrayVariable("ouc", out_domain, Q_out), new ArrayVariable("oub", BooleanDomain.instance, Q_out));
-		Variable[] params = new Variable[2 * (in_arity + 1) + 1];
+		m_backPorches = new ProcessorQueue[out_arity];
+		for (int i = 0; i < out_arity; i++)
+		{
+			m_backPorches[i] = new ProcessorQueue("ou", new ArrayVariable("ouc_" + i, out_domains[i], Q_out), new ArrayVariable("oub", BooleanDomain.instance, Q_out));
+		}
+		Variable[] params = new Variable[2 * (in_arity) + 2 * (out_arity) + 1];
 		int index = 0;
 		for (int i = 0; i < in_arity; i++)
 		{
 			params[index++] = m_frontPorches[i].m_arrayContents;
 			params[index++] = m_frontPorches[i].m_arrayFlags;
 		}
-		params[index++] = m_backPorch.m_arrayContents;
-		params[index++] = m_backPorch.m_arrayFlags;
+		for (int i = 0; i < out_arity; i++)
+		{
+			params[index++] = m_backPorches[i].m_arrayContents;
+			params[index++] = m_backPorches[i].m_arrayFlags;
+		}
 		params[index++] = m_resetFlag;
 		setParameters(params);
 		if (Q_b > 0)
@@ -115,7 +122,7 @@ public abstract class ProcessorModule extends LogicModule
 	{
 		Comment c = new Comment(s_dashes);
 		addToComment(c);
-		c.addLine("Q_in = " + m_frontPorches[0].getSize() + ", Q_b = " + m_buffers[0].getSize() + ", Q_out = " + m_backPorch.getSize());
+		c.addLine("Q_in = " + m_frontPorches[0].getSize() + ", Q_b = " + m_buffers[0].getSize() + ", Q_out = " + m_backPorches[0].getSize());
 		c.addLine(s_dashes);
 		return c;
 	}
@@ -139,7 +146,10 @@ public abstract class ProcessorModule extends LogicModule
 			and_init.add(m_buffers[i].isWellFormed());
 			and_init.add(m_frontPorches[i].isWellFormed());
 		}
-		and_init.add(m_backPorch.isWellFormed());
+		for (int i = 0; i < getOutputArity(); i++)
+		{
+			and_init.add(m_backPorches[i].isWellFormed());
+		}
 		addToInit(and_init);
 		if (s_simplify)
 		{
@@ -158,7 +168,10 @@ public abstract class ProcessorModule extends LogicModule
 			and_trans.add(m_buffers[i].next().isWellFormed());
 			and_trans.add(m_frontPorches[i].next().isWellFormed());
 		}
-		and_trans.add(m_backPorch.next().isWellFormed());
+		for (int i = 0; i < getOutputArity(); i++)
+		{
+			and_trans.add(m_backPorches[i].next().isWellFormed());	
+		}
 		addToTrans(and_trans);
 		if (s_simplify)
 		{
@@ -174,6 +187,15 @@ public abstract class ProcessorModule extends LogicModule
 	public int getInputArity()
 	{
 		return m_buffers.length;
+	}
+	
+	/**
+	 * Gets the output arity of this processor module.
+	 * @return The output arity
+	 */
+	public int getOutputArity()
+	{
+		return m_backPorches.length;
 	}
 
 	/**
@@ -248,12 +270,14 @@ public abstract class ProcessorModule extends LogicModule
 	}
 
 	/**
-	 * Gets the processor queue corresponding to the processor's back porch.
+	 * Gets the processor queue corresponding to the processor's back porch at
+	 * a given position.
+	 * @param index The index of the output pipe
 	 * @return The queue
 	 */
-	public ProcessorQueue getBackPorch()
+	public ProcessorQueue getBackPorch(int index)
 	{
-		return m_backPorch;
+		return m_backPorches[index];
 	}
 
 	public int length(QueueType t, int pipe_index)

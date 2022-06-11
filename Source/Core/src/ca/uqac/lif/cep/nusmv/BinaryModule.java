@@ -29,7 +29,7 @@ public abstract class BinaryModule extends ProcessorModule
 {
 	public BinaryModule(String name, Domain d_in1, Domain d_in2, Domain d_out, int Q_in, int Q_b, int Q_out)
 	{
-		super(name, 2, new Domain[] {d_in1, d_in2}, d_out, Q_in, Q_b, Q_out);
+		super(name, 2, new Domain[] {d_in1, d_in2}, 1, new Domain[] {d_out}, Q_in, Q_b, Q_out);
 	}
 
 	/**
@@ -169,7 +169,7 @@ public abstract class BinaryModule extends ProcessorModule
 	{
 		int Q_in = getFrontPorch(pipe_index).getSize();
 		int Q_b = getBuffer(pipe_index).getSize();
-		int Q_out = getBackPorch().getSize();
+		int Q_out = getBackPorch(0).getSize();
 		Conjunction big_and = new Conjunction();
 		for (int nf = 0; nf <= Q_out; nf++)
 		{
@@ -200,7 +200,7 @@ public abstract class BinaryModule extends ProcessorModule
 	{
 		int Q_in = getFrontPorch(pipe_index).getSize();
 		int Q_b = getBuffer(pipe_index).getSize();
-		int Q_out = getBackPorch().getSize();
+		int Q_out = getBackPorch(0).getSize();
 		Conjunction big_and = new Conjunction();
 		for (int nf = 0; nf <= Q_out; nf++)
 		{

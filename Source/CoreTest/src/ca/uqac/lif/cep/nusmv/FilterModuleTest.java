@@ -155,7 +155,7 @@ public class FilterModuleTest
 		mod.getFrontPorch(1).set(true, true).assign(a);
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set("a", "a", "a").assign(a);
+		mod.getBackPorch(0).set("a", "a", "a").assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -174,7 +174,7 @@ public class FilterModuleTest
 		mod.getFrontPorch(1).set(true, true).assign(a);
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set("a", "c", "a", "a").assign(a);
+		mod.getBackPorch(0).set("a", "c", "a", "a").assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -191,9 +191,9 @@ public class FilterModuleTest
 		mod.getFrontPorch(0).set("a").assign(a);
 		mod.getBuffer(1).set(true, false, true).assign(a);
 		mod.getFrontPorch(1).set(true, true).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch().isWellFormed(), mod.frontsVsBackPorch(false));
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).isWellFormed(), mod.frontsVsBackPorch(false));
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set("a", "c", "a", "a").assign(a);
+		mod.getBackPorch(0).set("a", "c", "a", "a").assign(a);
 		assertTrue(c.evaluate(a));
 	}
 }

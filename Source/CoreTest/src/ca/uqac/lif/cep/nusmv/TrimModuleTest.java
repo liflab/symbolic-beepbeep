@@ -118,9 +118,9 @@ public class TrimModuleTest
 		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(2).assign(a);
 		Condition c = mod.backPorchValues(false);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.backPorchLength(false), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.backPorchLength(false), mod.getBackPorch(0).isWellFormed());
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set(2, 3, 1, 2, 3).assign(a);
+		mod.getBackPorch(0).set(2, 3, 1, 2, 3).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	

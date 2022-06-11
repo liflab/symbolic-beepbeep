@@ -145,7 +145,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set("a").assign(a);
 		mod.getBuffer(1).set("a", "b", "c", "a").assign(a);
 		mod.getFrontPorch(1).set("a", "b", "c", "a").assign(a);
-		mod.getBackPorch().set("a", "b", "c", "a").assign(a);
+		mod.getBackPorch(0).set("a", "b", "c", "a").assign(a);
 		assertFalse(c.evaluate(a));
 	}
 
@@ -181,7 +181,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set().assign(a);
 		mod.getBuffer(1).set("a", "b", "c", "a").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
-		mod.getBackPorch().set(true, true, true, true).assign(a);
+		mod.getBackPorch(0).set(true, true, true, true).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -197,8 +197,8 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set().assign(a);
 		mod.getBuffer(1).set("a", "b").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
-		mod.getBackPorch().set(false, true);
-		mod.getBackPorch().m_arrayFlags.setValues(false, true).assign(a);
+		mod.getBackPorch(0).set(false, true);
+		mod.getBackPorch(0).m_arrayFlags.setValues(false, true).assign(a);
 		assertFalse(c.evaluate(a));
 	}
 
@@ -219,7 +219,7 @@ public class BinaryApplyFunctionModuleTest
 		//c = Condition.simplify(c);
 		//mod.getBackPorch().set(true, true, true, true).assign(a);
 		List<Assignment> solutions = s_solver.solveAll(c, a);
-		Condition len = mod.getBackPorch().hasLength(false, 2);
+		Condition len = mod.getBackPorch(0).hasLength(false, 2);
 		for (Assignment sol : solutions)
 		{
 			assertTrue(len.evaluate(sol));
@@ -240,7 +240,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set("a").assign(a);
 		mod.getBuffer(1).set("a").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
-		mod.getBackPorch().set().assign(a);
+		mod.getBackPorch(0).set().assign(a);
 		assertFalse(c.evaluate(a));
 	}
 
@@ -257,7 +257,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set("a").assign(a);
 		mod.getBuffer(1).set("a", "b", "c", "a").assign(a);
 		mod.getFrontPorch(1).set("a", "b", "c", "a").assign(a);
-		mod.getBackPorch().set("a", "b", "c", "a", "b").assign(a);
+		mod.getBackPorch(0).set("a", "b", "c", "a", "b").assign(a);
 		assertTrue(c.evaluate(a));
 	}
 
@@ -274,7 +274,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set().assign(a);
 		mod.getBuffer(1).set("a").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
-		mod.getBackPorch().set(true).assign(a);
+		mod.getBackPorch(0).set(true).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -291,7 +291,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set().assign(a);
 		mod.getBuffer(1).set("a").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
-		mod.getBackPorch().set(false).assign(a);
+		mod.getBackPorch(0).set(false).assign(a);
 		assertFalse(c.evaluate(a));
 	}
 	
@@ -309,7 +309,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set("a").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
 		//mod.getBackPorch().set(true).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed());
 		assertEquals(1, solutions.size());
 	}
 
@@ -326,7 +326,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set().assign(a);
 		mod.getBuffer(1).set("b").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
-		mod.getBackPorch().set(false).assign(a);
+		mod.getBackPorch(0).set(false).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -344,7 +344,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set("b").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
 		//mod.getBackPorch().set(false).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed());
 		assertEquals(1, solutions.size());
 	}
 
@@ -361,7 +361,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set().assign(a);
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a").assign(a);
-		mod.getBackPorch().set(true).assign(a);
+		mod.getBackPorch(0).set(true).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -379,7 +379,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a").assign(a);
 		//mod.getBackPorch().set(true).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed());
 		assertEquals(1, solutions.size());
 	}
 
@@ -396,7 +396,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set().assign(a);
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a", "c").assign(a);
-		mod.getBackPorch().set(true, false).assign(a);
+		mod.getBackPorch(0).set(true, false).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -413,7 +413,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set().assign(a);
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a", "c").assign(a);
-		mod.getBackPorch().set(true, true).assign(a);
+		mod.getBackPorch(0).set(true, true).assign(a);
 		assertFalse(c.evaluate(a));
 	}
 	
@@ -431,7 +431,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a", "c").assign(a);
 		//mod.getBackPorch().set(true, false).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed());
 		assertEquals(1, solutions.size());
 	}
 
@@ -448,7 +448,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set().assign(a);
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a", "c").assign(a);
-		mod.getBackPorch().set(true, false).assign(a);
+		mod.getBackPorch(0).set(true, false).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 
@@ -465,7 +465,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set("c").assign(a);
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a", "c", "c").assign(a);
-		mod.getBackPorch().set(true, false, true).assign(a);
+		mod.getBackPorch(0).set(true, false, true).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 
@@ -482,7 +482,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(0).set("c", "d").assign(a);
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a", "c", "c", "b", "a").assign(a);
-		mod.getBackPorch().set(true, false, true, false, false).assign(a);
+		mod.getBackPorch(0).set(true, false, true, false, false).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 

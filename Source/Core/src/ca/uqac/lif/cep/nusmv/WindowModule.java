@@ -22,11 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ca.uqac.lif.nusmv4j.Assignment;
-import ca.uqac.lif.nusmv4j.BooleanDomain;
 import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
-import ca.uqac.lif.nusmv4j.Constant;
 import ca.uqac.lif.nusmv4j.ConstantTrue;
 import ca.uqac.lif.nusmv4j.Disjunction;
 import ca.uqac.lif.nusmv4j.Domain;
@@ -78,7 +76,7 @@ public class WindowModule extends ProcessorModule
 
 	public WindowModule(String name, ProcessorModule processor, int width, Domain in_domain, Domain out_domain, int Q_in, int Q_b, int Q_out)
 	{
-		super(name, 1, new Domain[] {in_domain}, out_domain, Q_in, Q_b, Q_out);
+		super(name, 1, new Domain[] {in_domain}, 1, new Domain[] {out_domain}, Q_in, Q_b, Q_out);
 		m_width = width;
 		m_processor = processor;
 		m_processors = new ProcessorModule[Q_in + width];
@@ -341,7 +339,7 @@ public class WindowModule extends ProcessorModule
 				imp.add(in_porch.hasLength(next, m));
 				imp.add(new Equality(
 						in_porch.valueAt(next, m - 1),
-						getBackPorch().valueAt(next, offset)));
+						getBackPorch(0).valueAt(next, offset)));
 				add(imp);
 			}
 		}
@@ -368,7 +366,7 @@ public class WindowModule extends ProcessorModule
 		{
 			super();
 			m_next = next;
-			ProcessorQueue back_porch = getBackPorch();
+			ProcessorQueue back_porch = getBackPorch(0);
 			for (int i = 0; i < back_porch.getSize(); i++)
 			{
 				Equivalence eq = new Equivalence();
@@ -513,7 +511,7 @@ public class WindowModule extends ProcessorModule
 	{
 		c.add(new Equality(m_innerResetFlag, ConstantTrue.TRUE));
 		c.add(innerFrontPorchContents(false));
-		for (int i = 0; i < m_backPorch.getSize(); i++)
+		for (int i = 0; i < m_backPorches[0].getSize(); i++)
 		{
 			c.add(new BackPorchContents(false, i));
 		}
@@ -525,7 +523,7 @@ public class WindowModule extends ProcessorModule
 	{
 		c.add(new Equality(m_innerResetFlag.next(), ConstantTrue.TRUE));
 		c.add(innerFrontPorchContents(true));
-		for (int i = 0; i < m_backPorch.getSize(); i++)
+		for (int i = 0; i < m_backPorches[0].getSize(); i++)
 		{
 			c.add(new BackPorchContents(true, i));
 		}
@@ -539,7 +537,7 @@ public class WindowModule extends ProcessorModule
 	@Override
 	public WindowModule duplicate()
 	{
-		WindowModule m = new WindowModule(getName(), m_processor, m_width, getFrontPorch(0).getDomain(), getBackPorch().getDomain(), getFrontPorch(0).getSize(), getBuffer(0).getSize(), getBackPorch().getSize());
+		WindowModule m = new WindowModule(getName(), m_processor, m_width, getFrontPorch(0).getDomain(), getBackPorch(0).getDomain(), getFrontPorch(0).getSize(), getBuffer(0).getSize(), getBackPorch(0).getSize());
 		super.copyInto(m);
 		return m;
 	}

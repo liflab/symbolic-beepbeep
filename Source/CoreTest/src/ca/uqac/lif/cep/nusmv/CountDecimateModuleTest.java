@@ -174,11 +174,11 @@ public class CountDecimateModuleTest
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(2).assign(a);
-		mod.getBackPorch().set(2, 2).assign(a);
+		mod.getBackPorch(0).set(2, 2).assign(a);
 		assertEquals(true, mod.backPorchLength(false).evaluate(a));
-		mod.getBackPorch().set(2).assign(a);
+		mod.getBackPorch(0).set(2).assign(a);
 		assertEquals(false, mod.backPorchLength(false).evaluate(a));
-		mod.getBackPorch().set(2, 2, 1).assign(a);
+		mod.getBackPorch(0).set(2, 2, 1).assign(a);
 		assertEquals(false, mod.backPorchLength(false).evaluate(a));
 	}
 	
@@ -239,9 +239,9 @@ public class CountDecimateModuleTest
 		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(2).assign(a);
 		Condition c = mod.backPorchValues(false);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.backPorchLength(false), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.backPorchLength(false), mod.getBackPorch(0).isWellFormed());
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set(2).assign(a);
+		mod.getBackPorch(0).set(2).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -255,9 +255,9 @@ public class CountDecimateModuleTest
 		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(2).assign(a);
 		Condition c = mod.backPorchValues(false);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.backPorchLength(false), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.backPorchLength(false), mod.getBackPorch(0).isWellFormed());
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set(2, 3).assign(a);
+		mod.getBackPorch(0).set(2, 3).assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	
@@ -271,11 +271,11 @@ public class CountDecimateModuleTest
 		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(2).assign(a);
 		Condition c = mod.backPorchValues(false);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.backPorchLength(false), mod.getBackPorch().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.backPorchLength(false), mod.getBackPorch(0).isWellFormed());
 		assertEquals(1, solutions.size());
-		mod.getBackPorch().set(2, 2).assign(a);
+		mod.getBackPorch(0).set(2, 2).assign(a);
 		assertTrue(c.evaluate(a));
-		mod.getBackPorch().set(2, 3).assign(a);
+		mod.getBackPorch(0).set(2, 3).assign(a);
 		assertFalse(c.evaluate(a));
 	}
 	

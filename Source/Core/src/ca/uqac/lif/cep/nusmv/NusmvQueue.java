@@ -31,6 +31,17 @@ public class NusmvQueue
 	}
 	
 	/**
+	 * Sets the maximum size of this queue to a new value.
+	 * @param size The new queue size
+	 * @return This queue
+	 */
+	public NusmvQueue setSize(int size)
+	{
+		m_arrayFlags.setDimension(size);
+		return this;
+	}
+	
+	/**
 	 * Gets the size of this queue.
 	 * @return
 	 */

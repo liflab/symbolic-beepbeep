@@ -180,7 +180,7 @@ public class CountDecimateModule extends SubsetProcessorModule
 	@Override
 	public CountDecimateModule duplicate()
 	{
-		CountDecimateModule m = new CountDecimateModule(getName(), m_interval, getFrontPorch(0).getDomain(), getFrontPorch(0).getSize(), getBackPorch().getSize());
+		CountDecimateModule m = new CountDecimateModule(getName(), m_interval, getFrontPorch(0).getDomain(), getFrontPorch(0).getSize(), getBackPorch(0).getSize());
 		super.copyInto(m);
 		return m;
 	}

@@ -69,7 +69,7 @@ public class FilterModule extends BinaryModule
 	 */
 	/*@ non_null @*/ public Condition frontsVsBackPorch(boolean next)
 	{
-		ProcessorQueue back_porch = getBackPorch();
+		ProcessorQueue back_porch = getBackPorch(0);
 		Conjunction and = new Conjunction();
 		for (int i = 0; i <= back_porch.getSize(); i++)
 		{
@@ -259,7 +259,7 @@ public class FilterModule extends BinaryModule
 	@Override
 	public Condition isFrontToOutput(boolean next, QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
 	{
-		int Q_out = getBackPorch().getSize();
+		int Q_out = getBackPorch(0).getSize();
 		Disjunction or = new Disjunction();
 		for (int nf = n; nf <= Q_out; nf++)
 		{
@@ -279,7 +279,7 @@ public class FilterModule extends BinaryModule
 	 */
 	public Condition numTrueFronts(boolean next, int n)
 	{
-		int Q_out = getBackPorch().getSize();
+		int Q_out = getBackPorch(0).getSize();
 		Disjunction or = new Disjunction();
 		for (int nf = n; nf <= Q_out; nf++)
 		{
@@ -294,13 +294,13 @@ public class FilterModule extends BinaryModule
 	@Override
 	public Condition getOutputCondition(boolean next, QueueType sigma1, int m1, QueueType sigma2, int m2, int n)
 	{
-		return new Equality(getBackPorch().valueAt(next, n), valueAt(next, sigma1, 0, m1));
+		return new Equality(getBackPorch(0).valueAt(next, n), valueAt(next, sigma1, 0, m1));
 	}
 	
 	@Override
 	public FilterModule duplicate()
 	{
-		FilterModule m = new FilterModule(getName(), getFrontPorch(0).getDomain(), getFrontPorch(0).getSize(), getBuffer(0).getSize(), getBackPorch().getSize());
+		FilterModule m = new FilterModule(getName(), getFrontPorch(0).getDomain(), getFrontPorch(0).getSize(), getBuffer(0).getSize(), getBackPorch(0).getSize());
 		super.copyInto(m);
 		return m;
 	}

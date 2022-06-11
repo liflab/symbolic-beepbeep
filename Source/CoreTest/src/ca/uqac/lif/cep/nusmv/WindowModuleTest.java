@@ -268,7 +268,7 @@ public class WindowModuleTest
 		mod.m_innerBackPorches.get(3).set(1, 0).assign(a);
 		mod.m_innerBackPorches.get(4).set().assign(a);
 		mod.m_innerBackPorches.get(5).set().assign(a);
-		ProcessorQueue back_porch = mod.getBackPorch();
+		ProcessorQueue back_porch = mod.getBackPorch(0);
 		{
 			back_porch.set(1, 2, 0, 0).assign(a);
 			assertEquals(true, mod.new BackPorchContents(false, 0).evaluate(a));
@@ -306,7 +306,7 @@ public class WindowModuleTest
 		mod.m_innerBackPorches.get(4).set().assign(a);
 		mod.m_innerFrontPorches.get(5).set().assign(a); // Must set front porches
 		mod.m_innerBackPorches.get(5).set().assign(a);
-		ProcessorQueue back_porch = mod.getBackPorch();
+		ProcessorQueue back_porch = mod.getBackPorch(0);
 		back_porch.set(1, 2, 0, 0).assign(a);
 		assertEquals(true, mod.new BackPorchLength(false).evaluate(a));
 		back_porch.set(1, 2, 0, 0, 0).assign(a);
