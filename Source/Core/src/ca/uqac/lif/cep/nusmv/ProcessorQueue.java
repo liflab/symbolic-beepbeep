@@ -69,6 +69,7 @@ public class ProcessorQueue extends NusmvQueue
 	protected ProcessorQueue(String name, ArrayVariable contents, ArrayVariable flags, boolean is_next)
 	{
 		super(flags);
+		m_name = name;
 		m_arrayContents = contents;
 		m_next = null;
 	}
@@ -76,6 +77,7 @@ public class ProcessorQueue extends NusmvQueue
 	public ProcessorQueue(String name, String contents, String flags, int size, Domain d)
 	{
 		super(new ArrayVariable(flags, BooleanDomain.instance, size));
+		m_name = name;
 		m_arrayContents = new ArrayVariable(contents, d, size);
 		m_next = new ProcessorQueue(name, m_arrayContents.next(), m_arrayFlags.next(), true);
 	}

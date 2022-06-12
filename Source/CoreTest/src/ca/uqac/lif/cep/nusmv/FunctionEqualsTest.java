@@ -34,7 +34,7 @@ public class FunctionEqualsTest
 	@Test
 	public void test1()
 	{
-		FunctionEquals eq = new FunctionEquals(s_domLetters);
+		EqualsFunction eq = new EqualsFunction(s_domLetters);
 		ScalarVariable x = new ScalarVariable("x", eq.getInputDomain(0));
 		ScalarVariable y = new ScalarVariable("y", eq.getInputDomain(1));
 		ScalarVariable z = new ScalarVariable("z", eq.getOutputDomain());
@@ -46,7 +46,7 @@ public class FunctionEqualsTest
 	@Test
 	public void test2()
 	{
-		FunctionEquals eq = new FunctionEquals(s_domLetters);
+		EqualsFunction eq = new EqualsFunction(s_domLetters);
 		ScalarVariable x = new ScalarVariable("x", eq.getInputDomain(0));
 		ScalarVariable y = new ScalarVariable("y", eq.getInputDomain(1));
 		ScalarVariable z = new ScalarVariable("z", eq.getOutputDomain());
@@ -58,7 +58,7 @@ public class FunctionEqualsTest
 	@Test
 	public void test3()
 	{
-		FunctionEquals eq = new FunctionEquals(s_domLetters);
+		EqualsFunction eq = new EqualsFunction(s_domLetters);
 		ScalarVariable x = new ScalarVariable("x", eq.getInputDomain(0));
 		ScalarVariable y = new ScalarVariable("y", eq.getInputDomain(1));
 		ScalarVariable z = new ScalarVariable("z", eq.getOutputDomain());
@@ -70,7 +70,7 @@ public class FunctionEqualsTest
 	@Test
 	public void test4()
 	{
-		FunctionEquals eq = new FunctionEquals(s_domLetters);
+		EqualsFunction eq = new EqualsFunction(s_domLetters);
 		ScalarVariable x = new ScalarVariable("x", eq.getInputDomain(0));
 		ScalarVariable y = new ScalarVariable("y", eq.getInputDomain(1));
 		ScalarVariable z = new ScalarVariable("z", eq.getOutputDomain());

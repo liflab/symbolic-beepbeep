@@ -27,9 +27,10 @@ import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.Term;
 
 /**
- * Binary function representing equality between two values.
+ * Binary function representing equality between two values. Formally,
+ * f(x,y) = &top; if x=y, and f(x,y) = &bot; otherwise.
  */
-public class FunctionEquals implements BinaryFunctionCall
+public class EqualsFunction implements BinaryFunctionCall
 {
 	/**
 	 * The input domain for a particular instance of the function.
@@ -41,7 +42,7 @@ public class FunctionEquals implements BinaryFunctionCall
 	 * @param in_domain The input domain for a particular instance of the
 	 * function
 	 */
-	public FunctionEquals(Domain in_domain)
+	public EqualsFunction(Domain in_domain)
 	{
 		super();
 		m_inDomain = in_domain;

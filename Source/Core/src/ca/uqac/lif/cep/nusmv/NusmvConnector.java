@@ -18,7 +18,9 @@
  */
 package ca.uqac.lif.cep.nusmv;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ca.uqac.lif.nusmv4j.ModuleDomain;
@@ -55,6 +57,11 @@ public class NusmvConnector
 	/*@ non_null @*/ protected final Map<ProcessorModule,Map<Integer,ProcessorConnection>> m_outputConnections;
 	
 	/**
+	 * The list of inner pipes instantiated by this connector.
+	 */
+	/*@ non_null @*/ protected final List<ProcessorQueue> m_innerQueues;
+	
+	/**
 	 * A reset flag shared by all processors connected by this connector
 	 * instance.
 	 */
@@ -69,8 +76,37 @@ public class NusmvConnector
 		m_resetFlag = reset_flag;
 		m_inputConnections = new HashMap<ProcessorModule,Map<Integer,ProcessorConnection>>();
 		m_outputConnections = new HashMap<ProcessorModule,Map<Integer,ProcessorConnection>>();
+		m_innerQueues = new ArrayList<ProcessorQueue>();
 		m_queueCounter = 0;
 		m_queuePrefix = "q_";
+	}
+	
+	/**
+	 * Assigns a queue to the input pipe of a processor module.
+	 * @param p The processor module
+	 * @param i The index of the input pipe
+	 * @param q The queue
+	 * @return The input processor connection
+	 */
+	public InputProcessorConnection setInput(ProcessorModule p, int i, ProcessorQueue q)
+	{
+		InputProcessorConnection conn = new InputProcessorConnection(p, i, q);
+		registerInputConnection(p, i, conn);
+		return conn;
+	}
+	
+	/**
+	 * Assigns a queue to the output pipe of a processor module.
+	 * @param p The processor module
+	 * @param i The index of the output pipe
+	 * @param q The queue
+	 * @return The output processor connection
+	 */
+	public OutputProcessorConnection setOutput(ProcessorModule p, int i, ProcessorQueue q)
+	{
+		OutputProcessorConnection conn = new OutputProcessorConnection(p, i, q);
+		registerOutputConnection(p, i, conn);
+		return conn;
 	}
 
 	/**
@@ -83,35 +119,52 @@ public class NusmvConnector
 	 */
 	public void connect(ProcessorModule p1, int i, ProcessorModule p2, int j)
 	{
-		ProcessorConnection conn = new ProcessorConnection(p1, i, p2, j);
+		InnerProcessorConnection conn = new InnerProcessorConnection(p1, i, p2, j);
+		registerOutputConnection(p1, i, conn);
+		registerInputConnection(p2, j, conn);
+		m_innerQueues.add(conn.getQueue());
+	}
+	
+	/**
+	 * Registers the connection to the input j of module p.
+	 * @param p The module
+	 * @param j The index of its input
+	 * @param conn The connection to register
+	 */
+	protected void registerInputConnection(ProcessorModule p, int j, ProcessorConnection conn)
+	{
+		Map<Integer,ProcessorConnection> entries = null;
+		if (m_inputConnections.containsKey(p))
 		{
-			// Register output of p1
-			Map<Integer,ProcessorConnection> entries = null;
-			if (m_outputConnections.containsKey(p1))
-			{
-				entries = m_outputConnections.get(p1);
-			}
-			else
-			{
-				entries = new HashMap<Integer,ProcessorConnection>(p1.getOutputArity());
-				m_outputConnections.put(p1, entries);
-			}
-			entries.put(i, conn);
+			entries = m_inputConnections.get(p);
 		}
+		else
 		{
-			// Register input of p2
-			Map<Integer,ProcessorConnection> entries = null;
-			if (m_inputConnections.containsKey(p1))
-			{
-				entries = m_inputConnections.get(p1);
-			}
-			else
-			{
-				entries = new HashMap<Integer,ProcessorConnection>(p2.getInputArity());
-				m_inputConnections.put(p2, entries);
-			}
-			entries.put(j, conn);
+			entries = new HashMap<Integer,ProcessorConnection>(p.getInputArity());
+			m_inputConnections.put(p, entries);
 		}
+		entries.put(j, conn);	
+	}
+	
+	/**
+	 * Registers the connection to the input j of module p.
+	 * @param p The module
+	 * @param j The index of its input
+	 * @param conn The connection to register
+	 */
+	protected void registerOutputConnection(ProcessorModule p, int i, ProcessorConnection conn)
+	{
+		Map<Integer,ProcessorConnection> entries = null;
+		if (m_outputConnections.containsKey(p))
+		{
+			entries = m_outputConnections.get(p);
+		}
+		else
+		{
+			entries = new HashMap<Integer,ProcessorConnection>(p.getOutputArity());
+			m_outputConnections.put(p, entries);
+		}
+		entries.put(i, conn);
 	}
 	
 	/**
@@ -152,18 +205,124 @@ public class NusmvConnector
 				throw new NusmvConnectorException("Output pipe " + i + " of " + p.getName() + " is not connected");
 			}
 			ProcessorConnection conn = out_conns.get(i);
-			arguments[index++] = conn.m_pipe.m_arrayContents;
-			arguments[index++] = conn.m_pipe.m_arrayFlags;
+			ProcessorQueue q = conn.getQueue();
+			arguments[index++] = q.m_arrayContents;
+			arguments[index++] = q.m_arrayFlags;
 		}
 		arguments[index++] = m_resetFlag;
 		return new ModuleDomain(p, arguments);
+	}
+	
+	/**
+	 * Gets the list of inner pipes instantiated by this connector.
+	 * @return The list
+	 */
+	/*@ pure non_null @*/ public List<ProcessorQueue> getInnerQueues()
+	{
+		return m_innerQueues;
+	}
+	
+	public abstract class ProcessorConnection
+	{
+		/**
+		 * The processor pipe instance that is shared by both modules.
+		 */
+		protected ProcessorQueue m_pipe;
+		
+		protected ProcessorConnection()
+		{
+			super();
+		}
+		
+		public ProcessorConnection(ProcessorQueue pipe)
+		{
+			super();
+			m_pipe = pipe;
+		}
+		
+		public ProcessorQueue getQueue()
+		{
+			return m_pipe;
+		}
+	}
+	
+	/**
+	 * Connection associating a processor queue to an input pipe of a processor
+	 * module.
+	 */
+	public class InputProcessorConnection extends ProcessorConnection
+	{
+		/**
+		 * The processor module.
+		 */
+		protected ProcessorModule m_module;
+		
+		/**
+		 * The index of the input pipe.
+		 */
+		protected int m_index;
+		
+		public InputProcessorConnection(ProcessorModule p, int index, ProcessorQueue pipe)
+		{
+			super();
+			m_pipe = pipe;
+			m_index = index;
+			m_module = p;
+		}
+		
+		public int getIndex()
+		{
+			return m_index;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return m_module.getName() + "?" + m_index;
+		}
+	}
+	
+	/**
+	 * Connection associating a processor queue to an output pipe of a
+	 * processor module.
+	 */
+	public class OutputProcessorConnection extends ProcessorConnection
+	{
+		/**
+		 * The processor module.
+		 */
+		protected ProcessorModule m_module;
+		
+		/**
+		 * The index of the input pipe.
+		 */
+		protected int m_index;
+		
+		public OutputProcessorConnection(ProcessorModule p, int index, ProcessorQueue pipe)
+		{
+			super();
+			m_pipe = pipe;
+			m_index = index;
+			m_module = p;
+		}
+		
+		public int getIndex()
+		{
+			return m_index;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return m_module.getName() + "!" + m_index;
+		}
 	}
 
 	/**
 	 * An object registering the connection between an output pipe and an
 	 * input pipe of two processor modules.
 	 */
-	protected class ProcessorConnection
+	public class InnerProcessorConnection extends ProcessorConnection
 	{
 		/**
 		 * The source module.
@@ -186,18 +345,13 @@ public class NusmvConnector
 		protected int m_j;
 
 		/**
-		 * The processor pipe instance that is shared by both modules.
-		 */
-		/*@ non_null @*/ protected ProcessorQueue m_pipe;
-
-		/**
 		 * Creates a new processor connection.
 		 * @param p1 The source module
 		 * @param i The index of its output
 		 * @param p2 The destination module
 		 * @param j The index of its input
 		 */
-		public ProcessorConnection(ProcessorModule p1, int i, ProcessorModule p2, int j)
+		public InnerProcessorConnection(ProcessorModule p1, int i, ProcessorModule p2, int j)
 		{
 			super();
 			m_p1 = p1;
@@ -215,7 +369,7 @@ public class NusmvConnector
 				throw new NusmvConnectorException("Incompatible domains for output " + i + " of " + p1 + " and input " + j + " of " + p2);
 			}
 			int q_id = m_queueCounter++;
-			m_pipe = new ProcessorQueue(m_queuePrefix + q_id, "qc", "qb", out.getSize(), out.getDomain());
+			m_pipe = new ProcessorQueue(m_queuePrefix + q_id, "qc_" + q_id, "qb_" + q_id, out.getSize(), out.getDomain());
 		}
 		
 		@Override
