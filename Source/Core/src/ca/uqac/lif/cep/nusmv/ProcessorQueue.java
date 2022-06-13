@@ -300,10 +300,6 @@ public class ProcessorQueue extends NusmvQueue
 		public MinLength(int n)
 		{
 			this(false, n);
-			for (int i = 0; i <= n - 1; i++)
-			{
-				add(hasAt(m_next, i));
-			}
 		}
 
 		public MinLength(boolean next, int n)
@@ -311,6 +307,10 @@ public class ProcessorQueue extends NusmvQueue
 			super();
 			m_next = next;
 			m_n = n;
+			for (int i = 0; i <= n - 1; i++)
+			{
+				add(hasAt(m_next, i));
+			}
 		}
 
 		@Override

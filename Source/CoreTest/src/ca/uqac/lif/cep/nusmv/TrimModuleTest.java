@@ -137,8 +137,10 @@ public class TrimModuleTest
 		Condition c = mod.nextCounter();
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
+		mod.getCounter().next().set(0).assign(a);
+		assertEquals(false, c.evaluate(a));
 		mod.getCounter().next().set(3).assign(a);
-		assertTrue(c.evaluate(a));
+		assertEquals(true, c.evaluate(a));
 	}
 	
 	@Test

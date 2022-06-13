@@ -2,17 +2,17 @@
     Modeling of BeepBeep processor pipelines in NuSMV
     Copyright (C) 2020-2022 Laboratoire d'informatique formelle
     Université du Québec à Chicoutimi, Canada
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -40,7 +40,7 @@ public class TrimModule extends SubsetProcessorModule
 	 * The number of events to trim.
 	 */
 	/*@ non_null @*/ protected final int m_interval;
-	
+
 	public TrimModule(String name, int interval, Domain d, int Q_in, int Q_out)
 	{
 		super(name, d, Q_in, Q_out);
@@ -48,13 +48,13 @@ public class TrimModule extends SubsetProcessorModule
 		m_counter = new ScalarVariable("cnt", new IntegerRange(0, interval));
 		add(m_counter);
 	}
-	
+
 	@Override
 	protected void addToComment(Comment c)
 	{
 		c.addLine("Module: Trim(" + m_interval + ")");
 	}
-	
+
 	/**
 	 * Gets the internal variable acting as the processor's counter.
 	 * @return The variable
@@ -72,19 +72,19 @@ public class TrimModule extends SubsetProcessorModule
 	{
 		return m_interval;
 	}
-	
+
 	@Override
 	protected void addToInit(Conjunction c)
 	{
 		c.add(new Equality(m_counter, new Constant(m_counter.getDomain().getDefaultValue())));
 	}
-	
+
 	@Override
 	protected void addToTrans(Conjunction c)
 	{
 		c.add(nextCounter());
 	}
-	
+
 	public Condition nextCounter()
 	{
 		Conjunction and = new Conjunction();
@@ -100,7 +100,7 @@ public class TrimModule extends SubsetProcessorModule
 				in_imp.add(new Equality(m_counter.next(), new Constant(i)));
 				in_and.add(in_imp);
 			}
-			
+
 			Implication in_imp = new Implication();
 			in_imp.add(getFrontPorch(0).minLength(false, m_interval));
 			in_imp.add(new Equality(m_counter.next(), new Constant(m_interval)));
@@ -113,22 +113,33 @@ public class TrimModule extends SubsetProcessorModule
 			Implication imp = new Implication();
 			imp.add(new NoReset(false));
 			Conjunction in_and = new Conjunction();
+			{
+				Implication in_in_imp = new Implication();
+				in_in_imp.add(new Equality(m_counter, new Constant(m_interval)));
+				in_in_imp.add(new Equality(m_counter.next(), new Constant(m_interval)));
+				in_and.add(in_in_imp);
+			}
 			for (int cnt = 0; cnt < m_interval; cnt++)
+			//int cnt = 0;
 			{
 				Implication in_imp = new Implication();
 				in_imp.add(new Equality(m_counter, new Constant(cnt)));
 				Conjunction in_in_and = new Conjunction();
 				for (int nf = 0; nf < m_interval - cnt; nf++)
+				//int nf = 1;
 				{
 					Implication in_in_imp = new Implication();
 					in_in_imp.add(getFrontPorch(0).hasLength(false, nf));
 					in_in_imp.add(new Equality(m_counter.next(), new Constant(cnt + nf)));
 					in_in_and.add(in_in_imp);
 				}
-				/*Implication in_in_imp = new Implication();
-				in_in_imp.add(new Equality(m_counter, new Constant(m_interval)));
-				in_in_imp.add(new Equality(m_counter.next(), new Constant(m_interval)));
-				in_in_and.add(in_in_imp);*/
+				if (m_interval - cnt <= getFrontPorch(0).getSize())
+				{
+					Implication in_in_imp = new Implication();
+					in_in_imp.add(getFrontPorch(0).minLength(false, m_interval - cnt));
+					in_in_imp.add(new Equality(m_counter.next(), new Constant(m_interval)));
+					in_in_and.add(in_in_imp);
+				}
 				in_imp.add(in_in_and);
 				in_and.add(in_imp);
 			}
@@ -168,7 +179,7 @@ public class TrimModule extends SubsetProcessorModule
 		}
 		return big_or;
 	}
-	
+
 	@Override
 	public TrimModule duplicate()
 	{
