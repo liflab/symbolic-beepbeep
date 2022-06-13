@@ -54,4 +54,27 @@ public class BeepBeepModelTest
 		assertFalse(out.contains("ERROR")); // Indicating a problem with the transition relation
 		System.out.println(out);
 	}
+	
+	@Test
+	public void testPrint2()
+	{
+		int Q_in = 2, Q_out = 2;
+		ProcessorQueue in_q = new ProcessorQueue("in", "in_c", "in_b", 2, s_domLetters);
+		ProcessorQueue out_q = new ProcessorQueue("out", "ou_c", "ou_b", 2, s_domLetters);
+		BeepBeepPipeline pipeline = new BeepBeepPipeline(new ProcessorQueue[] {in_q}, new ProcessorQueue[] {out_q});
+		TrimModule pt1 = new TrimModule("Trim1", 1, s_domLetters, Q_in, Q_out);
+		PassthroughModule pt2 = new PassthroughModule("Passthrough", s_domLetters, Q_in, Q_out);
+		pipeline.add(pt1, pt2);
+		pipeline.connect(pt1, 0, pt2, 0);
+		pipeline.setInput(pt1, 0, 0);
+		pipeline.setOutput(pt2, 0, 0);
+		BeepBeepModel mod = new BeepBeepModel(pipeline);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PrettyPrintStream ps = new PrettyPrintStream(baos);
+		mod.print(ps);
+		String out = baos.toString();
+		assertNotNull(out);
+		assertFalse(out.contains("ERROR")); // Indicating a problem with the transition relation
+		System.out.println(out);
+	}
 }

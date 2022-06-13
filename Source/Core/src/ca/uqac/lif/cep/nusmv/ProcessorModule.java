@@ -535,8 +535,8 @@ public abstract class ProcessorModule extends LogicModule
 			{
 				int k = n - j;
 				Conjunction and = new Conjunction();
-				and.add(buffer.minLength(j));
-				and.add(porch.minLength(k));
+				and.add(buffer.minLength(next, j));
+				and.add(porch.minLength(next, k));
 				add(and);
 			}
 		}

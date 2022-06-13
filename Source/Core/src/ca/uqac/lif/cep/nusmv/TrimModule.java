@@ -25,6 +25,7 @@ import ca.uqac.lif.nusmv4j.Constant;
 import ca.uqac.lif.nusmv4j.Disjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
+import ca.uqac.lif.nusmv4j.Implication;
 import ca.uqac.lif.nusmv4j.IntegerRange;
 import ca.uqac.lif.nusmv4j.ScalarVariable;
 
@@ -86,8 +87,55 @@ public class TrimModule extends SubsetProcessorModule
 	
 	public Condition nextCounter()
 	{
-		// TODO
-		return null;
+		Conjunction and = new Conjunction();
+		{
+			// If reset
+			Implication imp = new Implication();
+			imp.add(new IsReset(false));
+			Conjunction in_and = new Conjunction();
+			for (int i = 0; i < m_interval; i++)
+			{
+				Implication in_imp = new Implication();
+				in_imp.add(getFrontPorch(0).hasLength(false, i));
+				in_imp.add(new Equality(m_counter.next(), new Constant(i)));
+				in_and.add(in_imp);
+			}
+			
+			Implication in_imp = new Implication();
+			in_imp.add(getFrontPorch(0).minLength(false, m_interval));
+			in_imp.add(new Equality(m_counter.next(), new Constant(m_interval)));
+			in_and.add(in_imp);
+			imp.add(in_and);
+			and.add(imp);
+		}
+		{
+			// If no reset
+			Implication imp = new Implication();
+			imp.add(new NoReset(false));
+			Conjunction in_and = new Conjunction();
+			for (int cnt = 0; cnt < m_interval; cnt++)
+			{
+				Implication in_imp = new Implication();
+				in_imp.add(new Equality(m_counter, new Constant(cnt)));
+				Conjunction in_in_and = new Conjunction();
+				for (int nf = 0; nf < m_interval - cnt; nf++)
+				{
+					Implication in_in_imp = new Implication();
+					in_in_imp.add(getFrontPorch(0).hasLength(false, nf));
+					in_in_imp.add(new Equality(m_counter.next(), new Constant(cnt + nf)));
+					in_in_and.add(in_in_imp);
+				}
+				/*Implication in_in_imp = new Implication();
+				in_in_imp.add(new Equality(m_counter, new Constant(m_interval)));
+				in_in_imp.add(new Equality(m_counter.next(), new Constant(m_interval)));
+				in_in_and.add(in_in_imp);*/
+				in_imp.add(in_in_and);
+				in_and.add(in_imp);
+			}
+			imp.add(in_and);
+			and.add(imp);
+		}
+		return and;
 	}
 
 	@Override

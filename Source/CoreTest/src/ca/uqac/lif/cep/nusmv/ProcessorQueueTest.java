@@ -78,7 +78,7 @@ public class ProcessorQueueTest
 	{
 		int Q = 5;
 		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.minLength(3);
+		Condition c = pq.minLength(false, 3);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
 		Assignment a = new Assignment();
@@ -91,7 +91,7 @@ public class ProcessorQueueTest
 	{
 		int Q = 5;
 		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.minLength(5);
+		Condition c = pq.minLength(false, 5);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
 		Assignment a = new Assignment();
@@ -104,7 +104,7 @@ public class ProcessorQueueTest
 	{
 		int Q = 5;
 		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.minLength(6);
+		Condition c = pq.minLength(false, 6);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
 		Assignment a = new Assignment();
@@ -117,7 +117,7 @@ public class ProcessorQueueTest
 	{
 		int Q = 5;
 		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.minLength(0);
+		Condition c = pq.minLength(false, 0);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
 		Assignment a = new Assignment();
@@ -130,7 +130,7 @@ public class ProcessorQueueTest
 	{
 		int Q = 5;
 		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.minLength(5);
+		Condition c = pq.minLength(false, 5);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a", "a");
 		Assignment a = new Assignment();

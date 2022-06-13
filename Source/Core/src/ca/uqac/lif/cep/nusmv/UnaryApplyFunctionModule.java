@@ -64,6 +64,7 @@ public abstract class UnaryApplyFunctionModule extends UnaryProcessorModule
 				Implication imp = new Implication();
 				imp.add(front.hasLength(next, len));
 				Conjunction and = new Conjunction();
+				and.add(back.hasLength(next, len));
 				for (int i = 0; i < len; i++)
 				{
 					and.add(m_function.getCondition(front.valueAt(next, i), back.valueAt(next, i)));

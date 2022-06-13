@@ -52,7 +52,7 @@ public class BeepBeepPipeline extends ContainerModule
 	protected void addToInit(Conjunction c)
 	{
 		c.add(new Negation(new BooleanVariableCondition(m_resetFlag)));
-		//Not necessary
+		/* //Not necessary
 		for (int i = 0; i < m_inputs.length; i++)
 		{
 			c.add(m_inputs[i].isWellFormed());
@@ -60,7 +60,7 @@ public class BeepBeepPipeline extends ContainerModule
 		for (int i = 0; i < m_outputs.length; i++)
 		{
 			c.add(m_outputs[i].isWellFormed());
-		}
+		} */
 	}
 
 	@Override

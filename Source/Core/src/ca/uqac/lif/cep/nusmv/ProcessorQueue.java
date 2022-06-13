@@ -277,7 +277,7 @@ public class ProcessorQueue extends NusmvQueue
 	 * @param n The number of elements
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition minLength(int n)
+	/*@ non_null @*/ public Condition minLength(boolean next, int n)
 	{
 		int Q = getSize();
 		if (n < 0 || n > Q)
@@ -288,7 +288,7 @@ public class ProcessorQueue extends NusmvQueue
 		{
 			return TRUE;
 		}
-		return new MinLength(n);
+		return new MinLength(next, n);
 	}
 
 	public class MinLength extends Conjunction
