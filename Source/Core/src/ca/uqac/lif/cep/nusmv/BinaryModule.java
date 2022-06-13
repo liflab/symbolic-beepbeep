@@ -29,7 +29,7 @@ public abstract class BinaryModule extends ProcessorModule
 {
 	public BinaryModule(String name, Domain d_in1, Domain d_in2, Domain d_out, int Q_in, int Q_b, int Q_out)
 	{
-		super(name, 2, new Domain[] {d_in1, d_in2}, 1, new Domain[] {d_out}, Q_in, Q_b, Q_out);
+		super(name, 2, new Domain[] {d_in1, d_in2}, 1, new Domain[] {d_out}, true, Q_in, Q_b, Q_out);
 	}
 
 	/**

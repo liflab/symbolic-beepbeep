@@ -72,13 +72,20 @@ public abstract class ProcessorModule extends LogicModule
 	 * The back porches of this processor.
 	 */
 	protected final ProcessorQueue[] m_backPorches;
+	
+	/**
+	 * A flag indicating if the processor has a reset flag as one of its
+	 * parameters.
+	 */
+	protected boolean m_hasReset;
 
 
-	public ProcessorModule(String name, int in_arity, Domain[] in_domains, int out_arity, Domain[] out_domains, int Q_in, int Q_b, int Q_out)
+	public ProcessorModule(String name, int in_arity, Domain[] in_domains, int out_arity, Domain[] out_domains, boolean has_reset, int Q_in, int Q_b, int Q_out)
 	{
 		super(name);
+		m_hasReset = has_reset;
 		m_frontPorches = new ProcessorQueue[in_arity];
-		m_resetFlag = new ScalarVariable("rst", BooleanDomain.instance);
+		m_resetFlag = instantiateResetFlag();
 		for (int i = 0; i < in_arity; i++)
 		{
 			m_frontPorches[i] = new ProcessorQueue("in_" + i, new ArrayVariable("inc_" + i, in_domains[i], Q_in), new ArrayVariable("inb_" + i, BooleanDomain.instance, Q_in));
@@ -93,7 +100,8 @@ public abstract class ProcessorModule extends LogicModule
 		{
 			m_backPorches[i] = new ProcessorQueue("ou", new ArrayVariable("ouc_" + i, out_domains[i], Q_out), new ArrayVariable("oub", BooleanDomain.instance, Q_out));
 		}
-		Variable[] params = new Variable[2 * (in_arity) + 2 * (out_arity) + 1];
+		int num_params = 2 * (in_arity) + 2 * (out_arity) + (has_reset ? 1 : 0);
+		Variable[] params = new Variable[num_params];
 		int index = 0;
 		for (int i = 0; i < in_arity; i++)
 		{
@@ -105,7 +113,10 @@ public abstract class ProcessorModule extends LogicModule
 			params[index++] = m_backPorches[i].m_arrayContents;
 			params[index++] = m_backPorches[i].m_arrayFlags;
 		}
-		params[index++] = m_resetFlag;
+		if (has_reset)
+		{
+			params[index++] = m_resetFlag;
+		}
 		setParameters(params);
 		if (Q_b > 0)
 		{
@@ -117,12 +128,34 @@ public abstract class ProcessorModule extends LogicModule
 		}
 	}
 	
+	/**
+	 * Instantiates the reset flag for this processor.
+	 * @return The variable for the reset flag
+	 */
+	/*@ non_null @*/ protected ScalarVariable instantiateResetFlag()
+	{
+		return new ScalarVariable("rst", BooleanDomain.instance);
+	}
+	
 	@Override
 	protected Comment getComment()
 	{
 		Comment c = new Comment(s_dashes);
 		addToComment(c);
-		c.addLine("Q_in = " + m_frontPorches[0].getSize() + ", Q_b = " + m_buffers[0].getSize() + ", Q_out = " + m_backPorches[0].getSize());
+		String line = "";
+		if (m_frontPorches.length > 0)
+		{
+			line += "Q_in = " + m_frontPorches[0].getSize() + " ";
+		}
+		if (m_buffers.length > 0)
+		{
+			line += "Q_b = " + m_buffers[0].getSize() + " ";
+		}
+		if (m_backPorches.length > 0)
+		{
+			line += "Q_out = " + m_backPorches[0].getSize() + " ";	
+		}
+		c.addLine(line);
 		c.addLine(s_dashes);
 		return c;
 	}
@@ -592,4 +625,5 @@ public abstract class ProcessorModule extends LogicModule
 	 * @param c The conjunction
 	 */
 	protected abstract void addToTrans(/*@ non_null @*/ Conjunction c);
+	
 }

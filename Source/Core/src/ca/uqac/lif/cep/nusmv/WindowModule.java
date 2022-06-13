@@ -76,7 +76,7 @@ public class WindowModule extends ProcessorModule
 
 	public WindowModule(String name, ProcessorModule processor, int width, Domain in_domain, Domain out_domain, int Q_in, int Q_b, int Q_out)
 	{
-		super(name, 1, new Domain[] {in_domain}, 1, new Domain[] {out_domain}, Q_in, Q_b, Q_out);
+		super(name, 1, new Domain[] {in_domain}, 1, new Domain[] {out_domain}, true, Q_in, Q_b, Q_out);
 		m_width = width;
 		m_processor = processor;
 		m_processors = new ProcessorModule[Q_in + width];
@@ -99,7 +99,7 @@ public class WindowModule extends ProcessorModule
 			add(out_q.m_arrayContents);
 			add(in_q.m_arrayFlags);
 			ModuleDomain dom = new ModuleDomain(m_processors[i], in_q.m_arrayContents, in_q.m_arrayFlags, out_q.m_arrayContents, out_q.m_arrayFlags, m_innerResetFlag);
-			this.add("in_p" + i, dom);
+			add("in_p" + i, dom);
 		}
 	}
 	

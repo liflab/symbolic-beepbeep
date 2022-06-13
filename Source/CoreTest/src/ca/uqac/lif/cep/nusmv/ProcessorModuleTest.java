@@ -30,7 +30,7 @@ import ca.uqac.lif.nusmv4j.Domain;
 /**
  * Unit tests for basic methods of {@link BeepBeepModule}.
  */
-public class BeepBeepModuleTest
+public class ProcessorModuleTest
 {
 	protected static Domain s_domLetters = new Domain(new Object[] {"a", "b", "c"});
 	
@@ -367,7 +367,7 @@ public class BeepBeepModuleTest
 	{
 		public DummyBeepBeepModule(int in_arity, Domain in_domain, Domain out_domain, int Q_in, int Q_b, int Q_out) 
 		{
-			super("foo", in_arity, new Domain[] {in_domain}, 1, new Domain[] {out_domain}, Q_in, Q_b, Q_out);
+			super("foo", in_arity, new Domain[] {in_domain}, 1, new Domain[] {out_domain}, true, Q_in, Q_b, Q_out);
 		}
 		
 		public DummyBeepBeepModule duplicate()

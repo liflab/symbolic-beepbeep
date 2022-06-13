@@ -19,6 +19,7 @@
 package ca.uqac.lif.cep.nusmv;
 
 import ca.uqac.lif.nusmv4j.Conjunction;
+import ca.uqac.lif.nusmv4j.Implication;
 
 /**
  * Unary processor applying a function to each event of the input porch.
@@ -37,15 +38,46 @@ public abstract class UnaryApplyFunctionModule extends UnaryProcessorModule
 	}
 
 	@Override
-	protected void addToInit(Conjunction c) {
-		// TODO Auto-generated method stub
-		
+	protected void addToInit(Conjunction c)
+	{
+		c.add(new MatchingPorches(false));
 	}
 
 	@Override
-	protected void addToTrans(Conjunction c) {
-		// TODO Auto-generated method stub
+	protected void addToTrans(Conjunction c)
+	{
+		c.add(new MatchingPorches(true));
+	}
+	
+	protected class MatchingPorches extends Conjunction
+	{
+		protected final boolean m_next;
 		
+		public MatchingPorches(boolean next)
+		{
+			super();
+			m_next = next;
+			ProcessorQueue front = getFrontPorch(0);
+			ProcessorQueue back = getBackPorch(0);
+			for (int len = 0; len <= front.getSize(); len++)
+			{
+				Implication imp = new Implication();
+				imp.add(front.hasLength(next, len));
+				Conjunction and = new Conjunction();
+				for (int i = 0; i < len; i++)
+				{
+					and.add(m_function.getCondition(front.valueAt(next, i), back.valueAt(next, i)));
+				}
+				imp.add(and);
+				add(imp);
+			}
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "![0] = f(?[0])";
+		}
 	}
 
 }

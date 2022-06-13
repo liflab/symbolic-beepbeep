@@ -36,5 +36,11 @@ public class TurnIntoModule extends UnaryApplyFunctionModule
 	{
 		return new TurnIntoModule(m_name, m_function.getInputDomain(), ((TurnIntoFunction) m_function).getValue(), getFrontPorch(0).getSize(), getBackPorch(0).getSize());
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Turn into " + ((TurnIntoFunction) m_function).getValue();
+	}
 
 }
