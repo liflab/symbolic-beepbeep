@@ -35,7 +35,7 @@ import ca.uqac.lif.nusmv4j.Solver;
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.BUFFER;
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.PORCH;
 
-public class FilterModuleTest 
+public class FilterProcessorModuleTest 
 {
 	protected static Domain s_domLetters = new Domain(new Object[] {"a", "b", "c"});
 

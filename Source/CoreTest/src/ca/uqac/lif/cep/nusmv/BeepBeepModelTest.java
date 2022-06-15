@@ -82,7 +82,7 @@ public class BeepBeepModelTest
 	@Test
 	public void testPrint3()
 	{
-		int Q_in = 1, Q_out = 1;
+		int Q_in = 2, Q_out = 2;
 		PresetProcessorQueue in_q = new PresetProcessorQueue("in", "in_c", "in_b", Q_in, s_domLetters, 4, false);
 		ProcessorQueue out_q = new ProcessorQueue("out", "ou_c", "ou_b", Q_in, s_domLetters);
 		in_q.addStep("a").addStep("b").addStep("c").addStep("a");
