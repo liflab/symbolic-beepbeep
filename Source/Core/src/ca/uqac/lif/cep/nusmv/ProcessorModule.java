@@ -98,7 +98,7 @@ public abstract class ProcessorModule extends LogicModule
 		m_backPorches = new ProcessorQueue[out_arity];
 		for (int i = 0; i < out_arity; i++)
 		{
-			m_backPorches[i] = new ProcessorQueue("ou", new ArrayVariable("ouc_" + i, out_domains[i], Q_out), new ArrayVariable("oub", BooleanDomain.instance, Q_out));
+			m_backPorches[i] = new ProcessorQueue("ou" + i, new ArrayVariable("ouc_" + i, out_domains[i], Q_out), new ArrayVariable("oub_" + i, BooleanDomain.instance, Q_out));
 		}
 		int num_params = 2 * (in_arity) + 2 * (out_arity) + (has_reset ? 1 : 0);
 		Variable[] params = new Variable[num_params];

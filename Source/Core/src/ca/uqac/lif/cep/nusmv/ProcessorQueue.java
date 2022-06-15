@@ -81,6 +81,28 @@ public class ProcessorQueue extends NusmvQueue
 		m_arrayContents = new ArrayVariable(contents, d, size);
 		m_next = new ProcessorQueue(name, m_arrayContents.next(), m_arrayFlags.next(), true);
 	}
+	
+	/**
+	 * Adds conditions to the initial states of the module that contains this
+	 * queue.
+	 * @param c The conjunction representing all the initial conditions of the
+	 * module
+	 */
+	public void addToInit(Conjunction c)
+	{
+		c.add(isWellFormed());
+	}
+	
+	/**
+	 * Adds conditions to the transition formula of the module that contains this
+	 * queue.
+	 * @param c The conjunction representing all the conditions of the
+	 * transition formula for this module
+	 */
+	public void addToTrans(Conjunction c)
+	{
+		c.add(next().isWellFormed());
+	}
 
 	/**
 	 * Gets an instance representing the processor queue in its next state.

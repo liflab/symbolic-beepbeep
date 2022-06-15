@@ -212,6 +212,23 @@ public class TrimModuleTest
 	}
 	
 	@Test
+	public void testNextCounter7()
+	{
+		int Q_in = 6, Q_out = 6;
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		Assignment a = new Assignment();
+		mod.getFrontPorch(0).set(1).assign(a);
+		mod.getResetFlag().set(true).assign(a);
+		mod.getBackPorch(0).set().assign(a);
+		mod.getCounter().set(3).assign(a);
+		Condition c = mod.nextCounter();
+		List<Assignment> solutions = s_solver.solveAll(c, a);
+		assertEquals(1, solutions.size());
+		mod.getCounter().next().set(1).assign(a);
+		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
 	public void testPrint1()
 	{
 		int Q_in = 6, Q_out = 6;

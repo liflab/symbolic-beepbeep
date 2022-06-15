@@ -133,7 +133,6 @@ public class TrimModule extends SubsetProcessorModule
 					in_in_imp.add(new Equality(m_counter.next(), new Constant(cnt + nf)));
 					in_in_and.add(in_in_imp);
 				}
-				if (m_interval - cnt <= getFrontPorch(0).getSize())
 				{
 					Implication in_in_imp = new Implication();
 					in_in_imp.add(getFrontPorch(0).minLength(false, m_interval - cnt));
