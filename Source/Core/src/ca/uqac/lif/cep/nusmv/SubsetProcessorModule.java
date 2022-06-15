@@ -49,7 +49,7 @@ public abstract class SubsetProcessorModule extends UnaryProcessorModule
 	 */
 	/*@ non_null @*/ public Condition numOutputs(boolean next, int m, int n)
 	{
-		if (n > m)
+		if (n > m + 1)
 		{
 			// Impossible to output n events from m inputs if n > m
 			return ConstantFalse.FALSE;
@@ -97,10 +97,6 @@ public abstract class SubsetProcessorModule extends UnaryProcessorModule
 	/*@ non_null @*/ public Condition backPorchLength(boolean next)
 	{
 		ProcessorQueue back_porch = getBackPorch(0);
-		if (next)
-		{
-			back_porch = back_porch.next();
-		}
 		Conjunction and = new Conjunction();
 		int last_pos = back_porch.getSize() - 1;
 		for (int i = 0; i <= back_porch.getSize(); i++)
@@ -165,12 +161,14 @@ public abstract class SubsetProcessorModule extends UnaryProcessorModule
 	protected void addToInit(Conjunction and_init)
 	{
 		and_init.add(backPorchValues(false));
+		and_init.add(backPorchLength(false));
 	}
 	
 	@Override
 	protected void addToTrans(Conjunction and_trans)
 	{
 		and_trans.add(backPorchValues(true));
+		and_trans.add(backPorchLength(true));
 	}
 	
 	/**

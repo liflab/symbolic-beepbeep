@@ -339,13 +339,13 @@ public abstract class ProcessorModule extends LogicModule
 		return m_buffers[pipe_index].valueAt(next, m);
 	}
 
-	public Condition booleanValueAt(QueueType t, int pipe_index, int m)
+	public Condition booleanValueAt(boolean next, QueueType t, int pipe_index, int m)
 	{
 		if (t == QueueType.PORCH)
 		{
-			return m_frontPorches[pipe_index].booleanValueAt(m);
+			return m_frontPorches[pipe_index].booleanValueAt(next, m);
 		}
-		return m_buffers[pipe_index].booleanValueAt(m);
+		return m_buffers[pipe_index].booleanValueAt(next, m);
 	}
 
 	public int getSize(QueueType t, int pipe_index)
@@ -538,7 +538,7 @@ public abstract class ProcessorModule extends LogicModule
 		@Override
 		public String toString()
 		{
-			return "|" + m_pipeIndex + "| >= " + m_length;
+			return "|" + m_pipeIndex + (m_next ? "'" : "") + "| >= " + m_length;
 		}
 	}
 
@@ -583,7 +583,7 @@ public abstract class ProcessorModule extends LogicModule
 		@Override
 		public String toString()
 		{
-			return "|" + m_pipeIndex + "| = " + m_length;
+			return "|" + m_pipeIndex + (m_next ? "'" : "") + "| = " + m_length;
 		}
 	}
 

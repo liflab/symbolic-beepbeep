@@ -251,11 +251,15 @@ public class ProcessorQueue extends NusmvQueue
 	 * @param index The index
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition booleanValueAt(int index)
+	/*@ non_null @*/ public Condition booleanValueAt(boolean next, int index)
 	{
 		if (index < 0 || index >= getSize())
 		{
 			return FALSE;
+		}
+		if (next)
+		{
+			return BooleanArrayAccessCondition.get(ArrayAccess.get(m_arrayContents.next(), index));	
 		}
 		return BooleanArrayAccessCondition.get(ArrayAccess.get(m_arrayContents, index));
 	}
@@ -341,7 +345,7 @@ public class ProcessorQueue extends NusmvQueue
 		@Override
 		public String toString()
 		{
-			return "|" + m_arrayContents.getName() + "| >= " + m_n;
+			return "|" + getName() + (m_next ? "'" : "") + "| >= " + m_n;
 		}
 	}
 
@@ -389,7 +393,7 @@ public class ProcessorQueue extends NusmvQueue
 		@Override
 		public String toString()
 		{
-			return "|" + m_arrayContents.getName() + "| = " + m_length;
+			return "|" + getName() + (m_next ? "'" : "") + "| = " + m_length;
 		}
 	}
 

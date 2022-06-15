@@ -19,6 +19,7 @@
 package ca.uqac.lif.cep.nusmv;
 
 import ca.uqac.lif.nusmv4j.BooleanVariableCondition;
+import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Negation;
@@ -33,12 +34,15 @@ public class BeepBeepPipeline extends ContainerModule
 	
 	/*@ non_null @*/ protected final ProcessorQueue[] m_outputs;
 	
-	protected final static Domain s_falseDomain = new Domain(new Object[] {false});
+	/*@ non_null @*/ protected final static Domain s_falseDomain = new Domain(new Object[] {false});
 	
-	public BeepBeepPipeline(ProcessorQueue[] inputs, ProcessorQueue[] outputs)
+	/*@ non_null @*/ protected final String m_mainName;
+	
+	public BeepBeepPipeline(String name, ProcessorQueue[] inputs, ProcessorQueue[] outputs)
 	{
 		super("main", 0, new Domain[0], 0, new Domain[0], false, 0, 0);
 		m_inputs = inputs;
+		m_mainName = name;
 		for (ProcessorQueue in : inputs)
 		{
 			add(in.getVariables());
@@ -59,6 +63,12 @@ public class BeepBeepPipeline extends ContainerModule
 	public void setOutput(ProcessorModule p, int i, int j)
 	{
 		m_connector.setOutput(p, i, m_outputs[j]);
+	}
+	
+	@Override
+	protected void addToComment(Comment c)
+	{
+		c.addLine("Module: " + m_mainName);
 	}
 
 	@Override

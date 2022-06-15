@@ -76,12 +76,14 @@ public class TrimModule extends SubsetProcessorModule
 	@Override
 	protected void addToInit(Conjunction c)
 	{
+		super.addToInit(c);
 		c.add(new Equality(m_counter, new Constant(m_counter.getDomain().getDefaultValue())));
 	}
 
 	@Override
 	protected void addToTrans(Conjunction c)
 	{
+		super.addToTrans(c);
 		c.add(nextCounter());
 	}
 
@@ -156,13 +158,15 @@ public class TrimModule extends SubsetProcessorModule
 		{
 			counter = m_counter.next();
 		}
+		Conjunction big_and = new Conjunction();
+		big_and.add(getFrontPorch(0).hasAt(next, m));
 		Disjunction big_or = new Disjunction();
 		{
 			// First case: no reset; depends on current counter and position
 			Conjunction and = new Conjunction();
 			and.add(new NoReset(next));
 			Disjunction imp_or = new Disjunction();
-			for (int c = 0; c < m_interval; c++)
+			for (int c = 0; c <= m_interval; c++)
 			{
 				if ((c + m) >= m_interval)
 				{
@@ -176,7 +180,8 @@ public class TrimModule extends SubsetProcessorModule
 		{
 			big_or.add(new IsReset(next));
 		}
-		return big_or;
+		big_and.add(big_or);
+		return big_and;
 	}
 
 	@Override

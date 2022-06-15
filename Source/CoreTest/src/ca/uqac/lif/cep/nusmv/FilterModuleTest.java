@@ -49,12 +49,12 @@ public class FilterModuleTest
 		Assignment a = new Assignment();
 		mod.getBuffer(1).set(true, false, true, true, false).assign(a);
 		mod.getFrontPorch(1).set().assign(a);
-		assertEquals(false, mod.hasNTrue(mod.getBuffer(1), 0, 0).evaluate(a));
-		assertEquals(true, mod.hasNTrue(mod.getBuffer(1), 0, 1).evaluate(a));
-		assertEquals(true, mod.hasNTrue(mod.getBuffer(1), 1, 1).evaluate(a));
-		assertEquals(true, mod.hasNTrue(mod.getBuffer(1), 2, 2).evaluate(a));
-		assertEquals(true, mod.hasNTrue(mod.getBuffer(1), 3, 3).evaluate(a));
-		assertEquals(true, mod.hasNTrue(mod.getBuffer(1), 4, 3).evaluate(a));
+		assertEquals(false, mod.hasNTrue(false, mod.getBuffer(1), 0, 0).evaluate(a));
+		assertEquals(true, mod.hasNTrue(false, mod.getBuffer(1), 0, 1).evaluate(a));
+		assertEquals(true, mod.hasNTrue(false, mod.getBuffer(1), 1, 1).evaluate(a));
+		assertEquals(true, mod.hasNTrue(false, mod.getBuffer(1), 2, 2).evaluate(a));
+		assertEquals(true, mod.hasNTrue(false, mod.getBuffer(1), 3, 3).evaluate(a));
+		assertEquals(true, mod.hasNTrue(false, mod.getBuffer(1), 4, 3).evaluate(a));
 	}
 		
 	@Test
@@ -65,13 +65,13 @@ public class FilterModuleTest
 		Assignment a = new Assignment();
 		mod.getBuffer(1).set(true, false, true, true, false).assign(a);
 		mod.getFrontPorch(1).set(true, false, true, true, false).assign(a);
-		assertEquals(false, mod.hasNTruePorch(1, 0, 3).evaluate(a));
-		assertEquals(true, mod.hasNTruePorch(1, 0, 4).evaluate(a));
-		assertEquals(true, mod.hasNTruePorch(1, 1, 4).evaluate(a));
-		assertEquals(true, mod.hasNTruePorch(1, 2, 5).evaluate(a));
-		assertEquals(true, mod.hasNTruePorch(1, 3, 6).evaluate(a));
-		assertEquals(false, mod.hasNTruePorch(1, 4, 5).evaluate(a));
-		assertEquals(true, mod.hasNTruePorch(1, 4, 6).evaluate(a));
+		assertEquals(false, mod.hasNTruePorch(false, 1, 0, 3).evaluate(a));
+		assertEquals(true, mod.hasNTruePorch(false, 1, 0, 4).evaluate(a));
+		assertEquals(true, mod.hasNTruePorch(false, 1, 1, 4).evaluate(a));
+		assertEquals(true, mod.hasNTruePorch(false, 1, 2, 5).evaluate(a));
+		assertEquals(true, mod.hasNTruePorch(false, 1, 3, 6).evaluate(a));
+		assertEquals(false, mod.hasNTruePorch(false, 1, 4, 5).evaluate(a));
+		assertEquals(true, mod.hasNTruePorch(false, 1, 4, 6).evaluate(a));
 	}
 	
 	@Test
@@ -82,20 +82,20 @@ public class FilterModuleTest
 		Assignment a = new Assignment();
 		mod.getBuffer(1).set(true, false, true, true, false).assign(a); // 3 true
 		mod.getFrontPorch(1).set(true, false, true, true, false).assign(a);
-		assertEquals(true, mod.isNthTrue(BUFFER, 1, 0, 1).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 1, 1).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 1, 2).evaluate(a));
-		assertEquals(true, mod.isNthTrue(BUFFER, 1, 2, 2).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 2, 1).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 2, 3).evaluate(a));
-		assertEquals(true, mod.isNthTrue(BUFFER, 1, 3, 3).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 3, 4).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 4, 3).evaluate(a));
-		assertEquals(true, mod.isNthTrue(PORCH, 1, 0, 4).evaluate(a));
-		assertEquals(false, mod.isNthTrue(PORCH, 1, 0, 3).evaluate(a));
-		assertEquals(false, mod.isNthTrue(PORCH, 1, 0, 5).evaluate(a));
-		assertEquals(false, mod.isNthTrue(PORCH, 1, 1, 4).evaluate(a));
-		assertEquals(true, mod.isNthTrue(PORCH, 1, 2, 5).evaluate(a));
+		assertEquals(true, mod.isNthTrue(false, BUFFER, 1, 0, 1).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 1, 1).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 1, 2).evaluate(a));
+		assertEquals(true, mod.isNthTrue(false, BUFFER, 1, 2, 2).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 2, 1).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 2, 3).evaluate(a));
+		assertEquals(true, mod.isNthTrue(false, BUFFER, 1, 3, 3).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 3, 4).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 4, 3).evaluate(a));
+		assertEquals(true, mod.isNthTrue(false, PORCH, 1, 0, 4).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, PORCH, 1, 0, 3).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, PORCH, 1, 0, 5).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, PORCH, 1, 1, 4).evaluate(a));
+		assertEquals(true, mod.isNthTrue(false, PORCH, 1, 2, 5).evaluate(a));
 	}
 	
 	@Test
@@ -106,20 +106,20 @@ public class FilterModuleTest
 		Assignment a = new Assignment();
 		mod.getBuffer(1).set(false, false, false, false, false).assign(a); // 0 true
 		mod.getFrontPorch(1).set(true, false, true, true, false).assign(a);
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 0, 1).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 1, 1).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 1, 2).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 2, 2).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 2, 1).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 2, 3).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 3, 3).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 3, 4).evaluate(a));
-		assertEquals(false, mod.isNthTrue(BUFFER, 1, 4, 3).evaluate(a));
-		assertEquals(true, mod.isNthTrue(PORCH, 1, 0, 1).evaluate(a));
-		assertEquals(false, mod.isNthTrue(PORCH, 1, 0, 2).evaluate(a));
-		assertEquals(false, mod.isNthTrue(PORCH, 1, 0, 0).evaluate(a));
-		assertEquals(false, mod.isNthTrue(PORCH, 1, 1, 2).evaluate(a));
-		assertEquals(true, mod.isNthTrue(PORCH, 1, 2, 2).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 0, 1).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 1, 1).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 1, 2).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 2, 2).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 2, 1).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 2, 3).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 3, 3).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 3, 4).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 4, 3).evaluate(a));
+		assertEquals(true, mod.isNthTrue(false, PORCH, 1, 0, 1).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, PORCH, 1, 0, 2).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, PORCH, 1, 0, 0).evaluate(a));
+		assertEquals(false, mod.isNthTrue(false, PORCH, 1, 1, 2).evaluate(a));
+		assertEquals(true, mod.isNthTrue(false, PORCH, 1, 2, 2).evaluate(a));
 	}
 	
 	@Test
@@ -175,6 +175,44 @@ public class FilterModuleTest
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
 		mod.getBackPorch(0).set("a", "c", "a", "a").assign(a);
+		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testFrontsVsBackPorch3()
+	{
+		// There is 1 complete front in this test case
+		int Q_in = 1, Q_b = 1, Q_out = 1;
+		FilterModule mod = new FilterModule("f", s_domLetters, Q_in, Q_b, Q_out);
+		Condition c = mod.frontsVsBackPorch(false);
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set().assign(a);
+		mod.getFrontPorch(0).set("a").assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set(true).assign(a);
+		List<Assignment> solutions = s_solver.solveAll(c, a);
+		assertEquals(1, solutions.size());
+		mod.getBackPorch(0).set("a").assign(a);
+		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testFrontsVsBackPorch4()
+	{
+		// There is 1 complete front in this test case
+		int Q_in = 1, Q_b = 1, Q_out = 1;
+		FilterModule mod = new FilterModule("f", s_domLetters, Q_in, Q_b, Q_out);
+		Condition c = mod.frontsVsBackPorch(true);
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).next().set().assign(a);
+		mod.getFrontPorch(0).next().set("a").assign(a);
+		mod.getBuffer(1).next().set().assign(a);
+		mod.getFrontPorch(1).next().set(true).assign(a);
+		List<Assignment> solutions = s_solver.solveAll(c, a);
+		assertEquals(1, solutions.size());
+		mod.getBackPorch(0).next().set("a").assign(a);
 		assertTrue(c.evaluate(a));
 	}
 	

@@ -31,6 +31,7 @@ import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Implication;
 import ca.uqac.lif.nusmv4j.IntegerRange;
+import ca.uqac.lif.nusmv4j.InvalidAssignmentException;
 import ca.uqac.lif.nusmv4j.LessThan;
 import ca.uqac.lif.nusmv4j.ScalarVariable;
 import ca.uqac.lif.nusmv4j.Variable;
@@ -105,6 +106,18 @@ public class PresetProcessorQueue extends ProcessorQueue
 	 */
 	/*@ non_null @*/ public PresetProcessorQueue addStep(Object ... events)
 	{
+		if (events.length > getSize())
+		{
+			throw new QueueOutOfBoundsException("Too many events (" + events.length + ") for queue size (" + getSize() + ")");
+		}
+		Domain d = m_arrayContents.getDomain();
+		for (Object o : events)
+		{
+			if (!d.contains(o))
+			{
+				throw new InvalidAssignmentException("Invalid value " + o);
+			}
+		}
 		m_steps.add(events);
 		return this;
 	}
@@ -141,6 +154,7 @@ public class PresetProcessorQueue extends ProcessorQueue
 	public void addToTrans(Conjunction c)
 	{
 		super.addToTrans(c);
+		// First, set value of state counter
 		if (m_loop)
 		{
 			c.add(new Equality(m_stateCounter.next(), new AdditionModulo(m_numSteps, m_stateCounter, new Constant(1))));
@@ -158,6 +172,12 @@ public class PresetProcessorQueue extends ProcessorQueue
 				{
 					imp.add(new Equality(m_stateCounter.next(), new Addition(m_stateCounter, new Constant(1))));
 				}
+				c.add(imp);
+			}
+			{
+				Implication imp = new Implication();
+				imp.add(new Equality(m_stateCounter, new Constant(m_numSteps)));
+				imp.add(new Equality(m_stateCounter.next(), new Constant(m_numSteps)));
 				c.add(imp);
 			}
 		}

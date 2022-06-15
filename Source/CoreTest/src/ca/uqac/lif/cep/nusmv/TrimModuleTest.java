@@ -109,6 +109,18 @@ public class TrimModuleTest
 	}
 	
 	@Test
+	public void testShouldBeOutput5()
+	{
+		int Q_in = 1, Q_out = 1;
+		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in, Q_out);
+		Assignment a = new Assignment();
+		mod.getFrontPorch(0).set(1).assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		mod.getCounter().set(1).assign(a);
+		assertEquals(true, mod.shouldBeOutput(false, 0).evaluate(a));
+	}
+	
+	@Test
 	public void testBackPorchValues1()
 	{
 		int Q_in = 6, Q_out = 6;
@@ -122,6 +134,125 @@ public class TrimModuleTest
 		assertEquals(1, solutions.size());
 		mod.getBackPorch(0).set(2, 3, 1, 2, 3).assign(a);
 		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testBackPorchValues2()
+	{
+		int Q_in = 1, Q_out = 1;
+		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in, Q_out);
+		Assignment a = new Assignment();
+		mod.getFrontPorch(0).set(0).assign(a);
+		mod.getFrontPorch(0).next().set(1).assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		mod.getResetFlag().next().set(false).assign(a);
+		mod.getBackPorch(0).set().assign(a);
+		mod.getCounter().set(0).assign(a);
+		mod.getCounter().next().set(1).assign(a);
+		{
+			Condition c = mod.shouldBeOutput(true, 0);
+			assertEquals(true, c.evaluate(a));
+		}
+		{
+			Condition c = mod.backPorchLength(true);
+			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).next().isWellFormed());
+			assertEquals(4, solutions.size()); // Values can be 0, 1, 2, 3
+		}
+		{
+			Condition c = mod.backPorchValues(true);
+			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).next().isWellFormed(), mod.backPorchLength(true));
+			assertEquals(1, solutions.size());
+		}
+	}
+	
+	@Test
+	public void testBackPorchValues3()
+	{
+		int Q_in = 2, Q_out = 2;
+		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in, Q_out);
+		Assignment a = new Assignment();
+		mod.getFrontPorch(0).set(0).assign(a);
+		mod.getFrontPorch(0).next().set(1).assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		mod.getResetFlag().next().set(false).assign(a);
+		mod.getBackPorch(0).set().assign(a);
+		mod.getCounter().set(0).assign(a);
+		mod.getCounter().next().set(1).assign(a);
+		{
+			Condition c = mod.shouldBeOutput(true, 0);
+			assertEquals(true, c.evaluate(a));
+		}
+		{
+			mod.getBackPorch(0).next().set().assign(a);
+			Condition c = mod.backPorchLength(true);
+			assertEquals(false, c.evaluate(a));
+			mod.getBackPorch(0).next().set(1).assign(a);
+		}
+		{
+			Condition c = mod.backPorchLength(true);
+			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).next().isWellFormed());
+			assertEquals(1, solutions.size());
+		}
+		{
+			Condition c = mod.backPorchValues(true);
+			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).next().isWellFormed(), mod.backPorchLength(true));
+			assertEquals(1, solutions.size());
+		}
+	}
+	
+	@Test
+	public void testBackPorchValues4()
+	{
+		int Q_in = 1, Q_out = 1;
+		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in, Q_out);
+		Assignment a = new Assignment();
+		mod.getFrontPorch(0).set(0).assign(a);
+		mod.getFrontPorch(0).next().set(1).assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		mod.getResetFlag().next().set(false).assign(a);
+		mod.getBackPorch(0).set().assign(a);
+		mod.getBackPorch(0).next().set().assign(a);
+		mod.getCounter().set(0).assign(a);
+		mod.getCounter().next().set(1).assign(a);
+		{
+			Condition c1 = mod.backPorchLength(true);
+			Condition c2 = mod.backPorchValues(true);
+			assertEquals(false, c1.evaluate(a));
+			assertEquals(false, c2.evaluate(a));
+		}
+	}
+	
+	@Test
+	public void testBackPorchValues5()
+	{
+		int Q_in = 1, Q_out = 1;
+		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in, Q_out);
+		Assignment a = new Assignment();
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		mod.getCounter().set(1).assign(a);
+		mod.getBackPorch(0).set(0).assign(a);
+		{
+			Condition c1 = mod.shouldBeOutput(false, 0);
+			assertEquals(false, c1.evaluate(a));
+		}
+		{
+			Condition c1 = mod.numOutputs(false, 0, 1);
+			assertEquals(false, c1.evaluate(a));
+		}
+		{
+			Condition c1 = mod.numOutputs(false, 0, 0);
+			assertEquals(true, c1.evaluate(a));
+		}
+		{
+			Condition c1 = mod.backPorchLength(false);
+			assertEquals(false, c1.evaluate(a));
+		}
+		{
+			mod.getBackPorch(0).set().assign(a);
+			Condition c1 = mod.backPorchLength(false);
+			assertEquals(true, c1.evaluate(a));
+		}
 	}
 	
 	@Test

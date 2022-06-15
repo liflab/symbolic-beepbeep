@@ -427,7 +427,6 @@ public class WindowModule extends ProcessorModule
 		{
 			super();
 			for (int len_pipe = 1; len_pipe <= getFrontPorch(0).getSize() + getBuffer(0).getSize(); len_pipe++)
-			//int len_pipe = 4;
 			{
 				Implication imp = new Implication();
 				imp.add(hasTotalPipe(false, 0, len_pipe));

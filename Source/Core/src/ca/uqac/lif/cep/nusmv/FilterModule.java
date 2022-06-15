@@ -45,14 +45,6 @@ public class FilterModule extends BinaryModule
 	{
 		super(name, d, BooleanDomain.instance, d, Q_in, Q_b, Q_out);
 	}
-
-	/*@ non_null @*/ public Condition buildInitialState(int Q_up, int Q_b)
-	{
-		Conjunction big_and = new Conjunction();
-		big_and.add(emptyBuffers(false));
-		// TODO
-		return big_and;
-	}
 	
 	@Override
 	protected void addToComment(Comment c)
@@ -89,7 +81,7 @@ public class FilterModule extends BinaryModule
 	 * @param n The number of true values
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition hasNTrue(ProcessorQueue q, int m, int n)
+	/*@ non_null @*/ public Condition hasNTrue(boolean next, ProcessorQueue q, int m, int n)
 	{
 		if (n - 1 > m)
 		{
@@ -101,31 +93,31 @@ public class FilterModule extends BinaryModule
 			// Works if input is well-formed and ⊥ is default value
 			if (m == 0)
 			{
-				return new Negation(q.booleanValueAt(0)); 	
+				return new Negation(q.booleanValueAt(next, 0)); 	
 			}
 			Conjunction and = new Conjunction();
 			for (int i = 0; i < m; i++)
 			{
-				and.add(new Negation(q.booleanValueAt(i)));
+				and.add(new Negation(q.booleanValueAt(next, i)));
 			}
 			return and;
 		}
 		if (m == 0)
 		{
-			return q.booleanValueAt(0); 	
+			return q.booleanValueAt(next, 0); 	
 		}
 		// n > 0, m > 0
 		Disjunction or = new Disjunction();
 		{
 			Conjunction and = new Conjunction();
-			and.add(q.booleanValueAt(m));
-			and.add(hasNTrue(q, m - 1, n - 1));
+			and.add(q.booleanValueAt(next, m));
+			and.add(hasNTrue(next, q, m - 1, n - 1));
 			or.add(and);
 		}
 		{
 			Conjunction and = new Conjunction();
-			and.add(new Negation(q.booleanValueAt(m)));
-			and.add(hasNTrue(q, m - 1, n));
+			and.add(new Negation(q.booleanValueAt(next, m)));
+			and.add(hasNTrue(next, q, m - 1, n));
 			or.add(and);
 		}
 		return or;
@@ -140,13 +132,13 @@ public class FilterModule extends BinaryModule
 	 * @param n The number of true values
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition hasNTrue(QueueType sigma, int pipe_index, int m, int n)
+	/*@ non_null @*/ public Condition hasNTrue(boolean next, QueueType sigma, int pipe_index, int m, int n)
 	{
 		if (sigma == QueueType.BUFFER)
 		{
-			return hasNTrue(getBuffer(pipe_index), m, n);
+			return hasNTrue(next, getBuffer(pipe_index), m, n);
 		}
-		return hasNTruePorch(pipe_index, m, n);
+		return hasNTruePorch(next, pipe_index, m, n);
 	}
 	
 	/**
@@ -158,7 +150,7 @@ public class FilterModule extends BinaryModule
 	 * @param n The number of true values
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition hasNTruePorch(int pipe_index, int m, int n)
+	/*@ non_null @*/ public Condition hasNTruePorch(boolean next, int pipe_index, int m, int n)
 	{
 		int Q_in = getFrontPorch(pipe_index).getSize();
 		int Q_b = getBuffer(pipe_index).getSize();
@@ -170,8 +162,8 @@ public class FilterModule extends BinaryModule
 			if (!(j > m + 1 || j > Q_in || i > Q_b))
 			{
 				Conjunction and = new Conjunction();
-				and.add(hasNTrue(getBuffer(pipe_index), Q_b - 1, i));
-				and.add(hasNTrue(getFrontPorch(pipe_index), m, j));
+				and.add(hasNTrue(next, getBuffer(pipe_index), Q_b - 1, i));
+				and.add(hasNTrue(next, getFrontPorch(pipe_index), m, j));
 				or.add(and);
 			}
 		}
@@ -206,12 +198,12 @@ public class FilterModule extends BinaryModule
 			if (s_b > m)
 			{
 				// All events in buffer
-				and.add(hasNTrue(QueueType.BUFFER, pipe_index, m, n));
+				and.add(hasNTrue(next, QueueType.BUFFER, pipe_index, m, n));
 			}
 			else
 			{
 				int offset = m - s_b;
-				and.add(hasNTrue(QueueType.PORCH, pipe_index, offset, n));
+				and.add(hasNTrue(next, QueueType.PORCH, pipe_index, offset, n));
 			}
 			or.add(and);
 		}
@@ -228,21 +220,21 @@ public class FilterModule extends BinaryModule
 	 * @param n The number of true values
 	 * @return The condition
 	 */
-	public Condition isNthTrue(QueueType sigma, int pipe_index, int m, int n)
+	public Condition isNthTrue(boolean next, QueueType sigma, int pipe_index, int m, int n)
 	{
 		if (m > 0)
 		{
 			Conjunction and = new Conjunction();
-			and.add(hasNTrue(sigma, pipe_index, m, n));
-			and.add(hasNTrue(sigma, pipe_index, m - 1, n - 1));
+			and.add(hasNTrue(next, sigma, pipe_index, m, n));
+			and.add(hasNTrue(next, sigma, pipe_index, m - 1, n - 1));
 			return and;
 		}
 		// m == 0
 		if (sigma == QueueType.PORCH)
 		{
 			Conjunction and = new Conjunction();
-			and.add(booleanValueAt(QueueType.PORCH, pipe_index, 0));
-			and.add(hasNTrue(QueueType.BUFFER, pipe_index, getBuffer(pipe_index).getSize() - 1, n - 1));
+			and.add(booleanValueAt(next, QueueType.PORCH, pipe_index, 0));
+			and.add(hasNTrue(next, QueueType.BUFFER, pipe_index, getBuffer(pipe_index).getSize() - 1, n - 1));
 			return and;
 		}
 		else
@@ -252,7 +244,7 @@ public class FilterModule extends BinaryModule
 				// n > 1, m == 0, sigma = buffer: impossible
 				return ConstantFalse.FALSE;
 			}
-			return hasNTrue(getBuffer(pipe_index), m, n);
+			return hasNTrue(next, getBuffer(pipe_index), m, n);
 		}
 	}
 
@@ -266,7 +258,7 @@ public class FilterModule extends BinaryModule
 			Conjunction left = new Conjunction();
 			left.add(at(next, sigma1, 0, m1, nf));
 			left.add(at(next, sigma2, 1, m2, nf));
-			left.add(isNthTrue(sigma2, 1, m2, n + 1));
+			left.add(isNthTrue(next, sigma2, 1, m2, n + 1));
 			or.add(left);
 		}
 		return or;
