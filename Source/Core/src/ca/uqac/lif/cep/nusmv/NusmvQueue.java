@@ -18,7 +18,11 @@
  */
 package ca.uqac.lif.cep.nusmv;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ca.uqac.lif.nusmv4j.ArrayVariable;
+import ca.uqac.lif.nusmv4j.Variable;
 
 public class NusmvQueue 
 {
@@ -57,5 +61,16 @@ public class NusmvQueue
 	/*@ pure non_null @*/ public ArrayVariable getVariable()
 	{
 		return m_arrayFlags;
+	}
+	
+	/**
+	 * Gets the list of all variables modeling this queue.
+	 * @return The list of variables
+	 */
+	/*@ pure non_null @*/ public List<Variable> getVariables()
+	{
+		List<Variable> vars = new ArrayList<Variable>();
+		vars.add(m_arrayFlags);
+		return vars;
 	}
 }

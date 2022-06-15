@@ -18,13 +18,10 @@
  */
 package ca.uqac.lif.cep.nusmv;
 
-import ca.uqac.lif.nusmv4j.BooleanArrayAccessCondition;
-import ca.uqac.lif.nusmv4j.BooleanDomain;
 import ca.uqac.lif.nusmv4j.BooleanVariableCondition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Negation;
-import ca.uqac.lif.nusmv4j.ScalarVariable;
 
 /**
  * The main module of a NuSMV model containing a pipeline of BeepBeep
@@ -44,14 +41,12 @@ public class BeepBeepPipeline extends ContainerModule
 		m_inputs = inputs;
 		for (ProcessorQueue in : inputs)
 		{
-			add(in.m_arrayContents);
-			add(in.m_arrayFlags);
+			add(in.getVariables());
 		}
 		m_outputs = outputs;
 		for (ProcessorQueue out : outputs)
 		{
-			add(out.m_arrayContents);
-			add(out.m_arrayFlags);
+			add(out.getVariables());
 		}
 		add(m_resetFlag);
 	}
@@ -70,21 +65,28 @@ public class BeepBeepPipeline extends ContainerModule
 	protected void addToInit(Conjunction c)
 	{
 		c.add(new Negation(new BooleanVariableCondition(m_resetFlag)));
-		/* //Not necessary
 		for (int i = 0; i < m_inputs.length; i++)
 		{
-			c.add(m_inputs[i].isWellFormed());
+			m_inputs[i].addToInit(c);
 		}
 		for (int i = 0; i < m_outputs.length; i++)
 		{
-			c.add(m_outputs[i].isWellFormed());
-		} */
+			m_outputs[i].addToInit(c);
+		}
 	}
 
 	@Override
 	protected void addToTrans(Conjunction c)
 	{
 		c.add(new Negation(new BooleanVariableCondition(m_resetFlag.next())));
+		for (int i = 0; i < m_inputs.length; i++)
+		{
+			m_inputs[i].addToTrans(c);
+		}
+		for (int i = 0; i < m_outputs.length; i++)
+		{
+			m_outputs[i].addToTrans(c);
+		}
 	}
 	
 	@Override

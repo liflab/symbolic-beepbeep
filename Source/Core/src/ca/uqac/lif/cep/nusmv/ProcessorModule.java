@@ -176,12 +176,12 @@ public abstract class ProcessorModule extends LogicModule
 		for (int i = 0; i < getInputArity(); i++)
 		{
 			and_init.add(m_buffers[i].hasLength(false, 0));
-			and_init.add(m_buffers[i].isWellFormed());
-			and_init.add(m_frontPorches[i].isWellFormed());
+			m_buffers[i].addToInit(and_init);
+			m_frontPorches[i].addToInit(and_init);
 		}
 		for (int i = 0; i < getOutputArity(); i++)
 		{
-			and_init.add(m_backPorches[i].isWellFormed());
+			m_backPorches[i].addToInit(and_init);
 		}
 		addToInit(and_init);
 		if (s_simplify)
@@ -197,13 +197,12 @@ public abstract class ProcessorModule extends LogicModule
 		Conjunction and_trans = new Conjunction();
 		for (int i = 0; i < getInputArity(); i++)
 		{
-			and_trans.add(m_buffers[i].hasLength(true, 0));
-			and_trans.add(m_buffers[i].next().isWellFormed());
-			and_trans.add(m_frontPorches[i].next().isWellFormed());
+			m_buffers[i].addToTrans(and_trans);
+			m_frontPorches[i].addToTrans(and_trans);
 		}
 		for (int i = 0; i < getOutputArity(); i++)
 		{
-			and_trans.add(m_backPorches[i].next().isWellFormed());	
+			m_backPorches[i].addToTrans(and_trans);	
 		}
 		addToTrans(and_trans);
 		if (s_simplify)
@@ -526,11 +525,6 @@ public abstract class ProcessorModule extends LogicModule
 			m_pipeIndex = pipe_index;
 			ProcessorQueue porch = m_frontPorches[pipe_index];
 			ProcessorQueue buffer = m_buffers[pipe_index];
-			if (next)
-			{
-				porch = porch.next();
-				buffer = buffer.next();
-			}
 			for (int j = 0; j <= n; j++)
 			{
 				int k = n - j;

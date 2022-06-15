@@ -21,6 +21,8 @@ package ca.uqac.lif.cep.nusmv;
 import static ca.uqac.lif.nusmv4j.ConstantFalse.FALSE;
 import static ca.uqac.lif.nusmv4j.ConstantTrue.TRUE;
 
+import java.util.List;
+
 import ca.uqac.lif.nusmv4j.ArrayAccess;
 import ca.uqac.lif.nusmv4j.ArrayVariable;
 import ca.uqac.lif.nusmv4j.Assignment;
@@ -34,6 +36,7 @@ import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Implication;
 import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.Term;
+import ca.uqac.lif.nusmv4j.Variable;
 
 /**
  * An event queue modeled as a pair of NuSMV array variables. Concretely,
@@ -439,5 +442,13 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		m_arrayContents.assign(a);
 		m_arrayFlags.assign(a);
+	}
+	
+	@Override
+	/*@ pure non_null @*/ public List<Variable> getVariables()
+	{
+		List<Variable> vars = super.getVariables();
+		vars.add(m_arrayContents);
+		return vars;
 	}
 }

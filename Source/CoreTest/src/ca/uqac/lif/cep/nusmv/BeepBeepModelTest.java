@@ -59,7 +59,8 @@ public class BeepBeepModelTest
 	public void testPrint2()
 	{
 		int Q_in = 2, Q_out = 2;
-		ProcessorQueue in_q = new ProcessorQueue("in", "in_c", "in_b", 2, s_domLetters);
+		PresetProcessorQueue in_q = new PresetProcessorQueue("in", "in_c", "in_b", 2, s_domLetters, 4, false);
+		in_q.addStep("a", "b", "c", "d");
 		ProcessorQueue out_q = new ProcessorQueue("out", "ou_c", "ou_b", 2, s_domLetters);
 		BeepBeepPipeline pipeline = new BeepBeepPipeline(new ProcessorQueue[] {in_q}, new ProcessorQueue[] {out_q});
 		TrimModule pt1 = new TrimModule("Trim1", 1, s_domLetters, Q_in, Q_out);
