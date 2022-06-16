@@ -80,11 +80,11 @@ public class PresetProcessorQueue extends ProcessorQueue
 		m_steps = new ArrayList<Object[]>();
 	}
 	
-	public PresetProcessorQueue(String name, String contents, String flags, int size, Domain d, int num_steps, boolean loop)
+	public PresetProcessorQueue(String name, String contents, String flags, String counter, int size, Domain d, int num_steps, boolean loop)
 	{
 		super(name, contents, flags, size, d);
 		m_numSteps = num_steps;
-		m_stateCounter = new ScalarVariable("cnt", new IntegerRange(0, num_steps));
+		m_stateCounter = new ScalarVariable(counter, new IntegerRange(0, num_steps));
 		m_loop = loop;
 		m_steps = new ArrayList<Object[]>();
 	}

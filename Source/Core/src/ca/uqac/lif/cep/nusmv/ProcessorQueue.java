@@ -219,7 +219,7 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		if (index < 0 || index >= getSize())
 		{
-			return FALSE;
+			throw new ArrayIndexOutOfBoundsException(getName() + "[" + index + "] out of bounds");
 		}
 		ArrayVariable q = m_arrayFlags;
 		if (next)
@@ -239,7 +239,7 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		if (index < 0 || index >= getSize())
 		{
-			return FALSE;
+			throw new ArrayIndexOutOfBoundsException(getName() + "[" + index + "] out of bounds");
 		}
 		return BooleanArrayAccessCondition.get(ArrayAccess.get(m_arrayFlags.next(), index));
 	}
@@ -255,7 +255,7 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		if (index < 0 || index >= getSize())
 		{
-			return FALSE;
+			throw new ArrayIndexOutOfBoundsException(getName() + "[" + index + "] out of bounds");
 		}
 		if (next)
 		{
@@ -276,7 +276,7 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		if (index < 0 || index >= getSize())
 		{
-			return FALSE;
+			throw new ArrayIndexOutOfBoundsException(getName() + "[" + index + "] out of bounds");
 		}
 		if (next)
 		{

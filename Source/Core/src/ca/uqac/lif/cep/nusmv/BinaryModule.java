@@ -81,7 +81,7 @@ public abstract class BinaryModule extends ProcessorModule
 		}
 		{
 			Implication imp = new Implication();
-			imp.add(new IsReset(true));
+			imp.add(new NoReset(true));
 			Conjunction and = new Conjunction();
 			and.add(nextBufferSizes());
 			imp.add(and);
@@ -175,6 +175,10 @@ public abstract class BinaryModule extends ProcessorModule
 		{
 			for (int nq = nf; nq <= Q_in + Q_b; nq++)
 			{
+				if (nq - nf > getBuffer(pipe_index).getSize())
+				{
+					continue;
+				}
 				Implication imp = new Implication();
 				{
 					Conjunction left = new Conjunction();
@@ -215,7 +219,7 @@ public abstract class BinaryModule extends ProcessorModule
 				}
 				{
 					Conjunction in_and = new Conjunction();
-					for (int i = 0; i <= nq - nf - 1; i++)
+					for (int i = 0; i <= nq - nf - 1 && i < getBuffer(pipe_index).getSize(); i++)
 					{
 						for (QueueType sigma : new QueueType[] {QueueType.PORCH, QueueType.BUFFER})
 						{

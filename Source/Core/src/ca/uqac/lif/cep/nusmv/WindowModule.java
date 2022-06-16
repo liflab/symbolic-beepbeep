@@ -20,8 +20,10 @@ package ca.uqac.lif.cep.nusmv;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import ca.uqac.lif.nusmv4j.Assignment;
+import ca.uqac.lif.nusmv4j.BooleanDomain;
 import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
@@ -38,7 +40,7 @@ import ca.uqac.lif.nusmv4j.ScalarVariable;
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.BUFFER;
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.PORCH;
 
-public class WindowModule extends ProcessorModule
+public class WindowModule extends ProcessorModule implements CompositeProcessorModule
 {
 	/**
 	 * The width of the window.
@@ -86,7 +88,7 @@ public class WindowModule extends ProcessorModule
 		}
 		m_innerFrontPorches = new HashMap<Integer,ProcessorQueue>();
 		m_innerBackPorches = new HashMap<Integer,ProcessorQueue>();
-		m_innerResetFlag = new ScalarVariable("innerr", new Domain(new Object[] {ConstantTrue.TRUE}));
+		m_innerResetFlag = new ScalarVariable("innerr", BooleanDomain.instance);
 		add(m_innerResetFlag);
 		for (int i = 0; i < Q_in + width; i++)
 		{
@@ -97,7 +99,7 @@ public class WindowModule extends ProcessorModule
 			add(in_q.m_arrayContents);
 			add(in_q.m_arrayFlags);
 			add(out_q.m_arrayContents);
-			add(in_q.m_arrayFlags);
+			add(out_q.m_arrayFlags);
 			ModuleDomain dom = new ModuleDomain(m_processors[i], in_q.m_arrayContents, in_q.m_arrayFlags, out_q.m_arrayContents, out_q.m_arrayFlags, m_innerResetFlag);
 			add("in_p" + i, dom);
 		}
@@ -211,6 +213,16 @@ public class WindowModule extends ProcessorModule
 				valueAt(next, sigma, 0, m), // m-th event of sigma
 				m_innerFrontPorches.get(offset).valueAt(next, n) // n-th event of front porch of offset
 				);
+	}
+	
+	@Override
+	public void addModules(/*@ non_null @*/ Set<ProcessorModule> modules)
+	{
+		if (m_processor instanceof CompositeProcessorModule)
+		{
+			((CompositeProcessorModule) m_processor).addModules(modules);
+		}
+		modules.add(m_processor);
 	}
 
 	/**

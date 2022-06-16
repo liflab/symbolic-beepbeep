@@ -41,9 +41,9 @@ public class TrimModule extends SubsetProcessorModule
 	 */
 	/*@ non_null @*/ protected final int m_interval;
 
-	public TrimModule(String name, int interval, Domain d, int Q_in, int Q_out)
+	public TrimModule(String name, int interval, Domain d, int Q_in)
 	{
-		super(name, d, Q_in, Q_out);
+		super(name, d, Q_in, Q_in);
 		m_interval = interval;
 		m_counter = new ScalarVariable("cnt", new IntegerRange(0, interval));
 		add(m_counter);
@@ -187,7 +187,7 @@ public class TrimModule extends SubsetProcessorModule
 	@Override
 	public TrimModule duplicate()
 	{
-		TrimModule m = new TrimModule(getName(), m_interval, getFrontPorch(0).getDomain(), getFrontPorch(0).getSize(), getBackPorch(0).getSize());
+		TrimModule m = new TrimModule(getName(), m_interval, getFrontPorch(0).getDomain(), getFrontPorch(0).getSize());
 		super.copyInto(m);
 		return m;
 	}

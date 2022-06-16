@@ -46,7 +46,7 @@ public class TrimModuleTest
 	public void testShouldBeOutput1()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 2, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 2, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -62,7 +62,7 @@ public class TrimModuleTest
 	public void testShouldBeOutput2()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -78,7 +78,7 @@ public class TrimModuleTest
 	public void testShouldBeOutput3()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -95,7 +95,7 @@ public class TrimModuleTest
 	public void testShouldBeOutput4()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 10, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 10, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 3, 2, 1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -112,7 +112,7 @@ public class TrimModuleTest
 	public void testShouldBeOutput5()
 	{
 		int Q_in = 1, Q_out = 1;
-		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -124,7 +124,7 @@ public class TrimModuleTest
 	public void testBackPorchValues1()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 1, 2, 3).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -140,7 +140,7 @@ public class TrimModuleTest
 	public void testBackPorchValues2()
 	{
 		int Q_in = 1, Q_out = 1;
-		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0).assign(a);
 		mod.getFrontPorch(0).next().set(1).assign(a);
@@ -169,7 +169,7 @@ public class TrimModuleTest
 	public void testBackPorchValues3()
 	{
 		int Q_in = 2, Q_out = 2;
-		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0).assign(a);
 		mod.getFrontPorch(0).next().set(1).assign(a);
@@ -204,7 +204,7 @@ public class TrimModuleTest
 	public void testBackPorchValues4()
 	{
 		int Q_in = 1, Q_out = 1;
-		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0).assign(a);
 		mod.getFrontPorch(0).next().set(1).assign(a);
@@ -226,7 +226,7 @@ public class TrimModuleTest
 	public void testBackPorchValues5()
 	{
 		int Q_in = 1, Q_out = 1;
-		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set().assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -259,7 +259,7 @@ public class TrimModuleTest
 	public void testBackPorchValues6()
 	{
 		int Q_in = 2, Q_out = 2;
-		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 1, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -300,7 +300,7 @@ public class TrimModuleTest
 	public void testNextCounter1()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 1, 2, 3).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -319,7 +319,7 @@ public class TrimModuleTest
 	public void testNextCounter2()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2, 3, 1, 2, 3).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -336,7 +336,7 @@ public class TrimModuleTest
 	public void testNextCounter3()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -353,7 +353,7 @@ public class TrimModuleTest
 	public void testNextCounter4()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -370,7 +370,7 @@ public class TrimModuleTest
 	public void testNextCounter5()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -387,7 +387,7 @@ public class TrimModuleTest
 	public void testNextCounter7()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getResetFlag().set(true).assign(a);
@@ -404,7 +404,7 @@ public class TrimModuleTest
 	public void testPrint1()
 	{
 		int Q_in = 6, Q_out = 6;
-		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in, Q_out);
+		TrimModule mod = new TrimModule("trim", 3, s_domNumbers, Q_in);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PrettyPrintStream ps = new PrettyPrintStream(baos);
 		mod.print(ps);

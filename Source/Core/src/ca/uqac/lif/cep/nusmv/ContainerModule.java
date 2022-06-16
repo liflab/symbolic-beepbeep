@@ -14,7 +14,7 @@ import ca.uqac.lif.nusmv4j.PrettyPrintStream;
 /**
  * A processor module that contains other processors connected by pipes.
  */
-public abstract class ContainerModule extends ProcessorModule
+public abstract class ContainerModule extends ProcessorModule implements CompositeProcessorModule
 {
 	/**
 	 * The processor modules that are "contained" within This container module. The map
@@ -92,18 +92,14 @@ public abstract class ContainerModule extends ProcessorModule
 		return this;
 	}
 	
-	/**
-	 * Recursively adds to a set all the processor module instances referred to
-	 * in this container.
-	 * @param modules The set where module instance are added
-	 */
+	@Override
 	public void addModules(/*@ non_null @*/ Set<ProcessorModule> modules)
 	{
 		for (ProcessorModule mod : m_contents.keySet())
 		{
-			if (mod instanceof ContainerModule)
+			if (mod instanceof CompositeProcessorModule)
 			{
-				((ContainerModule) mod).addModules(modules);
+				((CompositeProcessorModule) mod).addModules(modules);
 			}
 			modules.add(mod);
 		}

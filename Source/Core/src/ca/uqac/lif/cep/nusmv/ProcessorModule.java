@@ -573,6 +573,10 @@ public abstract class ProcessorModule extends LogicModule
 			for (int j = 0; j <= n; j++)
 			{
 				int k = n - j;
+				if (j > buffer.getSize() || k > porch.getSize())
+				{
+					continue; // Impossible condition
+				}
 				Conjunction and = new Conjunction();
 				and.add(buffer.hasLength(next, j));
 				and.add(porch.hasLength(next, k));

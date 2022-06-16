@@ -42,7 +42,7 @@ public class PresetProcessorQueueTest
 	@Test
 	public void test1()
 	{
-		PresetProcessorQueue q = new PresetProcessorQueue("q", "q_c", "q_b", 2, s_domLetters, 3, false);
+		PresetProcessorQueue q = new PresetProcessorQueue("q", "q_c", "q_b", "cnt", 2, s_domLetters, 3, false);
 		q.addStep("a").addStep("b").addStep("c");
 		Assignment a = new Assignment();
 		Conjunction c = new Conjunction();
@@ -59,7 +59,7 @@ public class PresetProcessorQueueTest
 	@Test
 	public void test2()
 	{
-		PresetProcessorQueue q = new PresetProcessorQueue("q", "q_c", "q_b", 2, s_domLetters, 3, false);
+		PresetProcessorQueue q = new PresetProcessorQueue("q", "q_c", "q_b", "cnt", 2, s_domLetters, 3, false);
 		q.addStep("a").addStep("b").addStep("c");
 		Assignment a = new Assignment();
 		Conjunction c = new Conjunction();
@@ -77,7 +77,7 @@ public class PresetProcessorQueueTest
 	@Test
 	public void test3()
 	{
-		PresetProcessorQueue q = new PresetProcessorQueue("q", "q_c", "q_b", 2, s_domLetters, 3, false);
+		PresetProcessorQueue q = new PresetProcessorQueue("q", "q_c", "q_b", "cnt", 2, s_domLetters, 3, false);
 		q.addStep("a").addStep("b").addStep("c", "b");
 		Assignment a = new Assignment();
 		Conjunction c = new Conjunction();
@@ -95,7 +95,7 @@ public class PresetProcessorQueueTest
 	@Test
 	public void test4()
 	{
-		PresetProcessorQueue q = new PresetProcessorQueue("q", "q_c", "q_b", 2, s_domLetters, 3, true);
+		PresetProcessorQueue q = new PresetProcessorQueue("q", "q_c", "q_b", "cnt", 2, s_domLetters, 3, true);
 		q.addStep("a").addStep("b").addStep("c", "b");
 		Assignment a = new Assignment();
 		Conjunction c = new Conjunction();

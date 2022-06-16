@@ -24,6 +24,7 @@ import ca.uqac.lif.nusmv4j.Assignment;
 import ca.uqac.lif.nusmv4j.BruteSolver;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Domain;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 import ca.uqac.lif.nusmv4j.Solver;
 
 import static org.junit.Assert.*;
@@ -33,6 +34,8 @@ import java.util.List;
 public class BinaryApplyFunctionModuleTest
 {
 	protected static Domain s_domLetters = new Domain(new Object[] {"a", "b", "c"});
+	
+	protected static Domain s_domNumbers = new IntegerRange(0, 3);
 
 	protected static Solver s_solver = new BruteSolver();
 
@@ -450,6 +453,43 @@ public class BinaryApplyFunctionModuleTest
 		mod.getFrontPorch(1).set("a", "c").assign(a);
 		mod.getBackPorch(0).set(true, false).assign(a);
 		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testBackPorchValues8()
+	{
+		int Q_in = 1, Q_b = 1, Q_out = 2;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set().assign(a);
+		mod.getFrontPorch(0).set(1).assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		mod.getBackPorch(0).set().assign(a);
+		mod.getFrontPorch(0).next().set(3).assign(a);
+		mod.getFrontPorch(1).next().set(2).assign(a);
+		mod.getResetFlag().next().set(false).assign(a);
+		/*{
+			mod.getBackPorch(0).next().set(3).assign(a);
+			mod.getBuffer(0).next().set(2).assign(a);
+			mod.getBuffer(1).next().set().assign(a);
+			assertEquals(true, mod.getTrans().evaluate(a));
+		}*/
+		List<Assignment> sols = s_solver.solveAll(mod.getTrans(), a);
+		assertEquals(1, sols.size());
+		/*{
+			mod.getBuffer(0).next().set().assign(a);
+			mod.getBuffer(1).next().set(1).assign(a);
+			assertEquals(true, mod.nextBufferSize(0).evaluate(a));
+			assertEquals(true, mod.nextBufferSize(1).evaluate(a));
+		}
+		{
+			mod.getBuffer(0).next().set().assign(a);
+			mod.getBuffer(1).next().set().assign(a);
+			assertEquals(true, mod.nextBufferSize(0).evaluate(a));
+			assertEquals(false, mod.nextBufferSize(1).evaluate(a));
+		}*/
 	}
 
 	@Test

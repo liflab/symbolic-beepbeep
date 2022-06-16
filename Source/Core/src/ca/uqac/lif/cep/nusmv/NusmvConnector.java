@@ -134,6 +134,11 @@ public class NusmvConnector
 	protected void registerInputConnection(ProcessorModule p, int j, ProcessorConnection conn)
 	{
 		Map<Integer,ProcessorConnection> entries = null;
+		int s1 = p.getFrontPorch(j).getSize(), s2 = conn.getQueue().getSize();
+		if (s1 != s2)
+		{
+			throw new IncompatibleQueueSizeException("Differing queue sizes: |" + p.getName() + "?[" + j + "]| = "+ s1 + " and " + s2);
+		}
 		if (m_inputConnections.containsKey(p))
 		{
 			entries = m_inputConnections.get(p);
@@ -147,13 +152,18 @@ public class NusmvConnector
 	}
 	
 	/**
-	 * Registers the connection to the input j of module p.
+	 * Registers the connection to the output j of module p.
 	 * @param p The module
 	 * @param j The index of its input
 	 * @param conn The connection to register
 	 */
 	protected void registerOutputConnection(ProcessorModule p, int i, ProcessorConnection conn)
 	{
+		int s1 = p.getBackPorch(i).getSize(), s2 = conn.getQueue().getSize();
+		if (s1 != s2)
+		{
+			throw new IncompatibleQueueSizeException("Differing queue sizes: |" + p.getName() + "![" + i + "]| = "+ s1 + " and " + s2);
+		}
 		Map<Integer,ProcessorConnection> entries = null;
 		if (m_outputConnections.containsKey(p))
 		{
