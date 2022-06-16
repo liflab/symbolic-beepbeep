@@ -374,6 +374,10 @@ public class ProcessorQueue extends NusmvQueue
 			m_length = n;
 			m_next = next;
 			int Q = getSize();
+			if (n > Q)
+			{
+				throw new QueueOutOfBoundsException("Length " + n + " exceeds size of " + getName());
+			}
 			if (n < 0 || n > Q)
 			{
 				add(FALSE);

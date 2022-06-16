@@ -24,7 +24,7 @@ import ca.uqac.lif.nusmv4j.Implication;
 /**
  * Unary processor applying a function to each event of the input porch.
  */
-public abstract class UnaryApplyFunctionModule extends UnaryProcessorModule
+public class UnaryApplyFunctionModule extends UnaryProcessorModule
 {
 	/**
 	 * The unary function to apply on each input event.
@@ -79,6 +79,13 @@ public abstract class UnaryApplyFunctionModule extends UnaryProcessorModule
 		{
 			return "![0] = f(?[0])";
 		}
+	}
+
+	@Override
+	public ProcessorModule duplicate()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

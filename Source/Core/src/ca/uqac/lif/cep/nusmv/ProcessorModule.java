@@ -392,7 +392,7 @@ public abstract class ProcessorModule extends LogicModule
 			m_n = n;
 			ProcessorQueue porch = m_frontPorches[pipe_index];
 			ProcessorQueue buffer = m_buffers[pipe_index];
-			if (n < 0 || n >= buffer.getSize() + porch.getSize() || m < 0 || m >= porch.getSize())
+			if (n < 0 || n >= buffer.getSize() + porch.getSize() || m < 0 || m >= porch.getSize() || n - m < 0 || n - m > buffer.getSize())
 			{
 				add(FALSE); // Impossible
 			}

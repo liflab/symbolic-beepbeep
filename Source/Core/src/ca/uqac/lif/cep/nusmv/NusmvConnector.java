@@ -379,7 +379,7 @@ public class NusmvConnector
 				throw new NusmvConnectorException("Incompatible domains for output " + i + " of " + p1 + " and input " + j + " of " + p2);
 			}
 			int q_id = m_queueCounter++;
-			m_pipe = new ProcessorQueue(m_queuePrefix + q_id, "qc_" + q_id, "qb_" + q_id, out.getSize(), out.getDomain());
+			m_pipe = new ProcessorQueue(m_queuePrefix + q_id, "qc_" + q_id, "qb_" + q_id, in.getSize(), in.getDomain());
 		}
 		
 		@Override

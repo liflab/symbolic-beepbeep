@@ -19,12 +19,17 @@
 package ca.uqac.lif.cep.nusmv;
 
 import ca.uqac.lif.nusmv4j.Addition.AdditionModulo;
+import ca.uqac.lif.nusmv4j.BooleanDomain;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
+import ca.uqac.lif.nusmv4j.Constant;
+import ca.uqac.lif.nusmv4j.ConstantTrue;
 import ca.uqac.lif.nusmv4j.Disjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
+import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.GreaterThan;
+import ca.uqac.lif.nusmv4j.Modulo;
 import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.Term;
 
@@ -53,6 +58,40 @@ public class NusmvNumbers
 		
 		@Override
 		public Domain getInputDomain(int index)
+		{
+			return m_domain;
+		}
+
+		@Override
+		public Domain getOutputDomain() 
+		{
+			return m_domain;
+		}
+	}
+	
+	/**
+	 * A binary function handling numbers taken from a finite set. 
+	 */
+	public static abstract class UnaryNumberFunction implements UnaryFunctionCall
+	{
+		/**
+		 * The domain of both inputs and the output of the function.
+		 */
+		/*@ non_null @*/ protected final Domain m_domain;
+		
+		/**
+		 * Creates a new instance of the function for a given domain.
+		 * @param d The domain, which is assumed to be the same for both
+		 * inputs and the output of the function.
+		 */
+		public UnaryNumberFunction(Domain d)
+		{
+			super();
+			m_domain = d;
+		}
+		
+		@Override
+		public Domain getInputDomain()
 		{
 			return m_domain;
 		}
@@ -171,6 +210,37 @@ public class NusmvNumbers
 		public String toString()
 		{
 			return "max";
+		}
+	}
+	
+	/**
+	 * Function that determines if a number is even.
+	 */
+	public static class IsEven extends UnaryNumberFunction
+	{
+		/**
+		 * Creates a new instance of the function for a given domain.
+		 * @param d The domain, which must be a discrete set for the form
+		 * {0, 1, &hellip; n}.
+		 */
+		public IsEven(Domain d)
+		{
+			super(d);
+		}
+
+		@Override
+		public Condition getCondition(Term<?> x, Term<?> y)
+		{
+			Equivalence eq = new Equivalence();
+			eq.add(new Equality(new Modulo(x, new Constant(2)), new Constant(0)));
+			eq.add(new Equality(ConstantTrue.TRUE, y));
+			return eq;
+		}
+		
+		@Override
+		public Domain getOutputDomain() 
+		{
+			return BooleanDomain.instance;
 		}
 	}
 }
