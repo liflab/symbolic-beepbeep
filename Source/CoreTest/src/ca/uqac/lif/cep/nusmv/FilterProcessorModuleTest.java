@@ -30,7 +30,6 @@ import ca.uqac.lif.nusmv4j.Assignment;
 import ca.uqac.lif.nusmv4j.BruteSolver;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Domain;
-import ca.uqac.lif.nusmv4j.Solver;
 
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.BUFFER;
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.PORCH;
@@ -39,7 +38,7 @@ public class FilterProcessorModuleTest
 {
 	protected static Domain s_domLetters = new Domain(new Object[] {"a", "b", "c"});
 
-	protected static Solver s_solver = new BruteSolver();
+	protected static BruteSolver s_solver = new BruteSolver();
 	
 	@Test
 	public void testHasNTrueBuffer1()
@@ -214,6 +213,50 @@ public class FilterProcessorModuleTest
 		assertEquals(1, solutions.size());
 		mod.getBackPorch(0).next().set("a").assign(a);
 		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
+	public void testGetInit1()
+	{
+		int Q_in = 2, Q_b = 2, Q_out = 2;
+		FilterModule mod = new FilterModule("f", s_domLetters, Q_in, Q_b, Q_out);
+		Condition c = mod.getInit();
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		// Current
+		mod.getBuffer(0).set().assign(a);
+		mod.getFrontPorch(0).set("a").assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set(false).assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		List<Assignment> solutions = s_solver.solveAll(c, a, 20);
+		assertEquals(1, solutions.size());
+	}
+	
+	@Test
+	public void testGetTrans1()
+	{
+		int Q_in = 2, Q_b = 2, Q_out = 2;
+		FilterModule mod = new FilterModule("f", s_domLetters, Q_in, Q_b, Q_out);
+		Condition c = mod.getTrans();
+		assertNotNull(c);
+		Assignment a = new Assignment();
+		// Current
+		mod.getBuffer(0).set().assign(a);
+		mod.getFrontPorch(0).set("a").assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set(false).assign(a);
+		mod.getBackPorch(0).set().assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		// Next
+		//mod.getBuffer(0).next().set().assign(a);
+		mod.getFrontPorch(0).next().set("b").assign(a);
+		//mod.getBuffer(1).next().set().assign(a);
+		mod.getFrontPorch(1).next().set(true).assign(a);
+		mod.getBackPorch(0).next().set("b").assign(a);
+		mod.getResetFlag().next().set(false).assign(a);
+		List<Assignment> solutions = s_solver.solveAll(c, a, 20);
+		assertEquals(1, solutions.size());
 	}
 	
 	@Test

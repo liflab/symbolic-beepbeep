@@ -200,7 +200,7 @@ public class FilterModule extends BinaryModule
 				// All events in buffer
 				and.add(hasNTrue(next, QueueType.BUFFER, pipe_index, m, n));
 			}
-			else
+			else if (m - s_b < getSize(QueueType.PORCH, pipe_index))
 			{
 				int offset = m - s_b;
 				and.add(hasNTrue(next, QueueType.PORCH, pipe_index, offset, n));
@@ -246,6 +246,20 @@ public class FilterModule extends BinaryModule
 			}
 			return hasNTrue(next, getBuffer(pipe_index), m, n);
 		}
+	}
+	
+	@Override
+	protected void addToInit(Conjunction c)
+	{
+		super.addToInit(c);
+		c.add(frontsVsBackPorch(false));
+	}
+
+	@Override
+	protected void addToTrans(Conjunction c) 
+	{
+		super.addToTrans(c);
+		c.add(frontsVsBackPorch(true));		
 	}
 
 	@Override
