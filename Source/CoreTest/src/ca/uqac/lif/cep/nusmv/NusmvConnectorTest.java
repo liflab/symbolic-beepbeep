@@ -46,8 +46,8 @@ public class NusmvConnectorTest
 		int Q = 2;
 		ScalarVariable reset = new ScalarVariable("reset", BooleanDomain.instance);
 		NusmvConnector connector = new NusmvConnector(reset);
-		PassthroughModule pt1 = new PassthroughModule("pt1", s_domNumbers, Q, Q);
-		PassthroughModule pt2 = new PassthroughModule("pt2", s_domNumbers, Q, Q);
+		PassthroughModule pt1 = new PassthroughModule("pt1", s_domNumbers, Q);
+		PassthroughModule pt2 = new PassthroughModule("pt2", s_domNumbers, Q);
 		connector.connect(pt1, 0, pt2, 0);
 		ProcessorQueue in = new ProcessorQueue("in", "in_c", "in_b", Q, s_domNumbers);
 		ProcessorQueue out = new ProcessorQueue("ou", "ou_c", "ou_b", Q, s_domNumbers);
@@ -69,8 +69,8 @@ public class NusmvConnectorTest
 		int Q = 2;
 		ScalarVariable reset = new ScalarVariable("reset", BooleanDomain.instance);
 		NusmvConnector connector = new NusmvConnector(reset);
-		PassthroughModule pt1 = new PassthroughModule("pt1", s_domNumbers, Q, Q);
-		PassthroughModule pt2 = new PassthroughModule("pt2", s_domNumbers, Q + 1, Q);
+		PassthroughModule pt1 = new PassthroughModule("pt1", s_domNumbers, Q);
+		PassthroughModule pt2 = new PassthroughModule("pt2", s_domNumbers, Q + 1);
 		connector.connect(pt1, 0, pt2, 0);
 	}
 	
@@ -80,8 +80,8 @@ public class NusmvConnectorTest
 		int Q = 2;
 		ScalarVariable reset = new ScalarVariable("reset", BooleanDomain.instance);
 		NusmvConnector connector = new NusmvConnector(reset);
-		PassthroughModule pt1 = new PassthroughModule("pt1", s_domNumbersLarge, Q, Q);
-		PassthroughModule pt2 = new PassthroughModule("pt2", s_domNumbers, Q, Q);
+		PassthroughModule pt1 = new PassthroughModule("pt1", s_domNumbersLarge, Q);
+		PassthroughModule pt2 = new PassthroughModule("pt2", s_domNumbers, Q);
 		connector.connect(pt1, 0, pt2, 0);
 	}
 }

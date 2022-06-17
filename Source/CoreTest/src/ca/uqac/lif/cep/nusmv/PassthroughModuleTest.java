@@ -43,24 +43,48 @@ protected static Domain s_domNumbers = new IntegerRange(0, 3);
 	@Test
 	public void testInOut1()
 	{
-		int Q_in = 2, Q_out = 2;
-		PassthroughModule mod = new PassthroughModule("pt", s_domNumbers, Q_in, Q_out);
+		int Q_in = 2;
+		PassthroughModule mod = new PassthroughModule("pt", s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		Condition c = mod.new MatchingPorches(false);
-		List<Assignment> sols = s_solver.solveAll(c, a, mod.getFrontPorch(0).isWellFormed(), mod.getBackPorch(0).isWellFormed());
+		List<Assignment> sols = s_solver.solveAll(c, a, mod.getFrontPorch(0).isWellFormed(false), mod.getBackPorch(0).isWellFormed(false));
 		assertEquals(1, sols.size());
 	}
 	
 	@Test
-	public void testInOut2()
+	public void testGetInit1()
 	{
-		int Q_in = 2, Q_out = 2;
-		PassthroughModule mod = new PassthroughModule("pt", s_domNumbers, Q_in, Q_out);
+		int Q_in = 2;
+		PassthroughModule mod = new PassthroughModule("pt", s_domNumbers, Q_in);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1, 2).assign(a);
-		Condition c = mod.new MatchingPorches(false);
-		List<Assignment> sols = s_solver.solveAll(c, a, mod.getFrontPorch(0).isWellFormed(), mod.getBackPorch(0).isWellFormed());
+		Condition c = mod.getInit();
+		List<Assignment> sols = s_solver.solveAll(c, a);
+		assertEquals(1, sols.size());
+	}
+	
+	@Test
+	public void testInOut3()
+	{
+		int Q_in = 2;
+		PassthroughModule mod = new PassthroughModule("pt", s_domNumbers, Q_in);
+		Assignment a = new Assignment();
+		mod.getFrontPorch(0).next().set(1, 2).assign(a);
+		Condition c = mod.new MatchingPorches(true);
+		List<Assignment> sols = s_solver.solveAll(c, a);
+		assertEquals(1, sols.size());
+	}
+	
+	@Test
+	public void testGetTrans1()
+	{
+		int Q_in = 2;
+		PassthroughModule mod = new PassthroughModule("pt", s_domNumbers, Q_in);
+		Assignment a = new Assignment();
+		mod.getFrontPorch(0).next().set(1).assign(a);
+		Condition c = mod.getTrans();
+		List<Assignment> sols = s_solver.solveAll(c, a);
 		assertEquals(1, sols.size());
 	}
 }

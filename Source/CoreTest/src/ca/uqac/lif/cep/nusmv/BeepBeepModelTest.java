@@ -35,12 +35,12 @@ public class BeepBeepModelTest
 	@Test
 	public void testPrint1()
 	{
-		int Q_in = 2, Q_out = 2;
+		int Q_in = 2;
 		ProcessorQueue in_q = new ProcessorQueue("in", "in_c", "in_b", 2, s_domLetters);
 		ProcessorQueue out_q = new ProcessorQueue("out", "ou_c", "ou_b", 2, s_domLetters);
 		BeepBeepPipeline pipeline = new BeepBeepPipeline("2 passthroughs", new ProcessorQueue[] {in_q}, new ProcessorQueue[] {out_q});
-		PassthroughModule pt1 = new PassthroughModule("Passthrough", s_domLetters, Q_in, Q_out);
-		PassthroughModule pt2 = new PassthroughModule("Passthrough", s_domLetters, Q_in, Q_out);
+		PassthroughModule pt1 = new PassthroughModule("Passthrough", s_domLetters, Q_in);
+		PassthroughModule pt2 = new PassthroughModule("Passthrough", s_domLetters, Q_in);
 		pipeline.add(pt1, pt2);
 		pipeline.connect(pt1, 0, pt2, 0);
 		pipeline.setInput(pt1, 0, 0);
@@ -58,13 +58,13 @@ public class BeepBeepModelTest
 	@Test
 	public void testPrint2()
 	{
-		int Q_in = 2, Q_out = 2;
+		int Q_in = 2;
 		PresetProcessorQueue in_q = new PresetProcessorQueue("in", "in_c", "in_b", "cnt", 2, s_domLetters, 4, false);
 		in_q.addStep("a").addStep("b").addStep("c").addStep("a");
 		ProcessorQueue out_q = new ProcessorQueue("out", "ou_c", "ou_b", 2, s_domLetters);
 		BeepBeepPipeline pipeline = new BeepBeepPipeline("Trim + Passthrough", new ProcessorQueue[] {in_q}, new ProcessorQueue[] {out_q});
 		TrimModule pt1 = new TrimModule("Trim1", 1, s_domLetters, Q_in);
-		PassthroughModule pt2 = new PassthroughModule("Passthrough", s_domLetters, Q_in, Q_out);
+		PassthroughModule pt2 = new PassthroughModule("Passthrough", s_domLetters, Q_in);
 		pipeline.add(pt1, pt2);
 		pipeline.connect(pt1, 0, pt2, 0);
 		pipeline.setInput(pt1, 0, 0);
@@ -82,7 +82,7 @@ public class BeepBeepModelTest
 	@Test
 	public void testPrint3()
 	{
-		int Q_in = 2, Q_out = 2;
+		int Q_in = 2;
 		PresetProcessorQueue in_q = new PresetProcessorQueue("in", "in_c", "in_b", "cnt", Q_in, s_domLetters, 4, false);
 		ProcessorQueue out_q = new ProcessorQueue("out", "ou_c", "ou_b", Q_in, s_domLetters);
 		in_q.addStep("a").addStep("b").addStep("c").addStep("a");

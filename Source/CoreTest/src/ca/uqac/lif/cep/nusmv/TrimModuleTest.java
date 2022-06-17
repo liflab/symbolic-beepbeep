@@ -130,7 +130,7 @@ public class TrimModuleTest
 		mod.getResetFlag().set(false).assign(a);
 		mod.getCounter().set(2).assign(a);
 		Condition c = mod.backPorchValues(false);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.backPorchLength(false), mod.getBackPorch(0).isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.backPorchLength(false), mod.getBackPorch(0).isWellFormed(false));
 		assertEquals(1, solutions.size());
 		mod.getBackPorch(0).set(2, 3, 1, 2, 3).assign(a);
 		assertTrue(c.evaluate(a));
@@ -155,12 +155,12 @@ public class TrimModuleTest
 		}
 		{
 			Condition c = mod.backPorchLength(true);
-			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).next().isWellFormed());
+			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).isWellFormed(true));
 			assertEquals(4, solutions.size()); // Values can be 0, 1, 2, 3
 		}
 		{
 			Condition c = mod.backPorchValues(true);
-			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).next().isWellFormed(), mod.backPorchLength(true));
+			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).isWellFormed(true), mod.backPorchLength(true));
 			assertEquals(1, solutions.size());
 		}
 	}
@@ -190,12 +190,12 @@ public class TrimModuleTest
 		}
 		{
 			Condition c = mod.backPorchLength(true);
-			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).next().isWellFormed());
+			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).isWellFormed(true));
 			assertEquals(1, solutions.size());
 		}
 		{
 			Condition c = mod.backPorchValues(true);
-			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).next().isWellFormed(), mod.backPorchLength(true));
+			List<Assignment> solutions = s_solver.solveAll(c, a, mod.getBackPorch(0).isWellFormed(true), mod.backPorchLength(true));
 			assertEquals(1, solutions.size());
 		}
 	}
@@ -270,7 +270,7 @@ public class TrimModuleTest
 		mod.getCounter().next().set(1).assign(a);
 		mod.getResetFlag().next().set(false).assign(a);
 		//mod.getBackPorch(0).next().set(1, 2).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(Condition.simplify(mod.backPorchValues(true)), a, mod.getBackPorch(0).next().isWellFormed(), mod.backPorchLength(true));
+		List<Assignment> solutions = s_solver.solveAll(Condition.simplify(mod.backPorchValues(true)), a, mod.getBackPorch(0).isWellFormed(true), mod.backPorchLength(true));
 		assertEquals(1, solutions.size());
 		/*
 		{

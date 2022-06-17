@@ -239,4 +239,18 @@ public class CumulateModuleTest
 		a.set(mod.getCounter().next(), 4);
 		assertTrue(c.evaluate(a));
 	}
+	
+	@Test
+	public void testGetInit1()
+	{
+		int Q_in = 2, Q_out = 2;
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
+		Assignment a = new Assignment();
+		mod.getFrontPorch(0).set(1).assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		a.set(mod.getCounter(), s_domNumbers.getDefaultValue());
+		Condition c = mod.getInit();
+		List<Assignment> solutions = s_solver.solveAll(c, a);
+		assertEquals(1, solutions.size());
+	}
 }

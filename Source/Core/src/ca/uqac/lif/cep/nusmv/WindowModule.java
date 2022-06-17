@@ -81,6 +81,10 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 		super(name, 1, new Domain[] {in_domain}, 1, new Domain[] {out_domain}, true, Q_in, Q_b, Q_out);
 		m_width = width;
 		m_processor = processor;
+		if (m_processor.getFrontPorch(0).getSize() != width)
+		{
+			throw new IncompatibleQueueSizeException("Inner processor has a queue size of " + m_processor.getFrontPorch(0).getSize() + ", expected " + width);
+		}
 		m_processors = new ProcessorModule[Q_in + width];
 		for (int i = 0; i < m_processors.length; i++)
 		{
@@ -104,7 +108,7 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 			add("in_p" + i, dom);
 		}
 	}
-	
+
 	@Override
 	public void addToComment(Comment c)
 	{
@@ -214,7 +218,7 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 				m_innerFrontPorches.get(offset).valueAt(next, n) // n-th event of front porch of offset
 				);
 	}
-	
+
 	@Override
 	public void addModules(/*@ non_null @*/ Set<ProcessorModule> modules)
 	{
@@ -274,12 +278,48 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 		Conjunction and = new Conjunction();
 		for (int offset = 0; offset < m_innerFrontPorches.size(); offset++)
 		{
-			Implication imp = new Implication();
-			imp.add(new IsActive(next, offset));
-			imp.add(new InnerFrontPorchContents(next, offset));
-			and.add(imp);
+			{
+				Implication imp = new Implication();
+				imp.add(new IsActive(next, offset));
+				imp.add(new InnerFrontPorchContents(next, offset));
+				and.add(imp);
+			}
+			/*{
+				Implication imp = new Implication();
+				imp.add(new Negation(new IsActive(next, offset)));
+				imp.add(m_innerFrontPorches.get(offset).hasLength(next, 0));
+				and.add(imp);
+			}*/
 		}
 		return and;
+	}
+	
+	/**
+	 * Produces the condition stipulating that inner back porches are empty
+	 * if their processor is not active.
+	 */
+	public class InnerBackPorchLengths extends Conjunction
+	{
+		protected final boolean m_next;
+		
+		public InnerBackPorchLengths(boolean next)
+		{
+			super();
+			m_next = next;
+			for (int i = 0; i < m_innerBackPorches.size(); i++)
+			{
+				Implication imp = new Implication();
+				imp.add(new Negation(new IsActive(next, i)));
+				imp.add(m_innerBackPorches.get(i).hasLength(next, 0));
+				add(imp);
+			}
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "InnerBackPorchLengths" + (m_next ? "'" : "");
+		}
 	}
 
 	/**
@@ -419,7 +459,7 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 			eq.add(buffer.nextHasLength(m_width - 1));
 			add(eq);
 		}
-		
+
 		@Override
 		public Boolean evaluate(Assignment a)
 		{
@@ -432,7 +472,7 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 			return "NextBufferLength";
 		}
 	}
-	
+
 	public class NextBufferContents extends Conjunction
 	{
 		public NextBufferContents()
@@ -446,24 +486,24 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 				add(imp);
 			}
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			return "NextBufferContents";
 		}
-		
+
 		@Override
 		public Boolean evaluate(Assignment a)
 		{
 			return super.evaluate(a);
 		}
 	}
-	
+
 	public class NextBufferContentsLength extends Conjunction
 	{
 		protected final int m_lenPipe;
-		
+
 		public NextBufferContentsLength(int len_pipe)
 		{
 			super();
@@ -501,14 +541,14 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 				}
 			}
 		}
-		
+
 		@Override
 		public Boolean evaluate(Assignment a)
 		{
 			return super.evaluate(a);
 		}
 	}
-	
+
 	public class NextBufferCellContent extends Conjunction
 	{
 		public NextBufferCellContent(int m, int n)
@@ -516,24 +556,45 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 			super();
 		}
 	}
-	
+
 	@Override
 	protected void addToInit(Conjunction c)
 	{
 		c.add(new Equality(m_innerResetFlag, ConstantTrue.TRUE));
 		c.add(innerFrontPorchContents(false));
+		c.add(innerFrontPorchSizes(false));
+		c.add(getBuffer(0).hasLength(false, 0));
+		c.add(new InnerBackPorchLengths(false));
+		for (int i = 0; i < m_innerFrontPorches.size(); i++)
+		{
+			m_innerFrontPorches.get(i).addToInit(c);
+		}
+		for (int i = 0; i < m_innerBackPorches.size(); i++)
+		{
+			m_innerBackPorches.get(i).addToInit(c);
+		}
 		for (int i = 0; i < m_backPorches[0].getSize(); i++)
 		{
 			c.add(new BackPorchContents(false, i));
 		}
 		c.add(new BackPorchLength(false));
 	}
-	
+
 	@Override
 	protected void addToTrans(Conjunction c)
 	{
 		c.add(new Equality(m_innerResetFlag.next(), ConstantTrue.TRUE));
 		c.add(innerFrontPorchContents(true));
+		c.add(innerFrontPorchSizes(true));
+		c.add(new InnerBackPorchLengths(true));
+		for (int i = 0; i < m_innerFrontPorches.size(); i++)
+		{
+			m_innerFrontPorches.get(i).addToTrans(c);
+		}
+		for (int i = 0; i < m_innerBackPorches.size(); i++)
+		{
+			m_innerBackPorches.get(i).addToTrans(c);
+		}
 		for (int i = 0; i < m_backPorches[0].getSize(); i++)
 		{
 			c.add(new BackPorchContents(true, i));
@@ -543,7 +604,7 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 		c.add(new NextBufferLength());
 		c.add(new NextBufferContents());
 	}
-	
+
 
 	@Override
 	public WindowModule duplicate()

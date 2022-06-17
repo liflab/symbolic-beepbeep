@@ -93,7 +93,7 @@ public class ProcessorQueue extends NusmvQueue
 	 */
 	public void addToInit(Conjunction c)
 	{
-		c.add(isWellFormed());
+		c.add(isWellFormed(false));
 	}
 	
 	/**
@@ -104,7 +104,7 @@ public class ProcessorQueue extends NusmvQueue
 	 */
 	public void addToTrans(Conjunction c)
 	{
-		c.add(next().isWellFormed());
+		c.add(isWellFormed(true));
 	}
 
 	/**
@@ -153,11 +153,6 @@ public class ProcessorQueue extends NusmvQueue
 	{
 		protected final boolean m_next;
 		
-		public IsWellFormed()
-		{
-			this(false);
-		}
-		
 		public IsWellFormed(boolean next)
 		{
 			super();
@@ -202,9 +197,9 @@ public class ProcessorQueue extends NusmvQueue
 	 * </ol>
 	 * @return The condition
 	 */
-	/*@ non_null @*/ public Condition isWellFormed()
+	/*@ non_null @*/ public Condition isWellFormed(boolean next)
 	{
-		return new IsWellFormed();
+		return new IsWellFormed(next);
 	}
 
 	/**

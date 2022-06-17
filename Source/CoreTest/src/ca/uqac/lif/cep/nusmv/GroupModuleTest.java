@@ -40,8 +40,8 @@ public class GroupModuleTest
 	{
 		int Q_in = 2, Q_out = 2;
 		GroupModule mod = new GroupModule("Group", 1, new Domain[] {s_domLetters}, 1, new Domain[] {s_domLetters}, Q_in, Q_out);
-		PassthroughModule pt1 = new PassthroughModule("Passthrough", s_domLetters, Q_in, Q_out);
-		PassthroughModule pt2 = new PassthroughModule("Passthrough", s_domLetters, Q_in, Q_out);
+		PassthroughModule pt1 = new PassthroughModule("Passthrough", s_domLetters, Q_in);
+		PassthroughModule pt2 = new PassthroughModule("Passthrough", s_domLetters, Q_in);
 		mod.add(pt1, pt2);
 		mod.connect(pt1, 0, pt2, 0);
 		mod.associateInput(0, pt1, 0);

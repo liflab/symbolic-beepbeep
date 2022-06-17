@@ -312,7 +312,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set("a").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
 		//mod.getBackPorch().set(true).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed(false));
 		assertEquals(1, solutions.size());
 	}
 
@@ -347,7 +347,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set("b").assign(a);
 		mod.getFrontPorch(1).set().assign(a);
 		//mod.getBackPorch().set(false).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed(false));
 		assertEquals(1, solutions.size());
 	}
 
@@ -382,7 +382,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a").assign(a);
 		//mod.getBackPorch().set(true).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed(false));
 		assertEquals(1, solutions.size());
 	}
 
@@ -434,7 +434,7 @@ public class BinaryApplyFunctionModuleTest
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set("a", "c").assign(a);
 		//mod.getBackPorch().set(true, false).assign(a);
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.frontsVsBackPorch(false), mod.getBackPorch(0).isWellFormed(false));
 		assertEquals(1, solutions.size());
 	}
 

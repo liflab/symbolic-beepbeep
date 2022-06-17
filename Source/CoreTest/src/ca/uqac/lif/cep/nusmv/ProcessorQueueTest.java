@@ -37,7 +37,7 @@ public class ProcessorQueueTest
 	{
 		int Q = 5;
 		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.isWellFormed();
+		Condition c = pq.isWellFormed(false);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
 		Assignment a = new Assignment();
@@ -50,7 +50,7 @@ public class ProcessorQueueTest
 	{
 		int Q = 5;
 		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.isWellFormed();
+		Condition c = pq.isWellFormed(false);
 		assertNotNull(c);
 		pq.set("a", "b", "c", "a");
 		pq.m_arrayFlags.setValues(true, false, true, true, false);
@@ -64,7 +64,7 @@ public class ProcessorQueueTest
 	{
 		int Q = 1;
 		ProcessorQueue pq = new ProcessorQueue("q", "q_c", "q_b", Q, s_domLetters);
-		Condition c = pq.isWellFormed();
+		Condition c = pq.isWellFormed(false);
 		assertNotNull(c);
 		pq.set("b");
 		pq.m_arrayFlags.setValues(false);

@@ -26,15 +26,15 @@ import ca.uqac.lif.nusmv4j.Domain;
  */
 public class PassthroughModule extends UnaryApplyFunctionModule
 {
-	public PassthroughModule(String name, Domain d, int Q_in, int Q_out)
+	public PassthroughModule(String name, Domain d, int Q_in)
 	{
-		super(name, new IdentityFunction(d), Q_in, Q_out);
+		super(name, new IdentityFunction(d), Q_in, Q_in);
 	}
 	
 	@Override
 	public PassthroughModule duplicate() 
 	{
-		return new PassthroughModule(m_name, m_function.getInputDomain(), getFrontPorch(0).getSize(), getBackPorch(0).getSize());
+		return new PassthroughModule(m_name, m_function.getInputDomain(), getFrontPorch(0).getSize());
 	}
 	
 	@Override

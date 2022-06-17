@@ -33,7 +33,6 @@ import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.IntegerRange;
 import ca.uqac.lif.nusmv4j.PrettyPrintStream;
-import ca.uqac.lif.nusmv4j.Solver;
 
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.BUFFER;
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.PORCH;
@@ -45,7 +44,7 @@ public class WindowModuleTest
 {
 	protected static Domain s_domNumbers = new IntegerRange(0, 2);
 
-	protected static Solver s_solver = new BruteSolver();
+	protected static BruteSolver s_solver = new BruteSolver();
 
 	@Test
 	public void testIsActive1()
@@ -438,7 +437,56 @@ public class WindowModuleTest
 		mod.getFrontPorch(0).set(0).assign(a);
 		mod.getBuffer(0).set(1).assign(a);
 		Condition c = mod.new NextBufferContents();
-		List<Assignment> solutions = s_solver.solveAll(c, a, mod.new NextBufferLength(), mod.getBuffer(0).isWellFormed(), mod.getBuffer(0).next().isWellFormed());
+		List<Assignment> solutions = s_solver.solveAll(c, a, mod.new NextBufferLength(), mod.getBuffer(0).isWellFormed(false), mod.getBuffer(0).isWellFormed(true));
+		assertEquals(1, solutions.size());
+	}
+	
+	@Test
+	public void testGetInit1()
+	{
+		int Q_in = 1, Q_b = 1, Q_out = 2;
+		PassthroughModule pt = new PassthroughModule("pt", s_domNumbers, Q_in);
+		WindowModule mod = new WindowModule("win", pt, 2, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getFrontPorch(0).set(1).assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		mod.getBuffer(0).set().assign(a);
+		mod.m_innerResetFlag.set(true).assign(a);
+		for (int i = 0; i < mod.m_innerBackPorches.size(); i++)
+		{
+			mod.m_innerBackPorches.get(i).set().assign(a);
+		}
+		Condition c = mod.getInit();
+		List<Assignment> solutions = s_solver.solveAll(c, a, 3);
+		assertEquals(1, solutions.size());
+	}
+	
+	@Test
+	public void testGetTrans1()
+	{
+		int Q_in = 1, Q_b = 1, Q_out = 2;
+		PassthroughModule pt = new PassthroughModule("pt", s_domNumbers, Q_in);
+		WindowModule mod = new WindowModule("win", pt, 2, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		// Initial
+		mod.getFrontPorch(0).set(1).assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		mod.getBuffer(0).set().assign(a);
+		mod.m_innerResetFlag.set(true).assign(a);
+		for (int i = 0; i < mod.m_innerBackPorches.size(); i++)
+		{
+			mod.m_innerBackPorches.get(i).set().assign(a);
+		}
+		// Next
+		mod.getFrontPorch(0).next().set(2).assign(a);
+		mod.getResetFlag().next().set(false).assign(a);
+		mod.m_innerBackPorches.get(0).next().set(2).assign(a);
+		for (int i = 1; i < mod.m_innerBackPorches.size(); i++)
+		{
+			mod.m_innerBackPorches.get(i).next().set().assign(a);
+		}
+		Condition c = mod.getTrans();
+		List<Assignment> solutions = s_solver.solveAll(c, a, 3);
 		assertEquals(1, solutions.size());
 	}
 

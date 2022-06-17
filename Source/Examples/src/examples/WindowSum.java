@@ -4,6 +4,7 @@ import ca.uqac.lif.cep.nusmv.BeepBeepModel;
 import ca.uqac.lif.cep.nusmv.BeepBeepPipeline;
 import ca.uqac.lif.cep.nusmv.CumulateModule;
 import ca.uqac.lif.cep.nusmv.NusmvNumbers;
+import ca.uqac.lif.cep.nusmv.PassthroughModule;
 import ca.uqac.lif.cep.nusmv.PresetProcessorQueue;
 import ca.uqac.lif.cep.nusmv.ProcessorQueue;
 import ca.uqac.lif.cep.nusmv.WindowModule;
@@ -18,7 +19,8 @@ public class WindowSum extends BeepBeepPipeline
 				new ProcessorQueue[] {input_queue}, 
 				new ProcessorQueue[] {new ProcessorQueue("ou", "ou_c", "ou_b", Q_out, d)});
 		WindowModule win = new WindowModule("Window" + width,
-				new CumulateModule("Sum", new NusmvNumbers.Addition(d), Q_in, Q_out),
+				//new PassthroughModule("pt", d, width),
+				new CumulateModule("Sum", new NusmvNumbers.Addition(d), width, width),
 				width, d, d, Q_in, Q_in, Q_out);
 		add(win);
 		setInput(win, 0, 0);
@@ -32,14 +34,15 @@ public class WindowSum extends BeepBeepPipeline
 	
 	public static void main(String[] args) 
 	{
-		IntegerRange range = new IntegerRange(0, 3);
-		PresetProcessorQueue inputs = new PresetProcessorQueue("in", "in_c", "in_b", "cnt", 2, range, 5, false);
+		int width = 2;
+		IntegerRange range = new IntegerRange(0, 2);
+		PresetProcessorQueue inputs = new PresetProcessorQueue("in", "in_c", "in_b", "cnt", 1, range, 5, false);
+		inputs.addStep(0);
 		inputs.addStep(1);
-		inputs.addStep(2);
-		inputs.addStep(3);
+		inputs.addStep(1);
 		inputs.addStep(1);
 		inputs.addStep(0);
-		WindowSum mod = new WindowSum(inputs, 2, 2, range, 3);
+		WindowSum mod = new WindowSum(inputs, 1, 1, range, width);
 		BeepBeepModel model = new BeepBeepModel(mod);
 		model.print(new PrettyPrintStream(System.out));
 	}
