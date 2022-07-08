@@ -33,7 +33,12 @@ public class TurnIntoFunction implements UnaryFunctionCall
 	/**
 	 * The input domain for a particular instance of the function.
 	 */
-	protected final Domain m_domain;
+	protected final Domain m_inputDomain;
+	
+	/**
+	 * The output domain for a particular instance of the function.
+	 */
+	protected final Domain m_outputDomain;
 	
 	/**
 	 * The value to output.
@@ -42,14 +47,17 @@ public class TurnIntoFunction implements UnaryFunctionCall
 	
 	/**
 	 * Creates a new instance of the function.
-	 * @param domain The input domain for a particular instance of the
+	 * @param in_domain The input domain for a particular instance of the
+	 * function
+	 * @param out_domain The output domain for a particular instance of the
 	 * function
 	 * @param value The value to output
 	 */
-	public TurnIntoFunction(Domain domain, Object value)
+	public TurnIntoFunction(Domain in_domain, Domain out_domain, Object value)
 	{
 		super();
-		m_domain = domain;
+		m_inputDomain = in_domain;
+		m_outputDomain = out_domain;
 		m_value = value;
 	}
 	
@@ -65,13 +73,13 @@ public class TurnIntoFunction implements UnaryFunctionCall
 	@Override
 	public Domain getInputDomain()
 	{
-		return m_domain;
+		return m_inputDomain;
 	}
 	
 	@Override
 	public Domain getOutputDomain() 
 	{
-		return m_domain;
+		return m_outputDomain;
 	}
 
 	@Override
