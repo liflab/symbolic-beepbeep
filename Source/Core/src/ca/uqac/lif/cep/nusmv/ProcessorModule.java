@@ -28,6 +28,7 @@ import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Disjunction;
 import ca.uqac.lif.nusmv4j.Domain;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 import ca.uqac.lif.nusmv4j.LogicModule;
 import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.ScalarVariable;
@@ -311,6 +312,17 @@ public abstract class ProcessorModule extends LogicModule
 	{
 		return m_backPorches[index];
 	}
+	
+	/**
+	 * Gets the min/max number of output events this processor can produce, in
+	 * a single computation step, given ranges on the number of input events
+	 * it can receive.
+	 * @param ranges Ranges describing the min/max number of input events the
+	 * processor can receive on each pipe. The number of such ranges must be
+	 * equal to the processor's input arity.
+	 * @return The range of output events the processor can produce
+	 */
+	/*@ pure non_null @*/ public abstract IntegerRange getOutputRange(IntegerRange ... ranges);
 
 	public int length(QueueType t, int pipe_index)
 	{

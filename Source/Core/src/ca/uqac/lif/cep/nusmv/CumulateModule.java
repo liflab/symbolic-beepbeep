@@ -25,6 +25,7 @@ import ca.uqac.lif.nusmv4j.Constant;
 import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.Implication;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 import ca.uqac.lif.nusmv4j.ScalarVariable;
 
 /**
@@ -194,5 +195,11 @@ public class CumulateModule extends UnaryProcessorModule
 	public String toString()
 	{
 		return "Cumulate(" + m_function + ")";
+	}
+
+	@Override
+	public IntegerRange getOutputRange(IntegerRange... ranges)
+	{
+		return ranges[0];
 	}
 }

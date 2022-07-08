@@ -20,6 +20,7 @@ package ca.uqac.lif.cep.nusmv;
 
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Implication;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 
 /**
  * Unary processor applying a function to each event of the input porch.
@@ -35,6 +36,13 @@ public class UnaryApplyFunctionModule extends UnaryProcessorModule
 	{
 		super(name, f.getInputDomain(), f.getOutputDomain(), Q_in, 0, Q_out);
 		m_function = f;
+	}
+	
+
+	@Override
+	public IntegerRange getOutputRange(IntegerRange... ranges)
+	{
+		return ranges[0];
 	}
 
 	@Override

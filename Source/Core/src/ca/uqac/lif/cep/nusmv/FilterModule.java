@@ -27,6 +27,7 @@ import ca.uqac.lif.nusmv4j.Disjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Equivalence;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 import ca.uqac.lif.nusmv4j.Negation;
 
 /**
@@ -309,5 +310,11 @@ public class FilterModule extends BinaryModule
 		FilterModule m = new FilterModule(getName(), getFrontPorch(0).getDomain(), getFrontPorch(0).getSize(), getBuffer(0).getSize(), getBackPorch(0).getSize());
 		super.copyInto(m);
 		return m;
+	}
+
+	@Override
+	public IntegerRange getOutputRange(IntegerRange... ranges)
+	{
+		return new IntegerRange(0, Math.min(ranges[0].getUpperBound(), ranges[1].getUpperBound()) + getBuffer(0).getSize());
 	}
 }

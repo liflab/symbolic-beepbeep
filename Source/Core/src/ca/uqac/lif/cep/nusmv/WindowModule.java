@@ -33,6 +33,7 @@ import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.Implication;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 import ca.uqac.lif.nusmv4j.ModuleDomain;
 import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.ScalarVariable;
@@ -612,5 +613,11 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 		WindowModule m = new WindowModule(getName(), m_processor, m_width, getFrontPorch(0).getDomain(), getBackPorch(0).getDomain(), getFrontPorch(0).getSize(), getBuffer(0).getSize(), getBackPorch(0).getSize());
 		super.copyInto(m);
 		return m;
+	}
+	
+	@Override
+	public IntegerRange getOutputRange(IntegerRange... ranges)
+	{
+		return new IntegerRange(Math.max(0, ranges[0].getLowerBound() - m_width + 1), ranges[0].getUpperBound());
 	}
 }

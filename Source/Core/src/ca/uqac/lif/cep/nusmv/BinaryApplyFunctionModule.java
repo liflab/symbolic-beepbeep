@@ -22,6 +22,7 @@ import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Equivalence;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 
 public class BinaryApplyFunctionModule extends BinaryModule
 {
@@ -100,5 +101,13 @@ public class BinaryApplyFunctionModule extends BinaryModule
 	{
 		super.addToTrans(c);
 		c.add(frontsVsBackPorch(true));		
+	}
+
+	@Override
+	public IntegerRange getOutputRange(IntegerRange ... ranges)
+	{
+		int lower = Math.min(ranges[0].getLowerBound(), ranges[1].getLowerBound());
+		int upper = Math.min(ranges[0].getUpperBound(), ranges[1].getUpperBound() + getBuffer(0).getSize());
+		return new IntegerRange(lower, upper);
 	}
 }

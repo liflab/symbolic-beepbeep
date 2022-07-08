@@ -42,5 +42,4 @@ public class TurnIntoModule extends UnaryApplyFunctionModule
 	{
 		return "Turn into " + ((TurnIntoFunction) m_function).getValue();
 	}
-
 }

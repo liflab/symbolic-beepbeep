@@ -8,6 +8,7 @@ import java.util.Set;
 import ca.uqac.lif.cep.nusmv.NusmvConnector.InputProcessorConnection;
 import ca.uqac.lif.cep.nusmv.NusmvConnector.OutputProcessorConnection;
 import ca.uqac.lif.nusmv4j.Domain;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 import ca.uqac.lif.nusmv4j.ModuleDomain;
 import ca.uqac.lif.nusmv4j.PrettyPrintStream;
 
@@ -114,6 +115,15 @@ public abstract class ContainerModule extends ProcessorModule implements Composi
 		updateModules();
 		super.print(ps);
 	}
+	
+
+	/*@Override
+	public IntegerRange getOutputRange(IntegerRange ... ranges)
+	{
+		for (int i = 0)
+		m_connector.m_inputConnections.get(arg0);
+				return null;
+	}*/
 	
 	/**
 	 * Updates the list of internal queues of the processor to their most

@@ -191,4 +191,10 @@ public class TrimModule extends SubsetProcessorModule
 		super.copyInto(m);
 		return m;
 	}
+
+	@Override
+	public IntegerRange getOutputRange(IntegerRange... ranges)
+	{
+		return new IntegerRange(Math.max(0, ranges[0].getLowerBound() - m_interval), ranges[0].getUpperBound());
+	}
 }

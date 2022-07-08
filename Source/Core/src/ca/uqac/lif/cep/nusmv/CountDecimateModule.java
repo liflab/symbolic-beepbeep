@@ -189,4 +189,10 @@ public class CountDecimateModule extends SubsetProcessorModule
 		super.copyInto(m);
 		return m;
 	}
+
+	@Override
+	public IntegerRange getOutputRange(IntegerRange... ranges)
+	{
+		return new IntegerRange((int) Math.ceil((double) ranges[0].getLowerBound() / (double) m_interval), (int) Math.ceil((double) ranges[0].getUpperBound() / (double) m_interval));
+	}
 }

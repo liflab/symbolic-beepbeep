@@ -21,7 +21,9 @@ package ca.uqac.lif.cep.nusmv;
 import java.util.HashSet;
 import java.util.Set;
 
+import ca.uqac.lif.nusmv4j.Module;
 import ca.uqac.lif.nusmv4j.NusmvFile;
+import ca.uqac.lif.nusmv4j.NusmvPrintable;
 
 /**
  * A NuSMV file made of a BeepBeep pipeline. A BeepBeep model takes care of
@@ -50,5 +52,18 @@ public class BeepBeepModel extends NusmvFile
 			}
 		}
 		add(pipeline);
+	}
+	
+	public Set<Module> getModules()
+	{
+		Set<Module> modules = new HashSet<Module>();
+		for (NusmvPrintable p : m_parts)
+		{
+			if (p instanceof Module)
+			{
+				modules.add((Module) p);
+			}
+		}
+		return modules;
 	}
 }
