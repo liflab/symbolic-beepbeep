@@ -19,6 +19,7 @@
 package ca.uqac.lif.cep.nusmv;
 
 import ca.uqac.lif.nusmv4j.Addition.AdditionModulo;
+import ca.uqac.lif.nusmv4j.BooleanDomain;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Constant;
@@ -28,6 +29,7 @@ import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.GreaterThan;
+import ca.uqac.lif.nusmv4j.Modulo;
 import ca.uqac.lif.nusmv4j.Multiplication.MultiplicationModulo;
 import ca.uqac.lif.nusmv4j.Negation;
 import ca.uqac.lif.nusmv4j.Term;
@@ -204,6 +206,45 @@ public class NusmvNumbers
 			return "+";
 		}
 	}
+	
+	/**
+	 * Binary function for modular multiplication. The modulus of the
+	 * multiplication is determined by the size of the domain passed to the
+	 * function.
+	 */
+	public static class IsGreaterOrEqual extends BinaryNumberFunction
+	{
+		/**
+		 * Creates a new instance of the function for a given domain.
+		 * @param d The domain, which must be a discrete set for the form
+		 * {0, 1, &hellip; n}.
+		 */
+		public IsGreaterOrEqual(Domain d)
+		{
+			super(d);
+		}
+		
+		@Override
+		public Domain getOutputDomain()
+		{
+			return BooleanDomain.instance;
+		}
+		
+		@Override
+		public Condition getCondition(Term<?> x, Term<?> y, Term<?> z)
+		{
+			GreaterThan mul = new GreaterThan(x, y);
+			Equality eq = new Equality(mul, z);
+			return eq;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "\u2265";
+		}
+	}
+	
 	
 	/**
 	 * Binary function for modular addition. The modulus of the addition is
