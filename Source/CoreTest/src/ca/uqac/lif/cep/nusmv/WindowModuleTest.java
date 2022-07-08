@@ -51,7 +51,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0, 1).assign(a);
 		mod.getBuffer(0).set(2).assign(a);
@@ -65,7 +65,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0, 1, 1).assign(a);
 		mod.getBuffer(0).set(2).assign(a);
@@ -79,7 +79,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getBuffer(0).set(2).assign(a);
@@ -93,7 +93,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0, 1).assign(a);
 		mod.getBuffer(0).set(0, 2).assign(a);
@@ -117,7 +117,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0, 1).assign(a);
 		mod.getBuffer(0).set(0, 2).assign(a);
@@ -138,7 +138,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0, 1).assign(a);
 		mod.getBuffer(0).set(0, 2).assign(a);
@@ -165,7 +165,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0, 1).assign(a);
 		mod.getBuffer(0).set(0, 2).assign(a);
@@ -186,7 +186,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(0, 1).assign(a);
 		mod.getBuffer(0).set(0, 2).assign(a);
@@ -223,7 +223,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getBuffer(0).set().assign(a);
@@ -241,7 +241,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(2, 1, 1).assign(a);
 		mod.getBuffer(0).set(2, 1, 2).assign(a);
@@ -259,7 +259,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 3;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.m_innerBackPorches.get(0).set(0, 1).assign(a);
 		mod.m_innerBackPorches.get(1).set(1, 2).assign(a);
@@ -291,7 +291,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 6;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.m_innerFrontPorches.get(0).set(0, 0, 0).assign(a); // Must set front porches
 		mod.m_innerBackPorches.get(0).set(0, 1).assign(a);
@@ -323,7 +323,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 6;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		// We only check the length, not the contents
 		mod.getFrontPorch(0).set(0, 1).assign(a);
@@ -341,7 +341,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 6;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		// We only check the length, not the contents
 		mod.getFrontPorch(0).set(0).assign(a);
@@ -353,13 +353,31 @@ public class WindowModuleTest
 		mod.getBuffer(0).next().set(1, 0).assign(a);
 		assertEquals(false, mod.new NextBufferLength().evaluate(a));
 	}
+	
+	@Test
+	public void testNextBufferLength3()
+	{
+		int Q_in = 1, Q_b = 2, Q_out = 1;
+		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), 3, 3);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
+		Assignment a = new Assignment();
+		// We only check the length, not the contents
+		mod.getFrontPorch(0).set(0).assign(a);
+		mod.getBuffer(0).set(0, 2).assign(a);
+		mod.getBuffer(0).next().set(2, 0).assign(a);
+		assertEquals(true, mod.new NextBufferLength().evaluate(a));
+		mod.getBuffer(0).next().set().assign(a);
+		assertEquals(false, mod.new NextBufferLength().evaluate(a));
+		mod.getBuffer(0).next().set(0).assign(a);
+		assertEquals(false, mod.new NextBufferLength().evaluate(a));
+	}
 
 	@Test
 	public void testNextBufferContents1()
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 6;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		// We only check the contents, not the length
 		mod.getFrontPorch(0).set(0, 1).assign(a);
@@ -377,7 +395,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 6;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		// We only check the contents, not the length
 		mod.getFrontPorch(0).set(0, 1).assign(a);
@@ -395,7 +413,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 6;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		// We only check the contents, not the length
 		mod.getFrontPorch(0).set(0, 1, 2).assign(a);
@@ -413,7 +431,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 6;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		// We only check the contents, not the length
 		mod.getFrontPorch(0).set(0).assign(a);
@@ -431,7 +449,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 6;
 		CumulateModule sum = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		// We only check the contents, not the length
 		mod.getFrontPorch(0).set(0).assign(a);
@@ -445,8 +463,8 @@ public class WindowModuleTest
 	public void testGetInit1()
 	{
 		int Q_in = 1, Q_b = 1, Q_out = 2;
-		PassthroughModule pt = new PassthroughModule("pt", s_domNumbers, Q_in);
-		WindowModule mod = new WindowModule("win", pt, 2, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		PassthroughModule pt = new PassthroughModule("pt", s_domNumbers, 2);
+		WindowModule mod = new WindowModule("win", pt, 2, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		mod.getFrontPorch(0).set(1).assign(a);
 		mod.getResetFlag().set(false).assign(a);
@@ -465,8 +483,8 @@ public class WindowModuleTest
 	public void testGetTrans1()
 	{
 		int Q_in = 1, Q_b = 1, Q_out = 2;
-		PassthroughModule pt = new PassthroughModule("pt", s_domNumbers, Q_in);
-		WindowModule mod = new WindowModule("win", pt, 2, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		PassthroughModule pt = new PassthroughModule("pt", s_domNumbers, 2);
+		WindowModule mod = new WindowModule("win", pt, 2, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		Assignment a = new Assignment();
 		// Initial
 		mod.getFrontPorch(0).set(1).assign(a);
@@ -495,7 +513,7 @@ public class WindowModuleTest
 	{
 		int Q_in = 3, Q_b = 3, Q_out = 6;
 		CumulateModule sum = new CumulateModule("Cumulate", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
-		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_b, Q_out);
+		WindowModule mod = new WindowModule("win", sum, 3, s_domNumbers, s_domNumbers, Q_in, Q_out);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		PrettyPrintStream ps = new PrettyPrintStream(baos);
 		mod.print(ps);

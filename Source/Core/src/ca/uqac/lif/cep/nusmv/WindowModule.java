@@ -77,9 +77,9 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 	 */
 	protected final ProcessorModule[] m_processors;
 
-	public WindowModule(String name, ProcessorModule processor, int width, Domain in_domain, Domain out_domain, int Q_in, int Q_b, int Q_out)
+	public WindowModule(String name, ProcessorModule processor, int width, Domain in_domain, Domain out_domain, int Q_in, int Q_out)
 	{
-		super(name, 1, new Domain[] {in_domain}, 1, new Domain[] {out_domain}, true, Q_in, Q_b, Q_out);
+		super(name, 1, new Domain[] {in_domain}, 1, new Domain[] {out_domain}, true, Q_in, width - 1, Q_out);
 		m_width = width;
 		m_processor = processor;
 		if (m_processor.getFrontPorch(0).getSize() != width)
@@ -610,7 +610,7 @@ public class WindowModule extends ProcessorModule implements CompositeProcessorM
 	@Override
 	public WindowModule duplicate()
 	{
-		WindowModule m = new WindowModule(getName(), m_processor, m_width, getFrontPorch(0).getDomain(), getBackPorch(0).getDomain(), getFrontPorch(0).getSize(), getBuffer(0).getSize(), getBackPorch(0).getSize());
+		WindowModule m = new WindowModule(getName(), m_processor, m_width, getFrontPorch(0).getDomain(), getBackPorch(0).getDomain(), getFrontPorch(0).getSize(), getBackPorch(0).getSize());
 		super.copyInto(m);
 		return m;
 	}
