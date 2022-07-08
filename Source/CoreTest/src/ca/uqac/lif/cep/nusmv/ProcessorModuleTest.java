@@ -26,6 +26,7 @@ import ca.uqac.lif.nusmv4j.Assignment;
 import ca.uqac.lif.nusmv4j.Condition;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Domain;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 
 /**
  * Unit tests for basic methods of {@link BeepBeepModule}.
@@ -386,6 +387,12 @@ public class ProcessorModuleTest
 		protected void addToTrans(Conjunction c)
 		{
 			// Nothing to do
+		}
+
+		@Override
+		public IntegerRange getOutputRange(IntegerRange... ranges) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }
