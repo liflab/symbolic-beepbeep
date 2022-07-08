@@ -19,9 +19,11 @@
 package ca.uqac.lif.cep.nusmv;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import ca.uqac.lif.nusmv4j.Module;
+import ca.uqac.lif.nusmv4j.ModuleDomain;
 import ca.uqac.lif.nusmv4j.NusmvFile;
 import ca.uqac.lif.nusmv4j.NusmvPrintable;
 
@@ -61,9 +63,22 @@ public class BeepBeepModel extends NusmvFile
 		{
 			if (p instanceof Module)
 			{
-				modules.add((Module) p);
+				getModules((Module) p, modules);
 			}
 		}
 		return modules;
+	}
+	
+	protected void getModules(Module m, Set<Module> modules)
+	{
+		if (m instanceof ContainerModule)
+		{
+			ContainerModule cm = (ContainerModule) m;
+			for (Map.Entry<String,ModuleDomain> e : cm.getSubModules().entrySet())
+			{
+				getModules(e.getValue().getModule(), modules);
+			}
+		}
+		modules.add(m);
 	}
 }
