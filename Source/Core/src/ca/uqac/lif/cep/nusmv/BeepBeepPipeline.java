@@ -22,6 +22,7 @@ import ca.uqac.lif.nusmv4j.BooleanVariableCondition;
 import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Domain;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 import ca.uqac.lif.nusmv4j.Negation;
 
 /**
@@ -103,6 +104,12 @@ public class BeepBeepPipeline extends ContainerModule
 	public ProcessorModule duplicate()
 	{
 		// Never happens, so don't implement
+		return null;
+	}
+
+	@Override
+	public IntegerRange getOutputRange(IntegerRange... ranges) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

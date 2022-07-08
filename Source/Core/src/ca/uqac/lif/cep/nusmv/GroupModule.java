@@ -25,6 +25,7 @@ import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Implication;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 
 /**
  * Container module associating its own input/output pipes to input/output
@@ -194,5 +195,11 @@ public class GroupModule extends ContainerModule
 			InputProcessorConnection conn = m_inputConnections.get(m_index);
 			return getName() + "![" + m_index + "] = " + conn.m_module.getName() + "![" + conn.m_index + "]";
 		}
+	}
+
+	@Override
+	public IntegerRange getOutputRange(IntegerRange... ranges) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

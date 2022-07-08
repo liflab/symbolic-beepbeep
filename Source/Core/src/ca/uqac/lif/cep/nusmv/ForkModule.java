@@ -22,6 +22,7 @@ import ca.uqac.lif.nusmv4j.ArrayVariable;
 import ca.uqac.lif.nusmv4j.Conjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 import ca.uqac.lif.nusmv4j.Equality;
+import ca.uqac.lif.nusmv4j.IntegerRange;
 
 /**
  * Module that replicates the contents of its front porch to a number of back
@@ -96,5 +97,10 @@ public class ForkModule extends ProcessorModule
 			return "AllEqual" + (m_next ? "'" : "");
 		}
 	}
-          
+
+	@Override
+	public IntegerRange getOutputRange(IntegerRange... ranges) 
+	{
+		return ranges[0];
+	}      
 }
