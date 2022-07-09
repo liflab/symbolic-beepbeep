@@ -104,20 +104,39 @@ public abstract class BinaryModule extends ProcessorModule
 	 */
 	/*@ non_null @*/ public Condition numFronts(boolean next, int n)
 	{
-		Disjunction or = new Disjunction();
+		return new NumFronts(next, n);
+	}
+	
+	protected class NumFronts extends Disjunction
+	{
+		protected final boolean m_next;
+		
+		protected final int m_n;
+		
+		public NumFronts(boolean next, int n)
 		{
-			Conjunction and = new Conjunction();
-			and.add(hasTotalPipe(next, 0, n));
-			and.add(minTotalPipe(next, 1, n));
-			or.add(and);
+			super();
+			m_next = next;
+			m_n = n;
+			{
+				Conjunction and = new Conjunction();
+				and.add(hasTotalPipe(next, 0, n));
+				and.add(minTotalPipe(next, 1, n));
+				add(and);
+			}
+			{
+				Conjunction and = new Conjunction();
+				and.add(minTotalPipe(next, 0, n));
+				and.add(hasTotalPipe(next, 1, n));
+				add(and);
+			}
 		}
+		
+		@Override
+		public String toString()
 		{
-			Conjunction and = new Conjunction();
-			and.add(minTotalPipe(next, 0, n));
-			and.add(hasTotalPipe(next, 1, n));
-			or.add(and);
+			return "NumFronts(" + m_n + ")" + (m_next ? "'" : "");
 		}
-		return or;
 	}
 
 	/**

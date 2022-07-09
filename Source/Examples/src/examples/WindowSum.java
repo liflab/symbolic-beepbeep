@@ -21,7 +21,7 @@ public class WindowSum extends BeepBeepPipeline
 		WindowModule win = new WindowModule("Window" + width,
 				//new PassthroughModule("pt", d, width),
 				new CumulateModule("Sum", new NusmvNumbers.Addition(d), width, width),
-				width, d, d, Q_in, Q_in, Q_out);
+				width, d, d, Q_in, Q_out);
 		add(win);
 		setInput(win, 0, 0);
 		setOutput(win, 0, 0);

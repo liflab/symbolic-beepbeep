@@ -28,12 +28,12 @@ import ca.uqac.lif.nusmv4j.Term;
  * Unary function that returns the same output value regardless of its
  * argument.
  */
-public class TurnIntoFunction implements UnaryFunctionCall
+public class BinaryTurnIntoFunction implements BinaryFunctionCall
 {
 	/**
-	 * The input domain for a particular instance of the function.
+	 * The input domains for a particular instance of the function.
 	 */
-	protected final Domain m_inputDomain;
+	protected final Domain[] m_inputDomains;
 	
 	/**
 	 * The output domain for a particular instance of the function.
@@ -53,10 +53,10 @@ public class TurnIntoFunction implements UnaryFunctionCall
 	 * function
 	 * @param value The value to output
 	 */
-	public TurnIntoFunction(Domain in_domain, Domain out_domain, Object value)
+	public BinaryTurnIntoFunction(Domain in_domain1, Domain in_domain2, Domain out_domain, Object value)
 	{
 		super();
-		m_inputDomain = in_domain;
+		m_inputDomains = new Domain[] {in_domain1, in_domain2};
 		m_outputDomain = out_domain;
 		m_value = value;
 	}
@@ -71,9 +71,9 @@ public class TurnIntoFunction implements UnaryFunctionCall
 	}
 	
 	@Override
-	public Domain getInputDomain()
+	public Domain getInputDomain(int index)
 	{
-		return m_inputDomain;
+		return m_inputDomains[index];
 	}
 	
 	@Override
@@ -83,8 +83,8 @@ public class TurnIntoFunction implements UnaryFunctionCall
 	}
 
 	@Override
-	public Condition getCondition(Term<?> x, Term<?> y)
+	public Condition getCondition(Term<?> x, Term<?> y, Term<?> z)
 	{
-		return new Equality(y, new Constant(m_value));
+		return new Equality(z, new Constant(m_value));
 	}
 }

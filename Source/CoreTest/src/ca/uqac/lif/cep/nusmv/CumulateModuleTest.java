@@ -241,6 +241,24 @@ public class CumulateModuleTest
 	}
 	
 	@Test
+	@Category(NextCounterValue.class)
+	public void testNextCounter6()
+	{
+		int Q_in = 1, Q_out = 1;
+		CumulateModule mod = new CumulateModule("sum", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_out);
+		Assignment a = new Assignment();
+		mod.getFrontPorch(0).set(2).assign(a);
+		mod.getCounter().set(1).assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		mod.getBackPorch(0).set(3).assign(a);
+		Condition c = mod.nextCounter();
+		List<Assignment> solutions = s_solver.solveAll(c, a);
+		assertEquals(1, solutions.size());
+		a.set(mod.getCounter().next(), 3);
+		assertTrue(c.evaluate(a));
+	}
+	
+	@Test
 	public void testGetInit1()
 	{
 		int Q_in = 2, Q_out = 2;

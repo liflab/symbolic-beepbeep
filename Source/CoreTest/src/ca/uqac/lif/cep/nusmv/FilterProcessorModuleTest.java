@@ -2,17 +2,17 @@
     Modeling of BeepBeep processor pipelines in NuSMV
     Copyright (C) 2020-2022 Laboratoire d'informatique formelle
     Université du Québec à Chicoutimi, Canada
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -39,7 +39,7 @@ public class FilterProcessorModuleTest
 	protected static Domain s_domLetters = new Domain(new Object[] {"a", "b", "c"});
 
 	protected static BruteSolver s_solver = new BruteSolver();
-	
+
 	@Test
 	public void testHasNTrueBuffer1()
 	{
@@ -55,7 +55,7 @@ public class FilterProcessorModuleTest
 		assertEquals(true, mod.hasNTrue(false, mod.getBuffer(1), 3, 3).evaluate(a));
 		assertEquals(true, mod.hasNTrue(false, mod.getBuffer(1), 4, 3).evaluate(a));
 	}
-		
+
 	@Test
 	public void testHasNTruePorch1()
 	{
@@ -73,6 +73,18 @@ public class FilterProcessorModuleTest
 		assertEquals(true, mod.hasNTruePorch(false, 1, 4, 6).evaluate(a));
 	}
 	
+	@Test
+	public void testHasNTrue1()
+	{
+		int Q_in = 1, Q_b = 1, Q_out = 1;
+		FilterModule mod = new FilterModule("f", s_domLetters, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set(true).assign(a);
+		assertEquals(false, mod.hasNTrue(false, 1, 1, 0).evaluate(a));
+		assertEquals(true, mod.hasNTrue(false, 1, 1, 1).evaluate(a));
+	}
+
 	@Test
 	public void testIsNthTrue1()
 	{
@@ -96,7 +108,7 @@ public class FilterProcessorModuleTest
 		assertEquals(false, mod.isNthTrue(false, PORCH, 1, 1, 4).evaluate(a));
 		assertEquals(true, mod.isNthTrue(false, PORCH, 1, 2, 5).evaluate(a));
 	}
-	
+
 	@Test
 	public void testIsNthTrue2()
 	{
@@ -120,7 +132,7 @@ public class FilterProcessorModuleTest
 		assertEquals(false, mod.isNthTrue(false, PORCH, 1, 1, 2).evaluate(a));
 		assertEquals(true, mod.isNthTrue(false, PORCH, 1, 2, 2).evaluate(a));
 	}
-	
+
 	@Test
 	public void testIsFrontToOutput1()
 	{
@@ -138,7 +150,7 @@ public class FilterProcessorModuleTest
 		assertEquals(true, mod.isFrontToOutput(false, BUFFER, 3, PORCH, 0, 1).evaluate(a));
 		assertEquals(true, mod.isFrontToOutput(false, PORCH, 0, PORCH, 1, 2).evaluate(a));
 	}
-	
+
 	@Test
 	public void testFrontsVsBackPorch1()
 	{
@@ -157,7 +169,7 @@ public class FilterProcessorModuleTest
 		mod.getBackPorch(0).set("a", "a", "a").assign(a);
 		assertTrue(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testFrontsVsBackPorch2()
 	{
@@ -176,7 +188,7 @@ public class FilterProcessorModuleTest
 		mod.getBackPorch(0).set("a", "c", "a", "a").assign(a);
 		assertTrue(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testFrontsVsBackPorch3()
 	{
@@ -190,12 +202,22 @@ public class FilterProcessorModuleTest
 		mod.getFrontPorch(0).set("a").assign(a);
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set(true).assign(a);
+		/*{
+			Condition ntrue = mod.numTrueFronts(false, 1);
+			assertEquals(true, ntrue.evaluate(a));
+		}*/
+		{
+			Condition ntrue = mod.numTrueFronts(false, 0);
+			assertEquals(false, ntrue.evaluate(a));
+		}
+		mod.getBackPorch(0).set("a").assign(a);
+		assertTrue(c.evaluate(a));
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
 		mod.getBackPorch(0).set("a").assign(a);
 		assertTrue(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testFrontsVsBackPorch4()
 	{
@@ -214,7 +236,7 @@ public class FilterProcessorModuleTest
 		mod.getBackPorch(0).next().set("a").assign(a);
 		assertTrue(c.evaluate(a));
 	}
-	
+
 	@Test
 	public void testGetInit1()
 	{
@@ -232,7 +254,7 @@ public class FilterProcessorModuleTest
 		List<Assignment> solutions = s_solver.solveAll(c, a, 20);
 		assertEquals(1, solutions.size());
 	}
-	
+
 	@Test
 	public void testGetTrans1()
 	{
@@ -258,7 +280,7 @@ public class FilterProcessorModuleTest
 		List<Assignment> solutions = s_solver.solveAll(c, a, 20);
 		assertEquals(1, solutions.size());
 	}
-	
+
 	@Test
 	public void testBackPorchValues1()
 	{

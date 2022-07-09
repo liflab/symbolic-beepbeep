@@ -18,6 +18,7 @@
  */
 package ca.uqac.lif.cep.nusmv;
 
+import ca.uqac.lif.nusmv4j.Assignment;
 import ca.uqac.lif.nusmv4j.BooleanDomain;
 import ca.uqac.lif.nusmv4j.Comment;
 import ca.uqac.lif.nusmv4j.Condition;
@@ -126,10 +127,10 @@ public class FilterModule extends BinaryModule
 	
 	/**
 	 * Generates the condition stipulating that there are exactly n cells
-	 * of the buffer that contain the true value, up to and including index m.
+	 * of a queue that contain the true value, up to and including index m.
 	 * @param queue_type 
 	 * @param pipe_index The index of the input pipe
-	 * @param m1 The position in the queue
+	 * @param m The position in the queue
 	 * @param n The number of true values
 	 * @return The condition
 	 */
@@ -189,26 +190,52 @@ public class FilterModule extends BinaryModule
 			// Impossible
 			return ConstantFalse.FALSE;
 		}
-		ProcessorQueue buffer = getBuffer(pipe_index);
-		int Q_b = buffer.getSize();
-		Disjunction or = new Disjunction();
-		for (int s_b = 0; s_b <= Q_b; s_b++)
+		return new HasNTrue(next, pipe_index, m, n);
+	}
+	
+	protected class HasNTrue extends Disjunction
+	{
+		protected final boolean m_next;
+		
+		protected final int m_n;
+		
+		protected final int m_m;
+		
+		protected final int m_pipeIndex;
+		
+		public HasNTrue(boolean next, int pipe_index, int m, int n)
 		{
-			Conjunction and = new Conjunction();
-			and.add(buffer.hasLength(next, s_b));
-			if (s_b > m)
+			super();
+			m_next = next;
+			m_n = n;
+			m_m = m;
+			m_pipeIndex = pipe_index;
+			ProcessorQueue buffer = getBuffer(pipe_index);
+			int Q_b = buffer.getSize();
+			for (int s_b = 0; s_b <= Q_b; s_b++)
 			{
-				// All events in buffer
-				and.add(hasNTrue(next, QueueType.BUFFER, pipe_index, m, n));
+				Conjunction and = new Conjunction();
+				and.add(buffer.hasLength(next, s_b));
+				if (s_b > m)
+				{
+					// All events in buffer
+					and.add(hasNTrue(next, QueueType.BUFFER, pipe_index, m, n));
+				}
+				else if (m - s_b < getSize(QueueType.PORCH, pipe_index))
+				{
+					//int offset = m - s_b;
+					//and.add(hasNTrue(next, QueueType.PORCH, pipe_index, offset, n));
+					and.add(hasNTrue(next, QueueType.PORCH, pipe_index, m, n));
+				}
+				add(and);
 			}
-			else if (m - s_b < getSize(QueueType.PORCH, pipe_index))
-			{
-				int offset = m - s_b;
-				and.add(hasNTrue(next, QueueType.PORCH, pipe_index, offset, n));
-			}
-			or.add(and);
 		}
-		return or;
+		
+		@Override
+		public String toString()
+		{
+			return "HasNTrue(#" + m_pipeIndex + "," + m_m + "," + m_n + ")" + (m_next ? "'" : "");
+		}
 	}
 	
 	/**
@@ -286,16 +313,42 @@ public class FilterModule extends BinaryModule
 	 */
 	public Condition numTrueFronts(boolean next, int n)
 	{
-		int Q_out = getBackPorch(0).getSize();
-		Disjunction or = new Disjunction();
-		for (int nf = n; nf <= Q_out; nf++)
+		return new NumTrueFronts(next, n);
+	}
+	
+	protected class NumTrueFronts extends Disjunction
+	{
+		protected final boolean m_next;
+		
+		protected final int m_n;
+		
+		public NumTrueFronts(boolean next, int n)
 		{
-			Conjunction and = new Conjunction();
-			and.add(numFronts(next, nf));
-			and.add(hasNTrue(next, 1, nf, n));
-			or.add(and);
+			super();
+			m_next = next;
+			m_n = n;
+			int Q_out = getBackPorch(0).getSize();
+			for (int nf = n; nf <= Q_out; nf++)
+			{
+				Conjunction and = new Conjunction();
+				and.add(numFronts(next, nf));
+				and.add(hasNTrue(next, 1, nf, n));
+				add(and);
+			}
 		}
-		return or;
+		
+		@Override
+		public String toString()
+		{
+			return "NumTrueFronts(" + m_n + ")" + (m_next ? "'" : "");
+		}
+		
+		@Override
+		public Boolean evaluate(Assignment a)
+		{
+			boolean b = super.evaluate(a);
+			return b;
+		}
 	}
 
 	@Override

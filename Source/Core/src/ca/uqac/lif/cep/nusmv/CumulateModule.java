@@ -118,6 +118,7 @@ public class CumulateModule extends UnaryProcessorModule
 		Conjunction and = new Conjunction();
 		ProcessorQueue front_porch = getFrontPorch(0);
 		ProcessorQueue back_porch = getBackPorch(0);
+		ScalarVariable counter = next ? m_counter.next() : m_counter;
 		for (int i = 0; i <= back_porch.getSize() - 1; i++)
 		{
 			Implication imp = new Implication();
@@ -136,7 +137,7 @@ public class CumulateModule extends UnaryProcessorModule
 						{
 							Implication in_imp = new Implication();
 							in_imp.add(new NoReset(next));
-							in_imp.add(m_function.getCondition(m_counter, front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
+							in_imp.add(m_function.getCondition(counter, front_porch.valueAt(next, i), back_porch.valueAt(next, i)));
 							in_and.add(in_imp);
 						}
 					}

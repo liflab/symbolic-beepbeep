@@ -28,18 +28,18 @@ public class TurnIntoModule extends UnaryApplyFunctionModule
 {
 	public TurnIntoModule(String name, Domain in_d, Domain out_d, Object value, int Q_in, int Q_out)
 	{
-		super(name, new TurnIntoFunction(in_d, out_d, value), Q_in, Q_out);
+		super(name, new UnaryTurnIntoFunction(in_d, out_d, value), Q_in, Q_out);
 	}
 	
 	@Override
 	public TurnIntoModule duplicate() 
 	{
-		return new TurnIntoModule(m_name, m_function.getInputDomain(), m_function.getOutputDomain(), ((TurnIntoFunction) m_function).getValue(), getFrontPorch(0).getSize(), getBackPorch(0).getSize());
+		return new TurnIntoModule(m_name, m_function.getInputDomain(), m_function.getOutputDomain(), ((UnaryTurnIntoFunction) m_function).getValue(), getFrontPorch(0).getSize(), getBackPorch(0).getSize());
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "Turn into " + ((TurnIntoFunction) m_function).getValue();
+		return "Turn into " + ((UnaryTurnIntoFunction) m_function).getValue();
 	}
 }
