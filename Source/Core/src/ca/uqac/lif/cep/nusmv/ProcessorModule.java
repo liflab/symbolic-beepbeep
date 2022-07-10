@@ -520,6 +520,39 @@ public abstract class ProcessorModule extends LogicModule
 	{
 		return new MinTotalPipe(next, pipe_index, n);
 	}
+	
+	/**
+	 * Condition that stipulates that the event at position m of a queue is the
+	 * event at position n of the pipe.
+	 */
+	public class IsNthInPipe
+	{
+		protected final int m_pipeIndex;
+		
+		protected final int m_m;
+		
+		protected final int m_n;
+		
+		protected final boolean m_next;
+		
+		protected final QueueType m_type;
+		
+		public IsNthInPipe(boolean next, QueueType type, int pipe_index, int m, int n)
+		{
+			super();
+			m_next = next;
+			m_m = m;
+			m_n = n;
+			m_pipeIndex = pipe_index;
+			m_type = type;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "IsNthInPipe(#" + m_pipeIndex + "," + m_type + "," + m_m + "," + m_n + ")" + (m_next ? "'" : "");
+		}
+	}
 
 	public class MinTotalPipe extends Disjunction
 	{
