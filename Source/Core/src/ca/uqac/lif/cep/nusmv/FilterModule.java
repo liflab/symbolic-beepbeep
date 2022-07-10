@@ -70,7 +70,7 @@ public class FilterModule extends BinaryModule
 		for (int i = 0; i <= back_porch.getSize(); i++)
 		{
 			Equivalence eq = new Equivalence();
-			eq.add(numTrueFronts(next, i));
+			eq.add(numTrueFronts(next, 1, i));
 			eq.add(back_porch.hasLength(next, i));
 			and.add(eq);
 		}
@@ -169,7 +169,7 @@ public class FilterModule extends BinaryModule
 			m_pipeIndex = pipe_index;
 			if (type == QueueType.PORCH && m == 0)
 			{
-				add(hasNTrue(next, type, pipe_index, m, 1));
+				add(hasNTrueQueue(next, type, pipe_index, m, 1));
 				add(totalNTrueQueue(next, QueueType.BUFFER, pipe_index, n - 1));
 			}
 			else
@@ -214,14 +214,44 @@ public class FilterModule extends BinaryModule
 		}
 		if (n == 0)
 		{
-			Conjunction and = new Conjunction();
-			for (int i = 0; i <= m; i++)
-			{
-				and.add(new Negation(queue.booleanValueAt(next, i)));
-			}
-			return and;
+			return new AllFalseUpTo(next, type, pipe_index, m);
 		}
 		return new HasNTrueQueue(next, type, pipe_index, m, n);
+	}
+
+	/**
+	 * Condition that stipulates that all entries of a queue are false from 0
+	 * up to index m. 
+	 */
+	protected class AllFalseUpTo extends Conjunction
+	{
+		protected final boolean m_next;
+
+		protected final int m_m;
+
+		protected final int m_pipeIndex;
+
+		protected final QueueType m_type;
+
+		public AllFalseUpTo(boolean next, QueueType type, int pipe_index, int m)
+		{
+			super();
+			m_next = next;
+			m_type = type;
+			m_pipeIndex = pipe_index;
+			m_m = m;
+			ProcessorQueue queue = (type == QueueType.BUFFER ? getBuffer(pipe_index) : getFrontPorch(pipe_index));
+			for (int i = 0; i <= m; i++)
+			{
+				add(new Negation(queue.booleanValueAt(next, i)));
+			}
+		}
+
+		@Override
+		public String toString()
+		{
+			return "AllFalseUpTo(#" + m_pipeIndex + "," + m_type + "," + m_m + ")" + (m_next ? "'" : "");
+		}
 	}
 
 	/**
@@ -431,7 +461,7 @@ public class FilterModule extends BinaryModule
 
 	public Condition isNthTrue(boolean next, QueueType type, int pipe_index, int m, int n)
 	{
-		if (m > n + 1)
+		if (m > n + 1 || n == 0)
 		{
 			return ConstantFalse.FALSE;
 		}
@@ -443,9 +473,16 @@ public class FilterModule extends BinaryModule
 	 * @param n The number of true fronts
 	 * @return
 	 */
-	public Condition numTrueFronts(boolean next, int n)
+	public Condition numTrueFronts(boolean next, int pipe_index, int n)
 	{
-		return new NumTrueFronts(next, n);
+		if (n == 0)
+		{
+			Conjunction and = new Conjunction();
+			and.add(new AllFalseUpTo(next, QueueType.BUFFER, pipe_index, getBuffer(pipe_index).getSize() - 1));
+			and.add(new AllFalseUpTo(next, QueueType.PORCH, pipe_index, getFrontPorch(pipe_index).getSize() - 1));
+			return and;
+		}
+		return new NumTrueFronts(next, pipe_index, n);
 	}
 
 	protected class NumTrueFronts extends Disjunction
@@ -454,35 +491,30 @@ public class FilterModule extends BinaryModule
 
 		protected final int m_n;
 
-		public NumTrueFronts(boolean next, int n)
+		protected final int m_pipeIndex;
+
+		public NumTrueFronts(boolean next, int pipe_index, int n)
 		{
 			super();
 			m_next = next;
 			m_n = n;
+			m_pipeIndex = pipe_index;
 			int Q_in = getFrontPorch(0).getSize();
 			int Q_out = getBackPorch(0).getSize();
 			int Q_b = getBuffer(0).getSize();
-			for (int nf = n; nf <= Q_out; nf++)
+			for (int i = 0; i < n; i++)
 			{
-				Conjunction and = new Conjunction();
-				and.add(numFronts(next, nf));
-				Disjunction or = new Disjunction();
-				for (int i = 0; i < nf; i++)
-				{
-					Conjunction in_and = new Conjunction();
-					in_and.add(hasNTrueQueue(next, QueueType.BUFFER, 1, Q_b - 1, i));
-					in_and.add(hasNTrueQueue(next, QueueType.PORCH, 1, Q_in - 1, nf - i));
-					or.add(in_and);
-				}
-				and.add(or);
-				add(and);
+				Conjunction in_and = new Conjunction();
+				in_and.add(totalNTrueQueue(next, QueueType.BUFFER, 1, pipe_index, i));
+				in_and.add(totalNTrueQueue(next, QueueType.PORCH, 1, pipe_index, n - i));
+				add(in_and);
 			}
 		}
 
 		@Override
 		public String toString()
 		{
-			return "NumTrueFronts(" + m_n + ")" + (m_next ? "'" : "");
+			return "NumTrueFronts(#" + m_pipeIndex + "," + m_n + ")" + (m_next ? "'" : "");
 		}
 
 		@Override

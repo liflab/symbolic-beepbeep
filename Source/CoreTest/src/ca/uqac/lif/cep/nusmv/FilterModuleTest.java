@@ -24,11 +24,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import ca.uqac.lif.nusmv4j.Assignment;
 import ca.uqac.lif.nusmv4j.BruteSolver;
 import ca.uqac.lif.nusmv4j.Condition;
+import ca.uqac.lif.nusmv4j.Conjunction;
+import ca.uqac.lif.nusmv4j.Disjunction;
 import ca.uqac.lif.nusmv4j.Domain;
 
 import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.BUFFER;
@@ -36,6 +39,14 @@ import static ca.uqac.lif.cep.nusmv.ProcessorModule.QueueType.PORCH;
 
 public class FilterModuleTest 
 {
+	@Before
+	public void setup()
+	{
+		// For debugging
+		Conjunction.s_merge = false;
+		Disjunction.s_merge = false;
+	}
+	
 	protected static Domain s_domLetters = new Domain(new Object[] {"a", "b", "c"});
 
 	protected static BruteSolver s_solver = new BruteSolver();
@@ -156,7 +167,7 @@ public class FilterModuleTest
 		Assignment a = new Assignment();
 		mod.getBuffer(1).set(true, false, true, true, false).assign(a); // 3 true
 		mod.getFrontPorch(1).set(true, false, true, true, false).assign(a);
-		/*assertEquals(true, mod.isNthTrue(false, BUFFER, 1, 0, 1).evaluate(a));
+		assertEquals(true, mod.isNthTrue(false, BUFFER, 1, 0, 1).evaluate(a));
 		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 1, 1).evaluate(a));
 		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 1, 2).evaluate(a));
 		assertEquals(true, mod.isNthTrue(false, BUFFER, 1, 2, 2).evaluate(a));
@@ -164,7 +175,7 @@ public class FilterModuleTest
 		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 2, 3).evaluate(a));
 		assertEquals(true, mod.isNthTrue(false, BUFFER, 1, 3, 3).evaluate(a));
 		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 3, 4).evaluate(a));
-		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 4, 3).evaluate(a));*/
+		assertEquals(false, mod.isNthTrue(false, BUFFER, 1, 4, 3).evaluate(a));
 		Condition c = mod.isNthTrue(false, PORCH, 1, 0, 4);
 		assertEquals(true, c.evaluate(a));
 		assertEquals(false, mod.isNthTrue(false, PORCH, 1, 0, 3).evaluate(a));
@@ -220,12 +231,58 @@ public class FilterModuleTest
 		mod.getBuffer(1).set(true, false, false).assign(a);
 		mod.getFrontPorch(1).set(true, true).assign(a);
 		mod.getResetFlag().set(false).assign(a);
-		/*assertEquals(true, mod.isFrontToOutput(false, BUFFER, 0, BUFFER, 0, 0).evaluate(a));
+		assertEquals(true, mod.isFrontToOutput(false, BUFFER, 0, BUFFER, 0, 0).evaluate(a));
 		assertEquals(false, mod.isFrontToOutput(false, BUFFER, 0, BUFFER, 1, 0).evaluate(a));
 		assertEquals(false, mod.isFrontToOutput(false, BUFFER, 1, BUFFER, 0, 0).evaluate(a));
-		assertEquals(false, mod.isFrontToOutput(false, BUFFER, 0, BUFFER, 0, 1).evaluate(a));*/
+		assertEquals(false, mod.isFrontToOutput(false, BUFFER, 0, BUFFER, 0, 1).evaluate(a));
 		assertEquals(true, mod.isFrontToOutput(false, BUFFER, 3, PORCH, 0, 1).evaluate(a));
 		//assertEquals(true, mod.isFrontToOutput(false, PORCH, 0, PORCH, 1, 2).evaluate(a));
+	}
+	
+	@Test
+	public void testNumTrueFronts1()
+	{
+		// There are 5 complete fronts in this test case, 3 true fronts
+		int Q_in = 5, Q_b = 5, Q_out = 5;
+		FilterModule mod = new FilterModule("f", s_domLetters, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
+		mod.getFrontPorch(0).set("a").assign(a);
+		mod.getBuffer(1).set(true, false, false).assign(a);
+		mod.getFrontPorch(1).set(true, true).assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		Condition c = mod.numTrueFronts(false, 1, 0);
+		assertEquals(false, c.evaluate(a));
+		assertEquals(false, mod.numTrueFronts(false, 1, 1).evaluate(a));
+		assertEquals(false, mod.numTrueFronts(false, 1, 2).evaluate(a));
+		Condition cond = mod.numTrueFronts(false, 1, 3);
+		assertEquals(true, cond.evaluate(a));
+		assertEquals(false, mod.numTrueFronts(false, 1, 4).evaluate(a));
+	}
+	
+	@Test
+	public void testNumTrueFronts2()
+	{
+		// There are 5 complete fronts in this test case, 4 true fronts
+		int Q_in = 5, Q_b = 5, Q_out = 5;
+		FilterModule mod = new FilterModule("f", s_domLetters, Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set("a", "b", "c", "a").assign(a);
+		mod.getFrontPorch(0).set("a").assign(a);
+		mod.getBuffer(1).set(true, false, true).assign(a);
+		mod.getFrontPorch(1).set(true, true).assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		Condition c = mod.numTrueFronts(false, 1, 0);
+		assertEquals(false, c.evaluate(a));
+		assertEquals(false, mod.numTrueFronts(false, 1, 1).evaluate(a));
+		assertEquals(false, mod.numTrueFronts(false, 1, 2).evaluate(a));
+		{
+			Condition cond = mod.totalNTrueQueue(false, BUFFER, 1, 1);
+			assertEquals(false, cond.evaluate(a));
+		}
+		Condition cond = mod.numTrueFronts(false, 1, 3);
+		assertEquals(false, cond.evaluate(a));
+		assertEquals(true, mod.numTrueFronts(false, 1, 4).evaluate(a));
 	}
 
 	@Test
@@ -241,6 +298,7 @@ public class FilterModuleTest
 		mod.getFrontPorch(0).set("a").assign(a);
 		mod.getBuffer(1).set(true, false, false).assign(a);
 		mod.getFrontPorch(1).set(true, true).assign(a);
+		mod.getResetFlag().set(false).assign(a);
 		List<Assignment> solutions = s_solver.solveAll(c, a);
 		assertEquals(1, solutions.size());
 		mod.getBackPorch(0).set("a", "a", "a").assign(a);
@@ -280,11 +338,11 @@ public class FilterModuleTest
 		mod.getBuffer(1).set().assign(a);
 		mod.getFrontPorch(1).set(true).assign(a);
 		/*{
-			Condition ntrue = mod.numTrueFronts(false, 1);
+			Condition ntrue = mod.numTrueFronts(false, 1, 1);
 			assertEquals(true, ntrue.evaluate(a));
 		}*/
 		{
-			Condition ntrue = mod.numTrueFronts(false, 0);
+			Condition ntrue = mod.numTrueFronts(false, 1, 0);
 			assertEquals(false, ntrue.evaluate(a));
 		}
 		mod.getBackPorch(0).set("a").assign(a);
