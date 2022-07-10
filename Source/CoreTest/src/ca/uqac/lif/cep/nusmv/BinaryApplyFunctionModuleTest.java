@@ -679,6 +679,22 @@ public class BinaryApplyFunctionModuleTest
 		assertNotNull(c);
 		assertFalse(c.evaluate(a));
 	}
+	
+	@Test
+	public void testNextBufferSize10()
+	{
+		int Q_in = 1, Q_b = 2, Q_out = 1;
+		BinaryApplyFunctionModule mod = new BinaryApplyFunctionModule("f", new NusmvNumbers.Addition(s_domNumbers), Q_in, Q_b, Q_out);
+		Assignment a = new Assignment();
+		mod.getBuffer(0).set(0, 0).assign(a);
+		mod.getFrontPorch(0).set().assign(a);
+		mod.getBuffer(1).set().assign(a);
+		mod.getFrontPorch(1).set().assign(a);
+		mod.getResetFlag().set(false).assign(a);
+		Condition c = mod.nextBufferSize(0);
+		List<Assignment> sols = s_solver.solveAll(c, a);
+		assertEquals(1, sols.size());
+	}
 
 	@Test
 	public void testNextBufferValues1()
