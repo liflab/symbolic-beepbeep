@@ -30,6 +30,7 @@ import ca.uqac.lif.nusmv4j.Equality;
 import ca.uqac.lif.nusmv4j.Equivalence;
 import ca.uqac.lif.nusmv4j.GreaterOrEqual;
 import ca.uqac.lif.nusmv4j.GreaterThan;
+import ca.uqac.lif.nusmv4j.LessOrEqual;
 import ca.uqac.lif.nusmv4j.Modulo;
 import ca.uqac.lif.nusmv4j.Multiplication.MultiplicationModulo;
 import ca.uqac.lif.nusmv4j.Negation;
@@ -243,6 +244,44 @@ public class NusmvNumbers
 		public String toString()
 		{
 			return "\u2265";
+		}
+	}
+	
+	/**
+	 * Binary function for modular multiplication. The modulus of the
+	 * multiplication is determined by the size of the domain passed to the
+	 * function.
+	 */
+	public static class IsLessOrEqual extends BinaryNumberFunction
+	{
+		/**
+		 * Creates a new instance of the function for a given domain.
+		 * @param d The domain, which must be a discrete set for the form
+		 * {0, 1, &hellip; n}.
+		 */
+		public IsLessOrEqual(Domain d)
+		{
+			super(d);
+		}
+		
+		@Override
+		public Domain getOutputDomain()
+		{
+			return BooleanDomain.instance;
+		}
+		
+		@Override
+		public Condition getCondition(Term<?> x, Term<?> y, Term<?> z)
+		{
+			LessOrEqual mul = new LessOrEqual(x, y);
+			Equality eq = new Equality(mul, z);
+			return eq;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return "\u2264";
 		}
 	}
 	

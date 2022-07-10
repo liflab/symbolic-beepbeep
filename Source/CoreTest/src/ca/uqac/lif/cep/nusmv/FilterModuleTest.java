@@ -416,7 +416,7 @@ public class FilterModuleTest
 		assertEquals(1, solutions.size());
 	}
 
-	@Test(timeout = 1000)
+	@Test
 	public void testBackPorchValues1()
 	{
 		// There are 5 complete fronts in this test case

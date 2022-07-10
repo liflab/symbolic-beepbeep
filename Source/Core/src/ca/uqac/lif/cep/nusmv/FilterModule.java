@@ -505,8 +505,8 @@ public class FilterModule extends BinaryModule
 			for (int i = 0; i < n; i++)
 			{
 				Conjunction in_and = new Conjunction();
-				in_and.add(totalNTrueQueue(next, QueueType.BUFFER, 1, pipe_index, i));
-				in_and.add(totalNTrueQueue(next, QueueType.PORCH, 1, pipe_index, n - i));
+				in_and.add(totalNTrueQueue(next, QueueType.BUFFER, pipe_index, i));
+				in_and.add(totalNTrueQueue(next, QueueType.PORCH, pipe_index, n - i));
 				add(in_and);
 			}
 		}

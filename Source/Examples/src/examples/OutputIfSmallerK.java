@@ -29,9 +29,9 @@ public class OutputIfSmallerK extends BeepBeepPipeline
 		connect(f, 2, turn_1, 0);
 		CumulateModule sum = new CumulateModule("Sum", new NusmvNumbers.Addition(domain), Q_in, Q_out);
 		connect(turn_1, 0, sum, 0);
-		BinaryApplyFunctionModule gt = new BinaryApplyFunctionModule("Greater", new NusmvNumbers.IsGreaterOrEqual(domain), Q_in, q_size, Q_out);
-		connect(turn_k, 0, gt, 0);
-		connect(sum, 0, gt, 1);
+		BinaryApplyFunctionModule gt = new BinaryApplyFunctionModule("Greater", new NusmvNumbers.IsLessOrEqual(domain), Q_in, q_size, Q_out);
+		connect(turn_k, 0, gt, 1);
+		connect(sum, 0, gt, 0);
 		connect(gt, 0, filter, 1);
 		add(f, filter, turn_k, turn_1, sum, gt);
 		setInput(f, 0, 0);
@@ -40,7 +40,7 @@ public class OutputIfSmallerK extends BeepBeepPipeline
 	
 	public static void main(String[] args)
 	{
-		int Q_in = 1, Q_b = 1, Q_out = 1, k = 0;
+		int Q_in = 1, Q_b = 1, Q_out = 1, k = 2;
 		IntegerRange range = new IntegerRange(0, 3);
 		ProcessorQueue inputs1 = new ProcessorQueue("in1", "in1_c", "in1_b", Q_in, range);
 		OutputIfSmallerK mod = new OutputIfSmallerK(inputs1, k, Q_in, Q_b, Q_out, range);
