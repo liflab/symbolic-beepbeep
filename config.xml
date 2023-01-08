@@ -23,21 +23,21 @@
        script's default values -->
 
   <!-- The project's name -->
-  <!-- <name>AntRun</name> -->
+  <name>Symbolic BeepBeep</name>
   
   <!-- The project's author. Currently this only
   shows up in the footer of the Javadoc documentation. -->
-  <!-- <author>Marty McFly</author> -->
+  <author>Alexis Bédard, Sylvain Hallé</author>
   
   <!-- The project's main class -->
   <!-- <mainclass>my.package.MainClass</mainclass> -->
   
   <test>
     <!-- The filename pattern to recognize test files -->
-    <!-- <filenamepattern>
+    <filenamepattern>
            <src>**/*Test.java</src>
            <bin>**/*Test.class</bin>
-         </filenamepattern> -->
+    </filenamepattern>
   </test>
   
   <!--
@@ -45,19 +45,19 @@
   -->
   <dependencies>
     <dependency>
-      <!-- This entry points to a nonexistent class on purpose, to test
-      whether the detection/download of dependencies works. Delete this in
-      a real-world project.
-      -->
-      <name>Test Dep</name>
-      <classname>ca.uqac.lif.NonExistentClass</classname>
+      <name>BeepBeep 3 Core</name>
+      <classname>ca.uqac.lif.cep.Processor</classname>
       <files>
-        <!-- You typically need only one of these two for each dependency -->
-        <jar>http://sylvainhalle.github.io/AntRun/placeholders/dummy-jar.jar</jar>
-        <zip>http://sylvainhalle.github.io/AntRun/placeholders/dummy-zip.zip</zip>
+        <zip>https://github.com/liflab/beepbeep-3/releases/download/v0.10.3-alpha/beepbeep-3-0.10.3-alpha.zip</zip>
       </files>
-      <!-- The following parameter is mandatory. Set it to false if you don't
-           want this library to be bundled into the compiled JAR. -->
+      <bundle>false</bundle>
+    </dependency>
+    <dependency>
+      <name>nusmv4j</name>
+      <classname>ca.uqac.lif.nusmv4j.Module</classname>
+      <files>
+        <jar>https://github.com/liflab/nusmv4j/releases/download/v1.0/nusmv4j.jar</jar>
+      </files>
       <bundle>true</bundle>
     </dependency>
   </dependencies>
