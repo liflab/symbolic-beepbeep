@@ -29,6 +29,10 @@
   shows up in the footer of the Javadoc documentation. -->
   <author>Alexis Bédard, Sylvain Hallé</author>
   
+  <jar>
+    <filename>symbolic-beepbeep.jar</filename>
+  </jar>
+  
   <!-- The project's main class -->
   <!-- <mainclass>my.package.MainClass</mainclass> -->
   
@@ -48,7 +52,7 @@
       <name>BeepBeep 3 Core</name>
       <classname>ca.uqac.lif.cep.Processor</classname>
       <files>
-        <zip>https://github.com/liflab/beepbeep-3/releases/download/v0.10.3-alpha/beepbeep-3-0.10.3-alpha.zip</zip>
+        <zip>https://github.com/liflab/beepbeep-3/releases/download/v0.10.7-alpha/beepbeep-3-0.10.7-alpha.zip</zip>
       </files>
       <bundle>false</bundle>
     </dependency>
