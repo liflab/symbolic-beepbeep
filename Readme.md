@@ -14,7 +14,7 @@ The palette is the result of work submitted in the following research paper:
 
 - A. Bédard, S. Hallé. (2023). *Formal Verification for Event Stream
   Processing: Model Checking of BeepBeep Stream Processing Pipelines*.
-  Submitted to *Information and Computation*.
+  Inf. Comput. 293: 105058, Elsevier.
 
 This work extends the original modeling presented in this paper:
 
